@@ -275,7 +275,7 @@
 
     <script>
         // --- CONFIGURATION ---
-        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=33741-31&single=true&output=csv';
+        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv';
         const ROWS_PER_PAGE = 20;
         // Columns to show in the main table
         const VISIBLE_HEADERS = ['Date', 'Home Team', 'Away Team', 'Home Odds', 'Draw Odds', 'Away Odds', 'Confidence', 'Correct Score', 'Form', 'Margin'];
@@ -541,6 +541,50 @@
             if (awayScore > homeScore) return 'Away Win';
             return 'Draw';
         }
+        
+        function parseDateString(dateStr) {
+            if (!dateStr || typeof dateStr !== 'string') return null;
+
+            // Try MM/DD/YYYY format first
+            let parts = dateStr.split('/');
+            if (parts.length === 3) {
+                const [month, day, year] = parts.map(p => parseInt(p.trim()));
+                // Basic validation for numbers
+                if (!isNaN(month) && !isNaN(day) && !isNaN(year) && month > 0 && month <= 12 && day > 0 && day <= 31) {
+                    const d = new Date(year, month - 1, day);
+                    // Final check for valid date object
+                    if (d && d.getMonth() === month - 1) return d;
+                }
+            }
+
+            // Try "D MMM" format (e.g., "8 sept")
+            parts = dateStr.split(' ');
+            if (parts.length >= 2) {
+                const day = parseInt(parts[0].trim());
+                const monthAbbr = parts[1].trim().toLowerCase().substring(0, 3); // Standardize to 3 chars
+                
+                const monthMap = {
+                    'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+                    'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+                };
+
+                const monthIndex = monthMap[monthAbbr];
+
+                if (!isNaN(day) && monthIndex !== undefined) {
+                    const currentYear = new Date().getFullYear();
+                    const d = new Date(currentYear, monthIndex, day);
+                     if (d && d.getDate() === day) return d;
+                }
+            }
+            
+            // Fallback for other standard formats recognized by new Date()
+            const d = new Date(dateStr);
+            if (!isNaN(d.getTime())) {
+                return d;
+            }
+
+            return null; // Return null if no format matches
+        }
 
         async function fetchMatchOutcome(buttonElement) {
             buttonElement.disabled = true;
@@ -551,7 +595,7 @@
             // Direct scraping from sites like Flashscore is blocked by browser security (CORS).
             // Example of what a real API call would look like:
             //
-            // const homeTeam = buttonElement.dataset.hometeam;
+            // const homeTeam = buttonElement.dataset.hometam;
             // const awayTeam = buttonElement.dataset.awayteam;
             // const API_KEY = 'YOUR_REAL_API_KEY';
             // try {
@@ -612,21 +656,17 @@
                 return `<span class="text-gray-800 font-bold">${finalScore}</span>`;
             }
 
-            try {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Normalize today's date
-                
-                // Handle MM/DD/YYYY format
-                const dateParts = dateStr.split('/');
-                if (dateParts.length !== 3) throw new Error("Invalid date format");
-                const matchDate = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
-
-                if (matchDate > today) {
-                    return '<span class="text-gray-400 text-xs italic">Future Match</span>';
-                }
-            } catch (e) {
-                // If date is invalid, assume we can't fetch.
+            const matchDate = parseDateString(dateStr);
+            
+            if (!matchDate) {
                 return '<span class="text-gray-400 text-xs italic">Date Invalid</span>';
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalize today's date
+
+            if (matchDate > today) {
+                return '<span class="text-gray-400 text-xs italic">Future Match</span>';
             }
             
             return `<button class="fetch-outcome-btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md text-xs transition">Fetch</button>`;
