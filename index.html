@@ -179,7 +179,7 @@
 
     <script>
         // --- CONFIGURATION ---
-        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1iTAOTu1GcuGbkmxHayZWqbjG9Y0sxGf2x6_PgS0TDRo/export?format=csv&gid=337419731'; // <--- PASTE YOUR URL HERE
+        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?output=csv';
 
         // --- DOM ELEMENT REFERENCES ---
         const tableBody = document.getElementById('dataTableBody');
@@ -229,8 +229,10 @@
         function parseCSV(text) {
             const rows = text.split(/\r?\n/).map(row => row.split(','));
             const headerRow = rows.shift() || [];
-            const data = rows.filter(row => row.length === headerRow.length);
-            return { headers: headerRow, data };
+            // Clean up header names
+            const cleanedHeaders = headerRow.map(h => h.trim());
+            const data = rows.filter(row => row.length === cleanedHeaders.length);
+            return { headers: cleanedHeaders, data };
         }
 
         function renderHeaders() {
@@ -275,7 +277,21 @@
                 const chanceMatch = (chanceValue === 'All') || (row[chanceIndex] === chanceValue);
                 const winningMarginMatch = (winningMarginValue === 'All') || (row[winningMarginIndex] === winningMarginValue);
                 const searchMatch = !searchValue || row[homeTeamIndex].toLowerCase().includes(searchValue) || row[awayTeamIndex].toLowerCase().includes(searchValue);
-                const dateMatch = (!startDate || new Date(row[dateIndex]) >= startDate) && (!endDate || new Date(row[dateIndex]) <= endDate);
+                
+                // Date parsing needs to be robust
+                let rowDate = null;
+                try {
+                    // Attempt to parse date, might need adjustment based on sheet format e.g., "DD/MM/YYYY"
+                    const dateParts = row[dateIndex].split('/');
+                    if(dateParts.length === 3) {
+                       // Assuming MM/DD/YYYY format from Sheets
+                       rowDate = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+                    } else {
+                       rowDate = new Date(row[dateIndex]);
+                    }
+                } catch(e) { /* ignore invalid dates */ }
+
+                const dateMatch = rowDate && (!startDate || rowDate >= startDate) && (!endDate || rowDate <= endDate);
 
                 return chanceMatch && winningMarginMatch && searchMatch && dateMatch;
             });
@@ -321,12 +337,12 @@
                     let cellContent = cell || '-';
 
                     if (index === chanceIndex) {
-                        const chanceValue = cell.toLowerCase();
+                        const chanceValue = (cell || '').toLowerCase();
                         if (chanceValue === 'high') cellClass += ' font-bold text-green-600';
                         else if (chanceValue === 'medium') cellClass += ' font-semibold text-yellow-600';
                         else if (chanceValue === 'low') cellClass += ' text-red-600';
                     } else if (index === winningMarginIndex) {
-                         const marginMet = cell.toLowerCase();
+                         const marginMet = (cell || '').toLowerCase();
                          if (marginMet === 'yes') cellContent = `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">${cell}</span>`;
                          else if (marginMet === 'no') cellContent = `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">${cell}</span>`;
                     }
@@ -357,7 +373,7 @@
             const totalGoalsIndex = headers.indexOf('Total Goals');
 
             if(data.length > 0) {
-                const wins = data.filter(row => row[winningMarginIndex]?.toLowerCase() === 'yes').length;
+                const wins = data.filter(row => (row[winningMarginIndex] || '').toLowerCase() === 'yes').length;
                 winRateCard.textContent = `${((wins / data.length) * 100).toFixed(1)}%`;
 
                 const totalGoals = data.reduce((acc, row) => acc + (parseFloat(row[totalGoalsIndex]) || 0), 0);
@@ -414,10 +430,6 @@
             buttonElement.innerHTML = `<svg class="animate-spin h-4 w-4 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
             // --- SIMULATION ---
-            // TODO: Replace this setTimeout with a real `fetch` call to a sports API.
-            // Example: const response = await fetch(`https://api.yoursportsdata.com/v1/matches?home=${homeTeam}&away=${awayTeam}&apiKey=YOUR_KEY`);
-            // const data = await response.json();
-            // const result = data.score; // e.g., "2 - 1"
             await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
 
             const homeScore = Math.floor(Math.random() * 4);
