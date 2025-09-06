@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Data Navigator</title>
+    <title>ChelseaFC Sports Data Navigator</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -14,7 +14,7 @@
         /* Use the Inter font */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
+            background-color: #f0f4f8; /* A lighter blue-gray background */
         }
         /* Custom scrollbar for better aesthetics */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -48,9 +48,9 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Modal Styles */
+        /* Modal Transitions */
         .modal-overlay { transition: opacity 0.3s ease; }
-        .modal-content { transition: transform 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
 
         /* Sidebar navigation active state */
         .sidebar-link.active {
@@ -58,31 +58,36 @@
             color: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
+
+        /* Toast Notification transitions */
+        #toast-notification {
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800 bg-gray-100">
 
     <div class="flex h-screen">
         <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-white shadow-lg flex flex-col">
+        <aside class="w-64 bg-white shadow-lg flex flex-col flex-shrink-0">
             <div class="p-6 flex items-center space-x-4 border-b border-gray-200">
                 <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" alt="Chelsea FC Logo" class="h-12 w-12">
                 <h1 class="text-xl font-bold text-blue-900">ChelseaFC Stats</h1>
             </div>
             <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="index.html" id="nav-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
+                <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     Dashboard
                 </a>
-                 <a href="statarea.html" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
+                 <a href="#" data-target="content-statarea" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     Statarea
                 </a>
-                <a href="statarea.html" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
+                <a href="#" data-target="content-forestats" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     Forestats
                 </a>
-                 <a href="comparison.html" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
+                 <a href="#" data-target="content-comparison" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     Comparison
                 </a>
@@ -94,26 +99,26 @@
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-blue-900">Statistics</h1>
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
+                <h1 id="main-header-title" class="text-2xl font-bold text-blue-900">Dashboard</h1>
                  <div class="flex space-x-2">
-                    <button id="syncDataBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2">
+                    <button id="syncDataBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
                         <svg class="w-4 h-4" id="syncIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.25-4.25l-1.47 1.47c.56.98.82 2.09.82 3.28 0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg>
                         <span id="syncText">Sync Data</span>
                     </button>
-                    <button id="deleteAllBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2">
+                    <button id="deleteAllBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        <span>Delete All Data</span>
+                        <span>Delete All</span>
                     </button>
                 </div>
             </header>
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+                <!-- Dashboard Page Content -->
                 <div id="content-dashboard" class="page-content">
-
                     <!-- Filters Section -->
                     <div class="bg-white rounded-xl shadow-md mb-8 p-6">
-                         <h3 class="text-xl font-bold text-blue-900 mb-4">Filter & Search</h3>
+                        <h3 class="text-xl font-bold text-blue-900 mb-4">Filter & Search</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                             <div class="lg:col-span-2">
                                 <label for="searchFilter" class="block text-sm font-medium text-gray-700 mb-2">Search Team</label>
@@ -131,9 +136,9 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="levelOfConfidenceFilter" class="block text-sm font-medium text-gray-700 mb-2">Level of Confidence</label>
+                                <label for="levelOfConfidenceFilter" class="block text-sm font-medium text-gray-700 mb-2">Confidence</label>
                                 <select id="levelOfConfidenceFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
-                                    <option value="All">All</option>
+                                    <option value="All">All Levels</option>
                                 </select>
                             </div>
                             <div>
@@ -157,16 +162,16 @@
                     
                     <!-- Today's Best Picks Card -->
                     <div class="bg-white rounded-xl shadow-md mb-8 p-6">
-                        <h3 class="text-xl font-bold text-blue-900 mb-4">Today's Best Picks</h3>
-                        <div id="bestPicksContainer" class="overflow-x-auto">
-                           <p class="text-gray-500">Finding today's top picks...</p>
+                        <h3 class="text-xl font-bold text-blue-900 mb-4">High-Confidence Picks</h3>
+                        <div id="bestPicksContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                           <div class="col-span-full text-center p-8"><p class="text-gray-500">Finding today's top picks...</p></div>
                         </div>
                     </div>
 
                     <!-- Data Table Section -->
                     <div class="bg-white rounded-xl shadow-md overflow-hidden">
                          <div class="p-4 border-b">
-                            <h3 class="font-bold text-gray-800">Match Data</h3>
+                            <h3 class="font-bold text-gray-800">All Match Data</h3>
                         </div>
                         <div id="table-container" class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -180,10 +185,30 @@
                              <div id="no-results" class="hidden p-8 text-center text-gray-500">No records match the current filters.</div>
                         </div>
                         <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-gray-200">
-                            <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</button>
+                            <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                             <div class="text-sm text-gray-700" id="page-info">Page 1 of 1</div>
-                            <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</button>
+                            <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Other Page Content (hidden by default) -->
+                <div id="content-statarea" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                        <h3 class="text-2xl font-bold text-blue-900">Statarea</h3>
+                        <p class="mt-4 text-gray-600">This section is under construction. Check back soon for detailed area statistics!</p>
+                    </div>
+                </div>
+                <div id="content-forestats" class="page-content hidden">
+                    <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                        <h3 class="text-2xl font-bold text-blue-900">Forestats</h3>
+                        <p class="mt-4 text-gray-600">This section is under construction. Detailed forecast statistics are coming soon!</p>
+                    </div>
+                </div>
+                <div id="content-comparison" class="page-content hidden">
+                     <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                        <h3 class="text-2xl font-bold text-blue-900">Comparison</h3>
+                        <p class="mt-4 text-gray-600">The team comparison tool is being built. Please check back later!</p>
                     </div>
                 </div>
             </main>
@@ -193,7 +218,7 @@
     <!-- Details Modal -->
     <div id="details-modal" class="fixed inset-0 z-50 hidden">
         <div id="modal-overlay" class="absolute inset-0 bg-black bg-opacity-50 modal-overlay opacity-0"></div>
-        <div class="relative bg-white w-full max-w-lg mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95">
+        <div class="relative bg-white w-full max-w-lg mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95 opacity-0">
             <div class="flex items-start justify-between pb-4 border-b">
                 <h2 class="text-xl font-bold text-gray-900" id="modal-title"></h2>
                 <button id="modal-close-btn" class="text-2xl text-gray-400 hover:text-gray-600 font-light">&times;</button>
@@ -215,47 +240,104 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="fixed top-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-lg transition-all transform translate-x-[120%] opacity-0">
+      <span id="toast-message"></span>
+    </div>
+
+
     <script>
         // --- CONFIGURATION ---
         const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv';
         const ROWS_PER_PAGE = 20;
         const VISIBLE_HEADERS = ['Date', 'Details', 'Home Team', 'Away Team', 'Home Odds', 'Draw Odds', 'Away Odds', 'Confidence', 'Level of Confidence', 'Prediction', 'Match Outcome', 'Accuracy'];
         
-        // --- DOM REFERENCES ---
-        const tableBody = document.getElementById('dataTableBody'), tableHeader = document.querySelector('thead tr'), noResultsDiv = document.getElementById('no-results');
-        const searchFilter = document.getElementById('searchFilter'), searchBtn = document.getElementById('searchBtn');
-        const dateFilter = document.getElementById('dateFilter'), levelOfConfidenceFilter = document.getElementById('levelOfConfidenceFilter'), outcomeMarginFilter = document.getElementById('outcomeMarginFilter'), preferenceFilter = document.getElementById('preferenceFilter');
-        const resetFiltersBtn = document.getElementById('resetFilters'), applyFiltersBtn = document.getElementById('applyFilters');
-        const paginationControls = document.getElementById('pagination-controls'), prevPageBtn = document.getElementById('prev-page'), nextPageBtn = document.getElementById('next-page'), pageInfo = document.getElementById('page-info');
-        const modal = document.getElementById('details-modal'), modalOverlay = document.getElementById('modal-overlay'), modalCloseBtn = document.getElementById('modal-close-btn'), modalTitle = document.getElementById('modal-title'), modalBody = document.getElementById('modal-body');
-        const deleteAllBtn = document.getElementById('deleteAllBtn'), syncDataBtn = document.getElementById('syncDataBtn'), syncIcon = document.getElementById('syncIcon'), syncText = document.getElementById('syncText');
-        const bestPicksContainer = document.getElementById('bestPicksContainer');
-        const confirmModal = document.getElementById('confirm-modal'), confirmModalCancel = document.getElementById('confirm-modal-cancel'), confirmModalConfirm = document.getElementById('confirm-modal-confirm'), confirmModalTitle = document.getElementById('confirm-modal-title'), confirmModalBody = document.getElementById('confirm-modal-body');
-
+        // --- GLOBAL STATE ---
         let allData = [], currentFilteredData = [], originalHeaders = [];
-        let sortState = { column: null, direction: 'asc' }, currentPage = 1;
+        let sortState = { column: null, direction: 'asc' };
+        let currentPage = 1;
         let confirmCallback = null;
+        let searchDebounceTimeout;
+
+        // --- DOM REFERENCES ---
+        const dom = {
+            tableBody: document.getElementById('dataTableBody'),
+            tableHeader: document.querySelector('thead tr'),
+            noResultsDiv: document.getElementById('no-results'),
+            searchFilter: document.getElementById('searchFilter'),
+            searchBtn: document.getElementById('searchBtn'),
+            dateFilter: document.getElementById('dateFilter'),
+            levelOfConfidenceFilter: document.getElementById('levelOfConfidenceFilter'),
+            outcomeMarginFilter: document.getElementById('outcomeMarginFilter'),
+            preferenceFilter: document.getElementById('preferenceFilter'),
+            resetFiltersBtn: document.getElementById('resetFilters'),
+            applyFiltersBtn: document.getElementById('applyFilters'),
+            paginationControls: document.getElementById('pagination-controls'),
+            prevPageBtn: document.getElementById('prev-page'),
+            nextPageBtn: document.getElementById('next-page'),
+            pageInfo: document.getElementById('page-info'),
+            modal: document.getElementById('details-modal'),
+            modalOverlay: document.getElementById('modal-overlay'),
+            modalCloseBtn: document.getElementById('modal-close-btn'),
+            modalTitle: document.getElementById('modal-title'),
+            modalBody: document.getElementById('modal-body'),
+            deleteAllBtn: document.getElementById('deleteAllBtn'),
+            syncDataBtn: document.getElementById('syncDataBtn'),
+            syncIcon: document.getElementById('syncIcon'),
+            syncText: document.getElementById('syncText'),
+            bestPicksContainer: document.getElementById('bestPicksContainer'),
+            confirmModal: document.getElementById('confirm-modal'),
+            confirmModalCancel: document.getElementById('confirm-modal-cancel'),
+            confirmModalConfirm: document.getElementById('confirm-modal-confirm'),
+            confirmModalTitle: document.getElementById('confirm-modal-title'),
+            confirmModalBody: document.getElementById('confirm-modal-body'),
+            sidebarLinks: document.querySelectorAll('.sidebar-link'),
+            contentPages: document.querySelectorAll('.page-content'),
+            mainHeaderTitle: document.getElementById('main-header-title'),
+            toast: document.getElementById('toast-notification'),
+            toastMessage: document.getElementById('toast-message'),
+        };
+
+        // Column indices to avoid repeated lookups
+        const COLUMN_INDICES = {};
 
         // --- CORE FUNCTIONS ---
-        async function init() {
+        
+        /**
+         * Fetches and processes data from the Google Sheet.
+         */
+        async function fetchAndProcessData() {
             try {
-                const response = await fetch(GOOGLE_SHEET_URL);
+                const response = await fetch(`${GOOGLE_SHEET_URL}&t=${new Date().getTime()}`); // Bust cache
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const csvText = await response.text();
+                // Handle potential header variations more robustly
                 const processedCsvText = csvText.replace('Correct Score', 'Prediction');
                 const parsed = parseCSV(processedCsvText);
+                
                 originalHeaders = parsed.headers;
+                // Populate column indices map
+                originalHeaders.forEach((header, index) => {
+                    COLUMN_INDICES[header.trim()] = index;
+                });
+                
                 allData = parsed.data;
                 currentFilteredData = [...allData];
+
                 renderHeaders();
                 populateDropdowns();
                 applyFilters();
+
             } catch (error) {
                 console.error('Failed to fetch/process data:', error);
-                tableBody.innerHTML = `<tr><td colspan="${VISIBLE_HEADERS.length}" class="p-8 text-center text-red-500 font-semibold">Failed to load data. Please check the sheet URL and publishing settings.</td></tr>`;
+                dom.tableBody.innerHTML = `<tr><td colspan="${VISIBLE_HEADERS.length}" class="p-8 text-center text-red-500 font-semibold">Failed to load data. Please try syncing again.</td></tr>`;
+                throw error; // Re-throw to be caught by caller
             }
         }
-
+        
+        /**
+         * Parses CSV text into headers and data rows.
+         */
         function parseCSV(text) {
             const rows = text.split(/\r?\n/).map(row => row.split(','));
             const headerRow = rows.shift() || [];
@@ -264,84 +346,68 @@
             return { headers: cleanedHeaders, data };
         }
 
+        /**
+         * Renders the table headers and attaches sorting classes.
+         */
         function renderHeaders() {
-            tableHeader.innerHTML = VISIBLE_HEADERS.map(header => {
-                const originalIndex = originalHeaders.indexOf(header);
-                const isSortable = originalIndex !== -1 && !['Details', 'Level of Confidence', 'Match Outcome', 'Accuracy'].includes(header);
+            dom.tableHeader.innerHTML = VISIBLE_HEADERS.map(header => {
+                const originalIndex = COLUMN_INDICES[header];
+                const isSortable = originalIndex !== undefined && !['Details', 'Level of Confidence', 'Match Outcome', 'Accuracy'].includes(header);
                 let classes = 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
 
-                if (header === 'Details') {
-                    return `<th scope="col" class="${classes}"></th>`;
-                }
+                if (header === 'Details') return `<th scope="col" class="${classes}"></th>`;
                 
                 if (isSortable) {
-                     if (sortState.column === originalIndex) classes += sortState.direction === 'asc' ? ' sort-asc' : ' sort-desc';
-                     return `<th scope="col" data-original-index="${originalIndex}" class="${classes}">${header}</th>`;
-                } else {
-                     return `<th scope="col" class="${classes}">${header}</th>`;
+                    if (sortState.column === originalIndex) classes += sortState.direction === 'asc' ? ' sort-asc' : ' sort-desc';
+                    return `<th scope="col" data-original-index="${originalIndex}" class="${classes}">${header}</th>`;
                 }
+                return `<th scope="col" class="${classes}">${header}</th>`;
             }).join('');
         }
 
+        /**
+         * Populates filter dropdowns with unique values from the data.
+         */
         function populateDropdowns() {
-            // Clear existing options first
-            [dateFilter, levelOfConfidenceFilter, preferenceFilter, outcomeMarginFilter].forEach(filter => {
+            [dom.dateFilter, dom.levelOfConfidenceFilter, dom.preferenceFilter, dom.outcomeMarginFilter].forEach(filter => {
                 const firstOption = filter.options[0];
                 filter.innerHTML = '';
                 filter.add(firstOption);
             });
 
-            const indices = {
-                date: originalHeaders.indexOf('Date'),
-                levelOfConfidence: originalHeaders.indexOf('Level of Confidence'),
-                preference: originalHeaders.indexOf('Preference'),
-                outcomeMargin: originalHeaders.indexOf('Outcome Margin')
-            };
-
-            const uniqueValues = {
-                dates: new Set(),
-                confidences: new Set(),
-                preferences: new Set(),
-                margins: new Set()
-            };
+            const uniqueValues = { dates: new Set(), confidences: new Set(), preferences: new Set(), margins: new Set() };
 
             allData.forEach(row => {
-                if (row[indices.date]) uniqueValues.dates.add(row[indices.date]);
-                if (row[indices.levelOfConfidence]) uniqueValues.confidences.add(row[indices.levelOfConfidence]);
-                if (row[indices.preference]) uniqueValues.preferences.add(row[indices.preference]);
-                if (row[indices.outcomeMargin]) uniqueValues.margins.add(row[indices.outcomeMargin]);
+                if (row[COLUMN_INDICES['Date']]) uniqueValues.dates.add(row[COLUMN_INDICES['Date']]);
+                if (row[COLUMN_INDICES['Level of Confidence']]) uniqueValues.confidences.add(row[COLUMN_INDICES['Level of Confidence']]);
+                if (row[COLUMN_INDICES['Preference']]) uniqueValues.preferences.add(row[COLUMN_INDICES['Preference']]);
+                if (row[COLUMN_INDICES['Outcome Margin']]) uniqueValues.margins.add(row[COLUMN_INDICES['Outcome Margin']]);
             });
 
-            [...uniqueValues.dates].sort((a,b) => new Date(b) - new Date(a)).forEach(val => dateFilter.add(new Option(val, val)));
-            [...uniqueValues.confidences].sort((a,b) => parseInt(b) - parseInt(a)).forEach(val => levelOfConfidenceFilter.add(new Option(val, val)));
-            [...uniqueValues.preferences].sort().forEach(val => preferenceFilter.add(new Option(val, val)));
-            [...uniqueValues.margins].sort().forEach(val => outcomeMarginFilter.add(new Option(val, val)));
+            [...uniqueValues.dates].sort((a,b) => new Date(b) - new Date(a)).forEach(val => dom.dateFilter.add(new Option(val, val)));
+            [...uniqueValues.confidences].sort((a,b) => parseInt(b) - parseInt(a)).forEach(val => dom.levelOfConfidenceFilter.add(new Option(val, val)));
+            [...uniqueValues.preferences].sort().forEach(val => dom.preferenceFilter.add(new Option(val, val)));
+            [...uniqueValues.margins].sort().forEach(val => dom.outcomeMarginFilter.add(new Option(val, val)));
         }
         
+        /**
+         * Applies all active filters and sorting to the data, then re-renders the page.
+         */
         function applyFilters() {
             const filters = {
-                search: searchFilter.value.toLowerCase(),
-                date: dateFilter.value,
-                levelOfConfidence: levelOfConfidenceFilter.value,
-                outcomeMargin: outcomeMarginFilter.value,
-                preference: preferenceFilter.value,
-            };
-            const indices = {
-                date: originalHeaders.indexOf('Date'),
-                homeTeam: originalHeaders.indexOf('Home Team'),
-                awayTeam: originalHeaders.indexOf('Away Team'),
-                levelOfConfidence: originalHeaders.indexOf('Level of Confidence'),
-                outcomeMargin: originalHeaders.indexOf('Outcome Margin'),
-                preference: originalHeaders.indexOf('Preference'),
+                search: dom.searchFilter.value.toLowerCase(),
+                date: dom.dateFilter.value,
+                levelOfConfidence: dom.levelOfConfidenceFilter.value,
+                outcomeMargin: dom.outcomeMarginFilter.value,
+                preference: dom.preferenceFilter.value,
             };
 
             let filtered = allData.filter(row => {
-                const searchMatch = !filters.search || row[indices.homeTeam].toLowerCase().includes(filters.search) || row[indices.awayTeam].toLowerCase().includes(filters.search);
-                const dateMatch = filters.date === 'All' || row[indices.date] === filters.date;
-                const confidenceMatch = filters.levelOfConfidence === 'All' || row[indices.levelOfConfidence] === filters.levelOfConfidence;
-                const outcomeMarginMatch = filters.outcomeMargin === 'All' || row[indices.outcomeMargin] === filters.outcomeMargin;
-                const preferenceMatch = filters.preference === 'All' || row[indices.preference] === filters.preference;
-
+                const searchMatch = !filters.search || row[COLUMN_INDICES['Home Team']].toLowerCase().includes(filters.search) || row[COLUMN_INDICES['Away Team']].toLowerCase().includes(filters.search);
+                const dateMatch = filters.date === 'All' || row[COLUMN_INDICES['Date']] === filters.date;
+                const confidenceMatch = filters.levelOfConfidence === 'All' || row[COLUMN_INDICES['Level of Confidence']] === filters.levelOfConfidence;
+                const outcomeMarginMatch = filters.outcomeMargin === 'All' || row[COLUMN_INDICES['Outcome Margin']] === filters.outcomeMargin;
+                const preferenceMatch = filters.preference === 'All' || row[COLUMN_INDICES['Preference']] === filters.preference;
                 return searchMatch && dateMatch && confidenceMatch && outcomeMarginMatch && preferenceMatch;
             });
             
@@ -358,6 +424,9 @@
             updateBestPicks(allData);
         }
 
+        /**
+         * Renders the visible portion of the table and updates pagination.
+         */
         function renderPage() {
             const totalPages = Math.max(1, Math.ceil(currentFilteredData.length / ROWS_PER_PAGE));
             currentPage = Math.max(1, Math.min(currentPage, totalPages));
@@ -366,28 +435,27 @@
             updatePaginationControls(totalPages);
         }
 
+        /**
+         * Renders the data rows into the main table.
+         */
         function renderTable(data) {
-            tableBody.innerHTML = '';
-            noResultsDiv.classList.toggle('hidden', data.length > 0);
-            paginationControls.classList.toggle('hidden', data.length === 0);
+            dom.tableBody.innerHTML = '';
+            dom.noResultsDiv.classList.toggle('hidden', data.length > 0);
+            dom.paginationControls.classList.toggle('hidden', data.length === 0);
             if (data.length === 0) return;
-
-            const homeOddsIndex = originalHeaders.indexOf('Home Odds');
-            const drawOddsIndex = originalHeaders.indexOf('Draw Odds');
-            const awayOddsIndex = originalHeaders.indexOf('Away Odds');
 
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-blue-50 transition-colors';
                 
-                const homeOdds = parseFloat(row[homeOddsIndex]);
-                const drawOdds = parseFloat(row[drawOddsIndex]);
-                const awayOdds = parseFloat(row[awayOddsIndex]);
+                const homeOdds = parseFloat(row[COLUMN_INDICES['Home Odds']]);
+                const drawOdds = parseFloat(row[COLUMN_INDICES['Draw Odds']]);
+                const awayOdds = parseFloat(row[COLUMN_INDICES['Away Odds']]);
                 let minOdd = Math.min(...[homeOdds, drawOdds, awayOdds].filter(o => !isNaN(o)));
 
                 let cells = VISIBLE_HEADERS.map(headerName => {
-                    const index = originalHeaders.indexOf(headerName);
-                    const cellValue = index !== -1 ? row[index] : '';
+                    const index = COLUMN_INDICES[headerName];
+                    const cellValue = index !== undefined ? row[index] : '';
                     let cellClass = 'px-6 py-4 whitespace-nowrap text-sm text-gray-700 align-middle';
                     let cellContent = cellValue || '-';
 
@@ -396,18 +464,12 @@
                             cellClass += ' font-semibold text-blue-900';
                             break;
                         case 'Home Odds': case 'Draw Odds': case 'Away Odds':
-                            const oddValue = parseFloat(cellValue);
-                            if (!isNaN(oddValue) && oddValue === minOdd) {
+                            if (!isNaN(parseFloat(cellValue)) && parseFloat(cellValue) === minOdd) {
                                 cellContent = `<span class="bg-blue-100 text-blue-800 font-bold py-1 px-2 rounded-md">${cellValue}</span>`;
                             }
                             break;
-                        case 'Confidence':
-                            cellContent = cellValue || '-';
-                            cellClass += ' font-medium';
-                            break;
                         case 'Level of Confidence':
-                            const confValue = cellValue.replace('%','').trim();
-                            const numericConf = parseFloat(confValue);
+                            const numericConf = parseFloat(cellValue.replace('%','').trim());
                             let confColor = 'text-gray-800';
                             if (!isNaN(numericConf)) {
                                 if (numericConf >= 80) confColor = 'text-green-600';
@@ -418,182 +480,186 @@
                             cellClass += ' text-center';
                             break;
                         case 'Match Outcome':
-                            cellContent = getMatchOutcome(row);
-                            cellClass += ' text-center font-medium';
+                            const outcome = row[COLUMN_INDICES['Match Outcome']] || '-';
+                            let outcomeClass = 'font-semibold ';
+                            if (outcome.toLowerCase() === 'home') outcomeClass += 'text-green-700';
+                            else if (outcome.toLowerCase() === 'away') outcomeClass += 'text-blue-700';
+                            else if (outcome.toLowerCase() === 'draw') outcomeClass += 'text-yellow-700';
+                            else outcomeClass += 'text-gray-500';
+                            cellContent = `<span class="${outcomeClass}">${outcome}</span>`;
+                            cellClass += ' text-center';
                             break;
                         case 'Accuracy':
-                            cellContent = getAccuracySymbol(row);
-                            cellClass += ' text-lg text-center';
+                            const accuracyValue = row[COLUMN_INDICES['Accuracy']] || '';
+                            if (accuracyValue.toLowerCase() === 'success') {
+                                cellContent = `<span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Success</span>`;
+                            } else if (accuracyValue.toLowerCase() === 'unsuccessful') {
+                                cellContent = `<span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
+                            } else {
+                                cellContent = '<span class="text-gray-400">-</span>';
+                            }
+                            cellClass += ' text-center';
                             break;
                         case 'Details':
-                             cellContent = `<button class="view-more-btn bg-blue-600 text-white px-3 py-1 text-xs rounded-full hover:bg-blue-700 transition shadow">view</button>`;
-                             cellClass += ' text-center';
-                             break;
+                            cellContent = `<button class="view-more-btn bg-blue-600 text-white px-3 py-1 text-xs rounded-full hover:bg-blue-700 transition shadow">view</button>`;
+                            cellClass += ' text-center';
+                            break;
                     }
                     return `<td class="${cellClass}">${cellContent}</td>`;
                 }).join('');
                 
                 tr.innerHTML = cells;
                 tr.querySelector('.view-more-btn')?.addEventListener('click', () => openModal(row));
-                tableBody.appendChild(tr);
+                dom.tableBody.appendChild(tr);
             });
         }
         
-        function getAccuracySymbol(row) {
-            const predictedScore = row[originalHeaders.indexOf('Prediction')], finalScore = row[originalHeaders.indexOf('Final Score / Time')];
-            if (!predictedScore || !finalScore || !finalScore.includes('-') || !predictedScore.includes('-')) return '<span class="text-gray-400">-</span>';
-            const [pHome, pAway] = predictedScore.split('-').map(s => parseInt(s.trim()));
-            const [fHome, fAway] = finalScore.split('-').map(s => parseInt(s.trim()));
-            if (isNaN(pHome) || isNaN(pAway) || isNaN(fHome) || isNaN(fAway)) return '<span class="text-gray-400">-</span>';
-            const predictedWinner = pHome > pAway ? 'home' : pAway > pHome ? 'away' : 'draw';
-            const actualWinner = fHome > fAway ? 'home' : fAway > fHome ? 'away' : 'draw';
-            return predictedWinner === actualWinner ? '<span class="text-green-400 font-bold text-2xl drop-shadow-[0_0_3px_rgba(74,222,128,0.8)]">✓</span>' : '<span class="text-red-500 font-bold text-xl">✗</span>';
+        // --- UTILITY & HELPER FUNCTIONS ---
+
+        function getStartOfDate(dateStr) {
+            if (!dateStr) return null;
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return null; // Invalid date
+            date.setHours(0, 0, 0, 0);
+            return date;
         }
 
-        function getMatchOutcome(row) {
-            const finalScore = row[originalHeaders.indexOf('Final Score / Time')];
-            return finalScore && finalScore.includes('-') ? `<span class="text-gray-800 font-bold text-base">${finalScore}</span>` : '<span class="text-gray-400 text-xs italic">Pending</span>';
-        }
-
-        function updatePaginationControls(totalPages) {
-            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-            prevPageBtn.disabled = currentPage === 1;
-            nextPageBtn.disabled = currentPage === totalPages;
-        }
-        
+        /**
+         * Updates the 'Best Picks' section with high-confidence matches for the selected day.
+         */
         function updateBestPicks(data) {
-            const indices = {
-                date: originalHeaders.indexOf('Date'),
-                levelOfConfidence: originalHeaders.indexOf('Level of Confidence'),
-                homeTeam: originalHeaders.indexOf('Home Team'),
-                awayTeam: originalHeaders.indexOf('Away Team'),
-                confidence: originalHeaders.indexOf('Confidence'),
-                prediction: originalHeaders.indexOf('Prediction'),
-                outcomeMargin: originalHeaders.indexOf('Outcome Margin'),
-                preference: originalHeaders.indexOf('Preference'),
-                finalScore: originalHeaders.indexOf('Final Score / Time'),
-            };
-
-            const today = new Date();
-            const todayString = `${(today.getMonth() + 1)}/${today.getDate()}/${today.getFullYear()}`;
+            const todayStart = new Date();
+            todayStart.setHours(0, 0, 0, 0);
 
             const picks = data.filter(row => {
-                const dateStr = row[indices.date];
-                if (!dateStr) return false;
-                
-                const matchDate = new Date(dateStr);
-                const matchDateString = `${(matchDate.getMonth() + 1)}/${matchDate.getDate()}/${matchDate.getFullYear()}`;
-                
-                if (dateFilter.value === 'All') {
-                    if (matchDateString !== todayString) return false;
+                const matchDate = getStartOfDate(row[COLUMN_INDICES['Date']]);
+                if (!matchDate) return false;
+
+                // Determine which date to filter for
+                if (dom.dateFilter.value === 'All') {
+                    if (matchDate.getTime() !== todayStart.getTime()) return false;
                 } else {
-                    if (dateFilter.value !== dateStr) return false;
+                    const selectedDate = getStartOfDate(dom.dateFilter.value);
+                    if (!selectedDate || matchDate.getTime() !== selectedDate.getTime()) return false;
                 }
 
-                const levelOfConfText = row[indices.levelOfConfidence] || '0%';
+                // Filter by confidence level (>= 80%)
+                const levelOfConfText = row[COLUMN_INDICES['Level of Confidence']] || '0%';
                 const levelOfConfMatch = levelOfConfText.match(/(\d+)/);
-                const levelOfConfidence = levelOfConfMatch ? parseInt(levelOfConfMatch[0]) : 0;
-                
-                const currentPreference = row[indices.preference];
-                const filterPreference = preferenceFilter.value;
-
+                const levelOfConfidence = levelOfConfMatch ? parseInt(levelOfConfMatch[0], 10) : 0;
                 if (levelOfConfidence < 80) return false;
-
-                if (filterPreference === 'All') {
-                     return true;
-                }
                 
-                return currentPreference === filterPreference;
+                // Filter by preference
+                const currentPreference = row[COLUMN_INDICES['Preference']];
+                return dom.preferenceFilter.value === 'All' || currentPreference === dom.preferenceFilter.value;
 
             }).slice(0, 15);
 
             if (picks.length === 0) {
-                bestPicksContainer.innerHTML = '<p class="text-gray-500">No top picks found for the selected criteria.</p>';
+                dom.bestPicksContainer.innerHTML = '<div class="col-span-full text-center p-8"><p class="text-gray-500">No high-confidence picks found for the selected criteria.</p></div>';
                 return;
             }
             
-            const picksTableHeaders = ['Match', 'Level of Confidence', 'Confidence', 'Preference', 'Outcome Margin', 'Prediction', 'Match Outcome'];
-            
-            let tableHTML = `<table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-gray-50">
-                    <tr>
-                        ${picksTableHeaders.map(h => `<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">`;
+            dom.bestPicksContainer.innerHTML = picks.map(r => {
+                const homeTeam = r[COLUMN_INDICES['Home Team']];
+                const awayTeam = r[COLUMN_INDICES['Away Team']];
+                const preference = r[COLUMN_INDICES['Preference']] || '-';
+                const outcomeMargin = r[COLUMN_INDICES['Outcome Margin']] || '-';
+                const prediction = r[COLUMN_INDICES['Prediction']] || '-';
+                const matchOutcome = r[COLUMN_INDICES['Match Outcome']] || 'Pending'; // Get text value
+                const levelOfConfidence = r[COLUMN_INDICES['Level of Confidence']] || '-';
 
-            picks.forEach(r => {
-                const homeTeam = r[indices.homeTeam];
-                const awayTeam = r[indices.awayTeam];
-                const levelOfConfidence = r[indices.levelOfConfidence] || '-';
-                const confidence = r[indices.confidence] || '-';
-                const prediction = r[indices.prediction] || '-';
-                const outcomeMargin = r[indices.outcomeMargin] || '-';
-                const matchOutcome = getMatchOutcome(r);
-                const preference = r[indices.preference] || '-';
+                let outcomeClass = 'text-gray-500';
+                if (matchOutcome.toLowerCase() === 'home') outcomeClass = 'text-green-600';
+                else if (matchOutcome.toLowerCase() === 'away') outcomeClass = 'text-blue-600';
+                else if (matchOutcome.toLowerCase() === 'draw') outcomeClass = 'text-yellow-600';
 
-                tableHTML += `<tr class="hover:bg-blue-50">
-                    <td class="px-4 py-2 whitespace-nowrap font-semibold text-blue-900">${homeTeam} vs ${awayTeam}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-center font-bold text-green-600">${levelOfConfidence}</td>
-                    <td class="px-4 py-2 whitespace-nowrap">${confidence}</td>
-                    <td class="px-4 py-2 whitespace-nowrap">${preference}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-center">${outcomeMargin}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-center font-mono">${prediction}</td>
-                    <td class="px-4 py-2 whitespace-nowrap text-center">${matchOutcome}</td>
-                </tr>`;
-            });
-
-            tableHTML += '</tbody></table>';
-            bestPicksContainer.innerHTML = tableHTML;
+                return `
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg hover:border-blue-400 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <p class="font-bold text-blue-900 text-base">${homeTeam} vs ${awayTeam}</p>
+                            <span class="font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">${levelOfConfidence}</span>
+                        </div>
+                        <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+                            <div class="text-gray-600">Preference:</div><div class="font-semibold text-gray-800">${preference}</div>
+                            <div class="text-gray-600">Outcome Margin:</div><div class="font-semibold text-gray-800">${outcomeMargin}</div>
+                            <div class="text-gray-600">Prediction:</div><div class="font-semibold text-gray-800">${prediction}</div>
+                            <div class="text-gray-600">Match Outcome:</div><div class="font-semibold ${outcomeClass}">${matchOutcome}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
+        // --- UI & MODAL FUNCTIONS ---
+
+        function updatePaginationControls(totalPages) {
+            dom.pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            dom.prevPageBtn.disabled = currentPage === 1;
+            dom.nextPageBtn.disabled = currentPage === totalPages;
+        }
 
         function openModal(row) {
-            modalTitle.textContent = `${row[originalHeaders.indexOf('Home Team')]} vs ${row[originalHeaders.indexOf('Away Team')]}`;
-            const fieldsToShow = { 
-                'Final Score / Time': 'Final Score / Time', 
-                'Home Team Chance': 'Home Team Chance', 
-                'Away Team Chance': 'Away Team Chance', 
-                'H_PR_Score': 'H_PR_Score',
-                'A_PR_Score': 'A_PR_Score',
-                'H_Final Score': 'H_Final Score',
-                'A_Final Score': 'A_Final Score' 
-            };
-            modalBody.innerHTML = Object.entries(fieldsToShow).map(([displayName, dataKey]) => {
-                let value = '-';
-                if (dataKey !== 'N/A') {
-                    const index = originalHeaders.indexOf(dataKey);
-                    if (index !== -1) value = row[index] || '-';
-                }
+            dom.modalTitle.textContent = `${row[COLUMN_INDICES['Home Team']]} vs ${row[COLUMN_INDICES['Away Team']]}`;
+            const fieldsToShow = { 'Final Score': 'Final Score / Time', 'Home Chance': 'Home Team Chance', 'Away Chance': 'Away Team Chance', 'H PR Score': 'H_PR_Score', 'A PR Score': 'A_PR_Score', 'H Final Score': 'H_Final Score', 'A Final Score': 'A_Final Score' };
+            dom.modalBody.innerHTML = Object.entries(fieldsToShow).map(([displayName, dataKey]) => {
+                const value = row[COLUMN_INDICES[dataKey]] || '-';
                 return `<div><p class="font-semibold text-gray-800">${displayName}</p><p class="text-gray-600">${value}</p></div>`;
             }).join('');
             
-            modal.classList.remove('hidden');
+            dom.modal.classList.remove('hidden');
             setTimeout(() => {
-                modalOverlay.classList.remove('opacity-0');
-                modal.querySelector('.modal-content').classList.remove('scale-95');
+                dom.modalOverlay.classList.remove('opacity-0');
+                dom.modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');
             }, 10);
         }
 
         function closeModal() {
-            modalOverlay.classList.add('opacity-0');
-            modal.querySelector('.modal-content').classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            dom.modalOverlay.classList.add('opacity-0');
+            dom.modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { dom.modal.classList.add('hidden'); }, 300);
         }
 
         function showConfirmModal(title, body, onConfirm) {
-            confirmModalTitle.textContent = title;
-            confirmModalBody.textContent = body;
+            dom.confirmModalTitle.textContent = title;
+            dom.confirmModalBody.textContent = body;
             confirmCallback = onConfirm;
-            confirmModal.classList.remove('hidden');
-            confirmModal.classList.add('flex');
+            dom.confirmModal.classList.remove('hidden');
+            dom.confirmModal.classList.add('flex');
         }
 
         function closeConfirmModal() {
-            confirmModal.classList.add('hidden');
-            confirmModal.classList.remove('flex');
+            dom.confirmModal.classList.add('hidden');
+            dom.confirmModal.classList.remove('flex');
             confirmCallback = null;
         }
+        
+        function showToast(message, type = 'success') {
+            let toastTimeout;
+            clearTimeout(toastTimeout);
+            dom.toastMessage.textContent = message;
+
+            dom.toast.className = 'fixed top-5 right-5 text-white py-3 px-5 rounded-lg shadow-lg transition-all transform'; // Reset
+            dom.toast.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500');
+            
+            dom.toast.classList.remove('translate-x-[120%]', 'opacity-0');
+
+            toastTimeout = setTimeout(() => {
+                dom.toast.classList.add('translate-x-[120%]', 'opacity-0');
+            }, 3000);
+        }
+
+        function navigate(targetId) {
+            dom.contentPages.forEach(page => page.classList.toggle('hidden', page.id !== targetId));
+            dom.sidebarLinks.forEach(link => link.classList.toggle('active', link.dataset.target === targetId));
+            const activeLink = document.querySelector(`.sidebar-link[data-target="${targetId}"]`);
+            if (activeLink) {
+                dom.mainHeaderTitle.textContent = activeLink.textContent.trim();
+            }
+        }
+
+        // --- EVENT HANDLERS ---
 
         function handleDeleteClick() {
             showConfirmModal('Delete All Data?', 'This will clear all data from the view. You can sync again to retrieve it.', () => {
@@ -601,19 +667,27 @@
                 currentFilteredData = [];
                 renderPage();
                 updateBestPicks([]);
+                populateDropdowns();
                 closeConfirmModal();
+                showToast('Data cleared.', 'success');
             });
         }
 
         async function handleSyncClick() {
-            syncDataBtn.disabled = true;
-            syncIcon.classList.add('animate-spin');
-            syncText.textContent = 'Syncing...';
-            tableBody.innerHTML = `<tr><td colspan="${VISIBLE_HEADERS.length}" class="p-8 text-center text-gray-500"><div class="loader mx-auto"></div><p class="mt-4">Syncing data from Google Sheet...</p></td></tr>`;
-            await init();
-            syncDataBtn.disabled = false;
-            syncIcon.classList.remove('animate-spin');
-            syncText.textContent = 'Sync Data';
+            dom.syncDataBtn.disabled = true;
+            dom.syncIcon.classList.add('animate-spin');
+            dom.syncText.textContent = 'Syncing...';
+            dom.tableBody.innerHTML = `<tr><td colspan="${VISIBLE_HEADERS.length}" class="p-8 text-center text-gray-500"><div class="loader mx-auto"></div><p class="mt-4">Syncing data from Google Sheet...</p></td></tr>`;
+            try {
+                await fetchAndProcessData();
+                showToast('Data synced successfully!');
+            } catch (e) {
+                showToast('Failed to sync data.', 'error');
+            } finally {
+                dom.syncDataBtn.disabled = false;
+                dom.syncIcon.classList.remove('animate-spin');
+                dom.syncText.textContent = 'Sync Data';
+            }
         }
 
         function handleSort(e) {
@@ -631,41 +705,56 @@
         }
 
         function resetFilters() {
-            searchFilter.value = '';
-            dateFilter.value = 'All';
-            levelOfConfidenceFilter.value = 'All';
-            outcomeMarginFilter.value = 'All';
-            preferenceFilter.value = 'All';
+            dom.searchFilter.value = '';
+            dom.dateFilter.value = 'All';
+            dom.levelOfConfidenceFilter.value = 'All';
+            dom.outcomeMarginFilter.value = 'All';
+            dom.preferenceFilter.value = 'All';
             sortState = { column: null, direction: 'asc' };
             renderHeaders();
             applyFilters();
         }
         
         // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', init);
-        tableHeader.addEventListener('click', handleSort);
-        resetFiltersBtn.addEventListener('click', resetFilters);
-        applyFiltersBtn.addEventListener('click', applyFilters);
-        [dateFilter, preferenceFilter, levelOfConfidenceFilter].forEach(filter => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            navigate('content-dashboard'); // Set initial page
+            try {
+                await fetchAndProcessData();
+            } catch(e) { /* Error UI is handled in fetchAndProcessData */ }
+        });
+
+        dom.tableHeader.addEventListener('click', handleSort);
+        dom.resetFiltersBtn.addEventListener('click', resetFilters);
+        dom.applyFiltersBtn.addEventListener('click', applyFilters);
+        [dom.dateFilter, dom.preferenceFilter, dom.levelOfConfidenceFilter, dom.outcomeMarginFilter].forEach(filter => {
             filter.addEventListener('change', applyFilters);
         });
-        searchBtn.addEventListener('click', applyFilters);
-        searchFilter.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        dom.searchBtn.addEventListener('click', applyFilters);
+        dom.searchFilter.addEventListener('input', () => {
+            clearTimeout(searchDebounceTimeout);
+            searchDebounceTimeout = setTimeout(() => {
                 applyFilters();
-            }
+            }, 300); // Debounce search input
         });
-        deleteAllBtn.addEventListener('click', handleDeleteClick);
-        syncDataBtn.addEventListener('click', handleSyncClick);
-        modalCloseBtn.addEventListener('click', closeModal);
-        modalOverlay.addEventListener('click', closeModal);
-        confirmModalCancel.addEventListener('click', closeConfirmModal);
-        confirmModalConfirm.addEventListener('click', () => { if (confirmCallback) confirmCallback(); });
-        document.addEventListener('keydown', (e) => { if (e.key === "Escape" && !modal.classList.contains('hidden')) closeModal(); });
-        prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderPage(); }});
-        nextPageBtn.addEventListener('click', () => {
+        dom.searchFilter.addEventListener('keypress', (e) => { if (e.key === 'Enter') applyFilters(); });
+        dom.deleteAllBtn.addEventListener('click', handleDeleteClick);
+        dom.syncDataBtn.addEventListener('click', handleSyncClick);
+        dom.modalCloseBtn.addEventListener('click', closeModal);
+        dom.modalOverlay.addEventListener('click', closeModal);
+        dom.confirmModalCancel.addEventListener('click', closeConfirmModal);
+        dom.confirmModalConfirm.addEventListener('click', () => { if (confirmCallback) confirmCallback(); });
+        document.addEventListener('keydown', (e) => { if (e.key === "Escape" && !dom.modal.classList.contains('hidden')) closeModal(); });
+        dom.prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderPage(); }});
+        dom.nextPageBtn.addEventListener('click', () => {
             const totalPages = Math.ceil(currentFilteredData.length / ROWS_PER_PAGE);
             if (currentPage < totalPages) { currentPage++; renderPage(); }
+        });
+        dom.sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.dataset.target;
+                if (targetId) navigate(targetId);
+            });
         });
     </script>
 </body>
