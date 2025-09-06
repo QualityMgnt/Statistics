@@ -58,13 +58,6 @@
             color: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        
-        /* Collapsible filter section transition */
-        .filter-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-        }
     </style>
 </head>
 <body class="antialiased text-gray-800 bg-gray-100">
@@ -77,7 +70,7 @@
                 <h1 class="text-xl font-bold text-blue-900">ChelseaFC Stats</h1>
             </div>
             <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#" id="nav-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
+                <a href="index.html" id="nav-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     Dashboard
                 </a>
@@ -89,6 +82,10 @@
                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     Forestats
                 </a>
+                 <a href="comparison.html" class="sidebar-link flex items-center px-4 py-2.5 text-gray-700 rounded-lg hover:bg-blue-800 hover:text-white transition-colors">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    Comparison
+                </a>
             </nav>
             <div class="p-4 border-t text-center text-xs text-gray-500">
                 <p>#COYB</p>
@@ -97,55 +94,72 @@
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="bg-white shadow-sm p-4">
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-blue-900">Statistics</h1>
+                 <div class="flex space-x-2">
+                    <button id="syncDataBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2">
+                        <svg class="w-4 h-4" id="syncIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.25-4.25l-1.47 1.47c.56.98.82 2.09.82 3.28 0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg>
+                        <span id="syncText">Sync Data</span>
+                    </button>
+                    <button id="deleteAllBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <span>Delete All Data</span>
+                    </button>
+                </div>
             </header>
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
                 <div id="content-dashboard" class="page-content">
-                    
+
                     <!-- Filters Section -->
-                    <div class="bg-white rounded-xl shadow-md mb-8">
-                        <button id="filter-toggle" class="w-full text-left p-4 font-bold text-gray-800 flex justify-between items-center">
-                            <span>Filter & Search</span>
-                            <svg id="filter-arrow" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div id="filter-content" class="filter-content px-6 pb-6">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end pt-4 border-t">
-                                <div>
-                                     <label for="dateFilter" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                                     <select id="dateFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
-                                        <option value="All">All Dates</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="totalGoalsFilter" class="block text-sm font-medium text-gray-700 mb-2">Total Goals</label>
-                                    <select id="totalGoalsFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
-                                        <option value="All">Any</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="outcomeMarginFilter" class="block text-sm font-medium text-gray-700 mb-2">Outcome Margin</label>
-                                    <select id="outcomeMarginFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
-                                        <option value="All">All</option>
-                                        <option value="Yes">Met</option>
-                                        <option value="No">Not Met</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="preferenceFilter" class="block text-sm font-medium text-gray-700 mb-2">Preference</label>
-                                    <select id="preferenceFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
-                                        <option value="All">All</option>
-                                        <option value="High Confidence">High Confidence (>75%)</option>
-                                        <option value="Home Favorite">Home Favorite</option>
-                                        <option value="Away Favorite">Away Favorite</option>
-                                    </select>
-                                </div>
-                                <div class="col-span-full flex justify-end gap-4 mt-4">
-                                    <button id="resetFilters" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2.5 px-6 rounded-lg transition">Reset</button>
-                                    <button id="applyFilters" class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-md hover:shadow-lg">Apply</button>
+                    <div class="bg-white rounded-xl shadow-md mb-8 p-6">
+                         <h3 class="text-xl font-bold text-blue-900 mb-4">Filter & Search</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                            <div class="lg:col-span-2">
+                                <label for="searchFilter" class="block text-sm font-medium text-gray-700 mb-2">Search Team</label>
+                                <div class="flex">
+                                    <input type="text" id="searchFilter" placeholder="Enter team name..." class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
+                                    <button id="searchBtn" class="bg-blue-800 hover:bg-blue-900 text-white font-bold p-2.5 rounded-r-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    </button>
                                 </div>
                             </div>
+                            <div>
+                                <label for="dateFilter" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <select id="dateFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
+                                    <option value="All">All Dates</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="levelOfConfidenceFilter" class="block text-sm font-medium text-gray-700 mb-2">Level of Confidence</label>
+                                <select id="levelOfConfidenceFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
+                                    <option value="All">All</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="preferenceFilter" class="block text-sm font-medium text-gray-700 mb-2">Preference</label>
+                                <select id="preferenceFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
+                                    <option value="All">All</option>
+                                </select>
+                            </div>
+                             <div>
+                                <label for="outcomeMarginFilter" class="block text-sm font-medium text-gray-700 mb-2">Outcome Margin</label>
+                                <select id="outcomeMarginFilter" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
+                                    <option value="All">All</option>
+                                </select>
+                            </div>
+                            <div class="col-span-full flex justify-end gap-4 mt-4">
+                                <button id="resetFilters" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2.5 px-6 rounded-lg transition">Reset All</button>
+                                <button id="applyFilters" class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-md hover:shadow-lg">Apply Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Today's Best Picks Card -->
+                    <div class="bg-white rounded-xl shadow-md mb-8 p-6">
+                        <h3 class="text-xl font-bold text-blue-900 mb-4">Today's Best Picks</h3>
+                        <div id="bestPicksContainer" class="overflow-x-auto">
+                           <p class="text-gray-500">Finding today's top picks...</p>
                         </div>
                     </div>
 
@@ -176,7 +190,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Details Modal -->
     <div id="details-modal" class="fixed inset-0 z-50 hidden">
         <div id="modal-overlay" class="absolute inset-0 bg-black bg-opacity-50 modal-overlay opacity-0"></div>
         <div class="relative bg-white w-full max-w-lg mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95">
@@ -188,22 +202,39 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl p-6">
+            <h3 class="text-lg font-bold text-gray-900" id="confirm-modal-title">Are you sure?</h3>
+            <p class="mt-2 text-sm text-gray-600" id="confirm-modal-body">This action cannot be undone.</p>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="confirm-modal-cancel" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition">Cancel</button>
+                <button id="confirm-modal-confirm" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- CONFIGURATION ---
         const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv';
         const ROWS_PER_PAGE = 20;
-        const VISIBLE_HEADERS = ['Date', 'Home Team', 'Away Team', 'Home Odds', 'Draw Odds', 'Away Odds', 'Confidence', 'Level of Confidence', 'Prediction', 'Match Outcome', 'Accuracy', 'Details'];
+        const VISIBLE_HEADERS = ['Date', 'Details', 'Home Team', 'Away Team', 'Home Odds', 'Draw Odds', 'Away Odds', 'Confidence', 'Level of Confidence', 'Prediction', 'Match Outcome', 'Accuracy'];
         
         // --- DOM REFERENCES ---
         const tableBody = document.getElementById('dataTableBody'), tableHeader = document.querySelector('thead tr'), noResultsDiv = document.getElementById('no-results');
-        const dateFilter = document.getElementById('dateFilter'), totalGoalsFilter = document.getElementById('totalGoalsFilter'), outcomeMarginFilter = document.getElementById('outcomeMarginFilter'), preferenceFilter = document.getElementById('preferenceFilter');
+        const searchFilter = document.getElementById('searchFilter'), searchBtn = document.getElementById('searchBtn');
+        const dateFilter = document.getElementById('dateFilter'), levelOfConfidenceFilter = document.getElementById('levelOfConfidenceFilter'), outcomeMarginFilter = document.getElementById('outcomeMarginFilter'), preferenceFilter = document.getElementById('preferenceFilter');
         const resetFiltersBtn = document.getElementById('resetFilters'), applyFiltersBtn = document.getElementById('applyFilters');
         const paginationControls = document.getElementById('pagination-controls'), prevPageBtn = document.getElementById('prev-page'), nextPageBtn = document.getElementById('next-page'), pageInfo = document.getElementById('page-info');
         const modal = document.getElementById('details-modal'), modalOverlay = document.getElementById('modal-overlay'), modalCloseBtn = document.getElementById('modal-close-btn'), modalTitle = document.getElementById('modal-title'), modalBody = document.getElementById('modal-body');
-        const filterToggle = document.getElementById('filter-toggle'), filterContent = document.getElementById('filter-content'), filterArrow = document.getElementById('filter-arrow');
+        const deleteAllBtn = document.getElementById('deleteAllBtn'), syncDataBtn = document.getElementById('syncDataBtn'), syncIcon = document.getElementById('syncIcon'), syncText = document.getElementById('syncText');
+        const bestPicksContainer = document.getElementById('bestPicksContainer');
+        const confirmModal = document.getElementById('confirm-modal'), confirmModalCancel = document.getElementById('confirm-modal-cancel'), confirmModalConfirm = document.getElementById('confirm-modal-confirm'), confirmModalTitle = document.getElementById('confirm-modal-title'), confirmModalBody = document.getElementById('confirm-modal-body');
 
         let allData = [], currentFilteredData = [], originalHeaders = [];
         let sortState = { column: null, direction: 'asc' }, currentPage = 1;
+        let confirmCallback = null;
 
         // --- CORE FUNCTIONS ---
         async function init() {
@@ -237,8 +268,12 @@
             tableHeader.innerHTML = VISIBLE_HEADERS.map(header => {
                 const originalIndex = originalHeaders.indexOf(header);
                 const isSortable = originalIndex !== -1 && !['Details', 'Level of Confidence', 'Match Outcome', 'Accuracy'].includes(header);
-                
                 let classes = 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
+
+                if (header === 'Details') {
+                    return `<th scope="col" class="${classes}"></th>`;
+                }
+                
                 if (isSortable) {
                      if (sortState.column === originalIndex) classes += sortState.direction === 'asc' ? ' sort-asc' : ' sort-desc';
                      return `<th scope="col" data-original-index="${originalIndex}" class="${classes}">${header}</th>`;
@@ -249,56 +284,65 @@
         }
 
         function populateDropdowns() {
-            const dateIndex = originalHeaders.indexOf('Date');
-            const totalGoalsIndex = originalHeaders.indexOf('Total Goals');
-            if (dateIndex !== -1) {
-                const dates = [...new Set(allData.map(row => row[dateIndex]).filter(Boolean))].sort((a,b) => new Date(b) - new Date(a));
-                dates.forEach(date => dateFilter.add(new Option(date, date)));
-            }
-            if (totalGoalsIndex !== -1) {
-                const goals = [...new Set(allData.map(row => row[totalGoalsIndex]).filter(Boolean))].sort((a, b) => parseFloat(a) - parseFloat(b));
-                goals.forEach(goal => totalGoalsFilter.add(new Option(goal, goal)));
-            }
+            // Clear existing options first
+            [dateFilter, levelOfConfidenceFilter, preferenceFilter, outcomeMarginFilter].forEach(filter => {
+                const firstOption = filter.options[0];
+                filter.innerHTML = '';
+                filter.add(firstOption);
+            });
+
+            const indices = {
+                date: originalHeaders.indexOf('Date'),
+                levelOfConfidence: originalHeaders.indexOf('Level of Confidence'),
+                preference: originalHeaders.indexOf('Preference'),
+                outcomeMargin: originalHeaders.indexOf('Outcome Margin')
+            };
+
+            const uniqueValues = {
+                dates: new Set(),
+                confidences: new Set(),
+                preferences: new Set(),
+                margins: new Set()
+            };
+
+            allData.forEach(row => {
+                if (row[indices.date]) uniqueValues.dates.add(row[indices.date]);
+                if (row[indices.levelOfConfidence]) uniqueValues.confidences.add(row[indices.levelOfConfidence]);
+                if (row[indices.preference]) uniqueValues.preferences.add(row[indices.preference]);
+                if (row[indices.outcomeMargin]) uniqueValues.margins.add(row[indices.outcomeMargin]);
+            });
+
+            [...uniqueValues.dates].sort((a,b) => new Date(b) - new Date(a)).forEach(val => dateFilter.add(new Option(val, val)));
+            [...uniqueValues.confidences].sort((a,b) => parseInt(b) - parseInt(a)).forEach(val => levelOfConfidenceFilter.add(new Option(val, val)));
+            [...uniqueValues.preferences].sort().forEach(val => preferenceFilter.add(new Option(val, val)));
+            [...uniqueValues.margins].sort().forEach(val => outcomeMarginFilter.add(new Option(val, val)));
         }
         
         function applyFilters() {
             const filters = {
+                search: searchFilter.value.toLowerCase(),
                 date: dateFilter.value,
-                totalGoals: totalGoalsFilter.value,
+                levelOfConfidence: levelOfConfidenceFilter.value,
                 outcomeMargin: outcomeMarginFilter.value,
                 preference: preferenceFilter.value,
             };
             const indices = {
                 date: originalHeaders.indexOf('Date'),
-                totalGoals: originalHeaders.indexOf('Total Goals'),
-                winningMargin: originalHeaders.indexOf('Winning Margin Met'),
-                confidence: originalHeaders.indexOf('Confidence'),
-                homeOdds: originalHeaders.indexOf('Home Odds'),
-                awayOdds: originalHeaders.indexOf('Away Odds'),
+                homeTeam: originalHeaders.indexOf('Home Team'),
+                awayTeam: originalHeaders.indexOf('Away Team'),
+                levelOfConfidence: originalHeaders.indexOf('Level of Confidence'),
+                outcomeMargin: originalHeaders.indexOf('Outcome Margin'),
+                preference: originalHeaders.indexOf('Preference'),
             };
 
             let filtered = allData.filter(row => {
+                const searchMatch = !filters.search || row[indices.homeTeam].toLowerCase().includes(filters.search) || row[indices.awayTeam].toLowerCase().includes(filters.search);
                 const dateMatch = filters.date === 'All' || row[indices.date] === filters.date;
-                const totalGoalsMatch = filters.totalGoals === 'All' || row[indices.totalGoals] === filters.totalGoals;
-                const outcomeMarginMatch = filters.outcomeMargin === 'All' || row[indices.winningMargin] === filters.outcomeMargin;
+                const confidenceMatch = filters.levelOfConfidence === 'All' || row[indices.levelOfConfidence] === filters.levelOfConfidence;
+                const outcomeMarginMatch = filters.outcomeMargin === 'All' || row[indices.outcomeMargin] === filters.outcomeMargin;
+                const preferenceMatch = filters.preference === 'All' || row[indices.preference] === filters.preference;
 
-                let preferenceMatch = true;
-                if (filters.preference === 'High Confidence') {
-                    const confText = row[indices.confidence] || '0';
-                    const confMatch = confText.match(/(\d+(\.\d+)?)/);
-                    const confidence = confMatch ? parseFloat(confMatch[0]) : 0;
-                    preferenceMatch = confidence > 75;
-                } else if (filters.preference === 'Home Favorite') {
-                    const homeOdds = parseFloat(row[indices.homeOdds]);
-                    const awayOdds = parseFloat(row[indices.awayOdds]);
-                    preferenceMatch = !isNaN(homeOdds) && !isNaN(awayOdds) && homeOdds < awayOdds;
-                } else if (filters.preference === 'Away Favorite') {
-                    const homeOdds = parseFloat(row[indices.homeOdds]);
-                    const awayOdds = parseFloat(row[indices.awayOdds]);
-                    preferenceMatch = !isNaN(homeOdds) && !isNaN(awayOdds) && awayOdds < homeOdds;
-                }
-
-                return dateMatch && totalGoalsMatch && outcomeMarginMatch && preferenceMatch;
+                return searchMatch && dateMatch && confidenceMatch && outcomeMarginMatch && preferenceMatch;
             });
             
             if (sortState.column !== null) {
@@ -311,6 +355,7 @@
             currentFilteredData = filtered;
             currentPage = 1;
             renderPage();
+            updateBestPicks(allData);
         }
 
         function renderPage() {
@@ -357,34 +402,19 @@
                             }
                             break;
                         case 'Confidence':
-                            const confText = cellValue || '0';
-                            const confMatch = confText.match(/(\d+(\.\d+)?)/);
-                            const confidence = confMatch ? parseFloat(confMatch[0]) : 0;
-                            let barColor = 'bg-red-400';
-                            if (confidence > 75) barColor = 'bg-green-400';
-                            else if (confidence > 50) barColor = 'bg-yellow-400';
-                            cellContent = `
-                                <div class="flex items-center">
-                                    <span class="w-12 text-right mr-2 font-bold">${confidence.toFixed(0)}%</span>
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="${barColor} h-2.5 rounded-full" style="width: ${confidence}%"></div></div>
-                                </div>`;
+                            cellContent = cellValue || '-';
+                            cellClass += ' font-medium';
                             break;
                         case 'Level of Confidence':
-                            const confidenceIndex = originalHeaders.indexOf('Confidence');
-                            const confidenceText = (confidenceIndex !== -1 ? row[confidenceIndex] : '0') || '0';
-                            const confidenceValMatch = confidenceText.match(/(\d+(\.\d+)?)/);
-                            const confidenceValue = confidenceValMatch ? parseFloat(confidenceValMatch[0]) : 0;
-                            
-                            let levelText = 'Low';
-                            let levelClass = 'bg-red-100 text-red-800';
-                            if (confidenceValue > 75) {
-                                levelText = 'High';
-                                levelClass = 'bg-green-200 text-green-800 font-bold';
-                            } else if (confidenceValue > 50) {
-                                levelText = 'Medium';
-                                levelClass = 'bg-yellow-100 text-yellow-800';
+                            const confValue = cellValue.replace('%','').trim();
+                            const numericConf = parseFloat(confValue);
+                            let confColor = 'text-gray-800';
+                            if (!isNaN(numericConf)) {
+                                if (numericConf >= 80) confColor = 'text-green-600';
+                                else if (numericConf >= 70) confColor = 'text-yellow-600';
+                                else confColor = 'text-red-600';
                             }
-                            cellContent = `<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${levelClass}">${levelText}</span>`;
+                            cellContent = `<span class="font-bold ${confColor}">${cellValue}</span>`;
                             cellClass += ' text-center';
                             break;
                         case 'Match Outcome':
@@ -396,8 +426,9 @@
                             cellClass += ' text-lg text-center';
                             break;
                         case 'Details':
-                            cellContent = `<button class="view-more-btn font-medium text-blue-800 hover:text-blue-600">View More</button>`;
-                            break;
+                             cellContent = `<button class="view-more-btn bg-blue-600 text-white px-3 py-1 text-xs rounded-full hover:bg-blue-700 transition shadow">view</button>`;
+                             cellClass += ' text-center';
+                             break;
                     }
                     return `<td class="${cellClass}">${cellContent}</td>`;
                 }).join('');
@@ -429,27 +460,110 @@
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages;
         }
+        
+        function updateBestPicks(data) {
+            const indices = {
+                date: originalHeaders.indexOf('Date'),
+                levelOfConfidence: originalHeaders.indexOf('Level of Confidence'),
+                homeTeam: originalHeaders.indexOf('Home Team'),
+                awayTeam: originalHeaders.indexOf('Away Team'),
+                confidence: originalHeaders.indexOf('Confidence'),
+                prediction: originalHeaders.indexOf('Prediction'),
+                outcomeMargin: originalHeaders.indexOf('Outcome Margin'),
+                preference: originalHeaders.indexOf('Preference'),
+                finalScore: originalHeaders.indexOf('Final Score / Time'),
+            };
+
+            const today = new Date();
+            const todayString = `${(today.getMonth() + 1)}/${today.getDate()}/${today.getFullYear()}`;
+
+            const picks = data.filter(row => {
+                const dateStr = row[indices.date];
+                if (!dateStr) return false;
+                
+                const matchDate = new Date(dateStr);
+                const matchDateString = `${(matchDate.getMonth() + 1)}/${matchDate.getDate()}/${matchDate.getFullYear()}`;
+                
+                if (dateFilter.value === 'All') {
+                    if (matchDateString !== todayString) return false;
+                } else {
+                    if (dateFilter.value !== dateStr) return false;
+                }
+
+                const levelOfConfText = row[indices.levelOfConfidence] || '0%';
+                const levelOfConfMatch = levelOfConfText.match(/(\d+)/);
+                const levelOfConfidence = levelOfConfMatch ? parseInt(levelOfConfMatch[0]) : 0;
+                
+                const currentPreference = row[indices.preference];
+                const filterPreference = preferenceFilter.value;
+
+                if (levelOfConfidence < 80) return false;
+
+                if (filterPreference === 'All') {
+                     return true;
+                }
+                
+                return currentPreference === filterPreference;
+
+            }).slice(0, 15);
+
+            if (picks.length === 0) {
+                bestPicksContainer.innerHTML = '<p class="text-gray-500">No top picks found for the selected criteria.</p>';
+                return;
+            }
+            
+            const picksTableHeaders = ['Match', 'Level of Confidence', 'Confidence', 'Preference', 'Outcome Margin', 'Prediction', 'Match Outcome'];
+            
+            let tableHTML = `<table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        ${picksTableHeaders.map(h => `<th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">`;
+
+            picks.forEach(r => {
+                const homeTeam = r[indices.homeTeam];
+                const awayTeam = r[indices.awayTeam];
+                const levelOfConfidence = r[indices.levelOfConfidence] || '-';
+                const confidence = r[indices.confidence] || '-';
+                const prediction = r[indices.prediction] || '-';
+                const outcomeMargin = r[indices.outcomeMargin] || '-';
+                const matchOutcome = getMatchOutcome(r);
+                const preference = r[indices.preference] || '-';
+
+                tableHTML += `<tr class="hover:bg-blue-50">
+                    <td class="px-4 py-2 whitespace-nowrap font-semibold text-blue-900">${homeTeam} vs ${awayTeam}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-center font-bold text-green-600">${levelOfConfidence}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">${confidence}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">${preference}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-center">${outcomeMargin}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-center font-mono">${prediction}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-center">${matchOutcome}</td>
+                </tr>`;
+            });
+
+            tableHTML += '</tbody></table>';
+            bestPicksContainer.innerHTML = tableHTML;
+        }
+
 
         function openModal(row) {
             modalTitle.textContent = `${row[originalHeaders.indexOf('Home Team')]} vs ${row[originalHeaders.indexOf('Away Team')]}`;
-            
-            const fieldsToShow = {
-                'Final Score / Time': 'Final Score / Time',
-                'Home Team Chance': 'Chance', 
-                'Away Team Chance': 'Chance', 
-                'H_PR_Score': 'N/A',
-                'A_PR_Score': 'N/A',
-                'H_Final Score': 'N/A',
-                'A_Final Score': 'N/A'
+            const fieldsToShow = { 
+                'Final Score / Time': 'Final Score / Time', 
+                'Home Team Chance': 'Home Team Chance', 
+                'Away Team Chance': 'Away Team Chance', 
+                'H_PR_Score': 'H_PR_Score',
+                'A_PR_Score': 'A_PR_Score',
+                'H_Final Score': 'H_Final Score',
+                'A_Final Score': 'A_Final Score' 
             };
-
             modalBody.innerHTML = Object.entries(fieldsToShow).map(([displayName, dataKey]) => {
                 let value = '-';
                 if (dataKey !== 'N/A') {
                     const index = originalHeaders.indexOf(dataKey);
-                    if (index !== -1) {
-                         value = row[index] || '-';
-                    }
+                    if (index !== -1) value = row[index] || '-';
                 }
                 return `<div><p class="font-semibold text-gray-800">${displayName}</p><p class="text-gray-600">${value}</p></div>`;
             }).join('');
@@ -467,6 +581,41 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
+        function showConfirmModal(title, body, onConfirm) {
+            confirmModalTitle.textContent = title;
+            confirmModalBody.textContent = body;
+            confirmCallback = onConfirm;
+            confirmModal.classList.remove('hidden');
+            confirmModal.classList.add('flex');
+        }
+
+        function closeConfirmModal() {
+            confirmModal.classList.add('hidden');
+            confirmModal.classList.remove('flex');
+            confirmCallback = null;
+        }
+
+        function handleDeleteClick() {
+            showConfirmModal('Delete All Data?', 'This will clear all data from the view. You can sync again to retrieve it.', () => {
+                allData = [];
+                currentFilteredData = [];
+                renderPage();
+                updateBestPicks([]);
+                closeConfirmModal();
+            });
+        }
+
+        async function handleSyncClick() {
+            syncDataBtn.disabled = true;
+            syncIcon.classList.add('animate-spin');
+            syncText.textContent = 'Syncing...';
+            tableBody.innerHTML = `<tr><td colspan="${VISIBLE_HEADERS.length}" class="p-8 text-center text-gray-500"><div class="loader mx-auto"></div><p class="mt-4">Syncing data from Google Sheet...</p></td></tr>`;
+            await init();
+            syncDataBtn.disabled = false;
+            syncIcon.classList.remove('animate-spin');
+            syncText.textContent = 'Sync Data';
+        }
+
         function handleSort(e) {
             const target = e.target.closest('th');
             if (!target || !target.dataset.originalIndex) return;
@@ -482,8 +631,9 @@
         }
 
         function resetFilters() {
+            searchFilter.value = '';
             dateFilter.value = 'All';
-            totalGoalsFilter.value = 'All';
+            levelOfConfidenceFilter.value = 'All';
             outcomeMarginFilter.value = 'All';
             preferenceFilter.value = 'All';
             sortState = { column: null, direction: 'asc' };
@@ -496,23 +646,26 @@
         tableHeader.addEventListener('click', handleSort);
         resetFiltersBtn.addEventListener('click', resetFilters);
         applyFiltersBtn.addEventListener('click', applyFilters);
+        [dateFilter, preferenceFilter, levelOfConfidenceFilter].forEach(filter => {
+            filter.addEventListener('change', applyFilters);
+        });
+        searchBtn.addEventListener('click', applyFilters);
+        searchFilter.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+        deleteAllBtn.addEventListener('click', handleDeleteClick);
+        syncDataBtn.addEventListener('click', handleSyncClick);
         modalCloseBtn.addEventListener('click', closeModal);
         modalOverlay.addEventListener('click', closeModal);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape" && !modal.classList.contains('hidden')) closeModal();
-        });
+        confirmModalCancel.addEventListener('click', closeConfirmModal);
+        confirmModalConfirm.addEventListener('click', () => { if (confirmCallback) confirmCallback(); });
+        document.addEventListener('keydown', (e) => { if (e.key === "Escape" && !modal.classList.contains('hidden')) closeModal(); });
         prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderPage(); }});
         nextPageBtn.addEventListener('click', () => {
             const totalPages = Math.ceil(currentFilteredData.length / ROWS_PER_PAGE);
             if (currentPage < totalPages) { currentPage++; renderPage(); }
-        });
-        filterToggle.addEventListener('click', () => {
-            filterArrow.classList.toggle('rotate-180');
-            if (filterContent.style.maxHeight) {
-                filterContent.style.maxHeight = null;
-            } else {
-                filterContent.style.maxHeight = filterContent.scrollHeight + "px";
-            }
         });
     </script>
 </body>
