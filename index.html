@@ -453,30 +453,28 @@
             dom.signupMessage.textContent = 'Submitting...';
             dom.signupMessage.className = 'text-sm text-center text-slate-500';
 
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('email', email);
-            formData.append('password', password);
-
             try {
+                const postBody = new URLSearchParams();
+                postBody.append('name', name);
+                postBody.append('email', email);
+                postBody.append('password', password);
+
                 const response = await fetch(SIGNUP_URL, {
                     method: 'POST',
-                    body: formData,
+                    body: postBody,
                 });
 
-                const result = await response.json();
-                
-                if (result.result === "success") {
+                if (response.ok) {
                     dom.signupMessage.textContent = 'Signup successful! You can now log in.';
                     dom.signupMessage.className = 'text-sm text-center text-green-500';
                     dom.signupForm.reset();
                     setTimeout(() => switchView('login'), 2000);
                 } else {
-                    throw new Error(result.message || 'Unknown signup error');
+                    throw new Error(`Server responded with an error (status: ${response.status})`);
                 }
             } catch (error) {
                 console.error('Signup error:', error);
-                dom.signupMessage.textContent = `Signup failed: ${error.message}`;
+                dom.signupMessage.textContent = `Signup failed. Please try again later.`;
                 dom.signupMessage.className = 'text-sm text-center text-red-500';
             }
         }
@@ -1036,6 +1034,8 @@
         function handleMainTableRowClick(e) {
             const rowElement = e.target.closest('tr');
             if (!rowElement || typeof rowElement.dataset.rowIndex === 'undefined') return;
+            // Prevent the modal from opening if the 'View' button was the specific target
+            if (e.target.closest('.view-more-btn')) return;
             const rowIndex = parseInt(rowElement.dataset.rowIndex, 10);
             const rowData = currentFilteredData[rowIndex];
             if (rowData) openModal(rowData);
