@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Compass | Sports Analytics</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -90,134 +92,221 @@
 </head>
 <body class="antialiased text-slate-800 bg-slate-100">
 
-    <div class="flex h-screen">
-        <aside class="w-64 bg-white shadow-lg flex flex-col flex-shrink-0">
-            <div class="p-6 flex items-center space-x-4 border-b border-slate-200">
-                <img src="https://github.com/QualityMgnt/Statistics/blob/main/logo.png?raw=true" alt="Data Compass Logo" class="h-10 w-10">
-                <h1 class="text-xl font-bold text-indigo-800">Data Compass</h1>
-            </div>
-            <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                    Dashboard
-                </a>
-            </nav>
-            <div class="p-4 border-t text-center text-xs text-slate-500">
-                <p>&copy; 2025 Data Compass</p>
-            </div>
-        </aside>
-
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
-                <h1 id="main-header-title" class="text-2xl font-bold text-indigo-800">Dashboard</h1>
-                <div class="flex space-x-2">
-                    <button id="syncDataBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
-                        <svg class="w-4 h-4" id="syncIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.25-4.25l-1.47 1.47c.56.98.82 2.09.82 3.28 0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg>
-                        <span id="syncText">Sync Data</span>
-                    </button>
+    <!-- Authentication Container -->
+    <div id="auth-container" class="flex items-center justify-center min-h-screen bg-slate-100">
+        <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg">
+            <!-- Login View -->
+            <div id="login-view">
+                <div class="text-center">
+                    <img src="https://github.com/QualityMgnt/Statistics/blob/main/logo.png?raw=true" alt="Data Compass Logo" class="h-16 w-16 mx-auto mb-4">
+                    <h2 class="text-3xl font-extrabold text-indigo-800">Welcome Back</h2>
+                    <p class="mt-2 text-sm text-slate-600">Sign in to access your dashboard</p>
                 </div>
-            </header>
-
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100 p-4 sm:p-6 lg:p-8">
-                <div id="content-dashboard" class="page-content">
-                    <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
-                        <h3 class="text-xl font-bold text-indigo-800 mb-4">Filter Data</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div>
-                                <label for="dateFilter" class="block text-sm font-medium text-slate-700 mb-2">Date</label>
-                                <select id="dateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
-                                    <option value="All">All Dates</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="preferenceFilter" class="block text-sm font-medium text-slate-700 mb-2">Preference</label>
-                                <select id="preferenceFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
-                                    <option value="All">All Preferences</option>
-                                </select>
-                            </div>
-                             <div>
-                                <label for="winningMarginFilter" class="block text-sm font-medium text-slate-700 mb-2">Winning Margin</label>
-                                <select id="winningMarginFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
-                                    <option value="All">All Margins</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="analyzedPredictionFilter" class="block text-sm font-medium text-slate-700 mb-2">Analyzed Prediction</label>
-                                <select id="analyzedPredictionFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
-                                    <option value="All">All Predictions</option>
-                                </select>
-                            </div>
-                             <div>
-                                <label for="goalsTipFilter" class="block text-sm font-medium text-slate-700 mb-2">Goals Tip</label>
-                                <select id="goalsTipFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
-                                    <option value="All">All Goal Tips</option>
-                                </select>
-                            </div>
-                             <div>
-                                <label for="totalGoalsFilter" class="block text-sm font-medium text-slate-700 mb-2">Total Goals</label>
-                                <select id="totalGoalsFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
-                                    <option value="All">All Totals</option>
-                                </select>
-                            </div>
-                            <div class="lg:col-span-2">
-                                <label for="confidenceRangeFilter" class="block text-sm font-medium text-slate-700 mb-2">
-                                    Level of Confidence: <span id="confidenceRangeValue" class="font-bold text-indigo-600">70%</span>
-                                </label>
-                                <input type="range" id="confidenceRangeFilter" min="0" max="100" value="70" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
-                            </div>
-
-                            <div class="col-span-full flex justify-end gap-4 mt-4">
-                                <button id="resetFiltersBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2.5 px-6 rounded-lg transition">Reset Filters</button>
-                            </div>
+                <form id="login-form" class="mt-8 space-y-6">
+                    <div id="login-error" class="hidden p-3 text-sm text-red-700 bg-red-100 rounded-lg"></div>
+                    <div class="rounded-md shadow-sm -space-y-px">
+                        <div>
+                            <label for="login-email" class="sr-only">Email address</label>
+                            <input id="login-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address">
+                        </div>
+                        <div>
+                            <label for="login-password" class="sr-only">Password</label>
+                            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
                         </div>
                     </div>
-                    
-                    <div class="bg-white rounded-xl shadow-md mb-8">
-                        <div class="p-4 border-b">
-                           <h3 class="text-xl font-bold text-indigo-800">High-Confidence Picks</h3>
-                           <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip" from the results below. Click any row for details.</p>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-200">
-                                <thead id="highConfidenceTableHead" class="bg-slate-50"></thead>
-                                <tbody id="highConfidenceTableBody" class="bg-white divide-y divide-slate-200">
-                                    <tr><td colspan="8" class="p-8 text-center text-slate-500">Finding best picks...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                         <div id="high-confidence-pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
-                            <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                            <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
-                            <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
-                        </div>
+                    <div>
+                        <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out">
+                            Sign In
+                        </button>
                     </div>
+                </form>
+                <p class="mt-6 text-center text-sm">
+                    Don't have an account? 
+                    <a href="#" id="show-signup" class="font-medium text-indigo-600 hover:text-indigo-500">Sign Up</a>
+                </p>
+            </div>
 
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                         <div class="p-4 border-b">
-                            <h3 class="font-bold text-slate-800">All Match Data</h3>
-                        </div>
-                        <div id="table-container" class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-200">
-                                <thead class="bg-slate-50">
-                                    <tr></tr>
-                                </thead>
-                                <tbody id="dataTableBody" class="bg-white divide-y divide-slate-200">
-                                     <tr><td colspan="10" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Loading data...</p></td></tr>
-                                </tbody>
-                            </table>
-                             <div id="no-results" class="hidden p-8 text-center text-slate-500">No records match the current filters.</div>
-                        </div>
-                        <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
-                            <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                            <div class="text-sm text-slate-700" id="page-info">Page 1 of 1</div>
-                            <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
-                        </div>
-                    </div>
+            <!-- Signup View -->
+            <div id="signup-view" class="hidden">
+                <div class="text-center">
+                    <img src="https://github.com/QualityMgnt/Statistics/blob/main/logo.png?raw=true" alt="Data Compass Logo" class="h-16 w-16 mx-auto mb-4">
+                    <h2 class="text-3xl font-extrabold text-indigo-800">Create Account</h2>
+                    <p class="mt-2 text-sm text-slate-600">Get started with your own dashboard</p>
                 </div>
-            </main>
+                <form id="signup-form" class="mt-8 space-y-6">
+                     <div id="signup-message" class="hidden p-3 text-sm rounded-lg"></div>
+                    <div class="rounded-md shadow-sm -space-y-px">
+                        <div>
+                             <label for="signup-name" class="sr-only">Full Name</label>
+                             <input id="signup-name" name="name" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Full Name">
+                        </div>
+                        <div>
+                             <label for="signup-email" class="sr-only">Email address</label>
+                             <input id="signup-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Email address">
+                        </div>
+                        <div>
+                             <label for="signup-password" class="sr-only">Password</label>
+                             <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Password">
+                        </div>
+                    </div>
+                    <div>
+                         <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                             Sign Up
+                         </button>
+                    </div>
+                </form>
+                <p class="mt-6 text-center text-sm">
+                    Already have an account?
+                    <a href="#" id="show-login" class="font-medium text-indigo-600 hover:text-indigo-500">Sign In</a>
+                </p>
+            </div>
         </div>
     </div>
 
+    <!-- Dashboard Container -->
+    <div id="dashboard-container" class="hidden">
+        <div class="flex h-screen">
+            <!-- Sidebar Navigation -->
+            <aside class="w-64 bg-white shadow-lg flex flex-col flex-shrink-0">
+                <div class="p-6 flex items-center space-x-4 border-b border-slate-200">
+                    <img src="https://github.com/QualityMgnt/Statistics/blob/main/logo.png?raw=true" alt="Data Compass Logo" class="h-10 w-10">
+                    <h1 class="text-xl font-bold text-indigo-800">Data Compass</h1>
+                </div>
+                <nav class="flex-1 px-4 py-6 space-y-2">
+                    <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        Dashboard
+                    </a>
+                </nav>
+                <div class="p-4 border-t text-center text-xs text-slate-500">
+                    <p>&copy; 2025 Data Compass</p>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
+                    <h1 id="main-header-title" class="text-2xl font-bold text-indigo-800">Dashboard</h1>
+                    <div class="flex items-center space-x-4">
+                        <span id="welcome-user" class="text-sm font-medium text-slate-700"></span>
+                        <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
+                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                           <span>Logout</span>
+                        </button>
+                    </div>
+                </header>
+
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100 p-4 sm:p-6 lg:p-8">
+                    <div id="content-dashboard" class="page-content">
+                        <!-- Filters Section -->
+                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
+                            <div class="flex justify-between items-center mb-4">
+                               <h3 class="text-xl font-bold text-indigo-800">Filter Data</h3>
+                               <button id="syncDataBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
+                                  <svg class="w-4 h-4" id="syncIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.25-4.25l-1.47 1.47c.56.98.82 2.09.82 3.28 0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg>
+                                  <span id="syncText">Sync Data</span>
+                               </button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div>
+                                    <label for="dateFilter" class="block text-sm font-medium text-slate-700 mb-2">Date</label>
+                                    <select id="dateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Dates</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="preferenceFilter" class="block text-sm font-medium text-slate-700 mb-2">Preference</label>
+                                    <select id="preferenceFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Preferences</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label for="winningMarginFilter" class="block text-sm font-medium text-slate-700 mb-2">Winning Margin</label>
+                                    <select id="winningMarginFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Margins</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="analyzedPredictionFilter" class="block text-sm font-medium text-slate-700 mb-2">Analyzed Prediction</label>
+                                    <select id="analyzedPredictionFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Predictions</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label for="goalsTipFilter" class="block text-sm font-medium text-slate-700 mb-2">Goals Tip</label>
+                                    <select id="goalsTipFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Goal Tips</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label for="totalGoalsFilter" class="block text-sm font-medium text-slate-700 mb-2">Total Goals</label>
+                                    <select id="totalGoalsFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Totals</option>
+                                    </select>
+                                </div>
+                                <div class="lg:col-span-2">
+                                    <label for="confidenceRangeFilter" class="block text-sm font-medium text-slate-700 mb-2">
+                                        Level of Confidence: <span id="confidenceRangeValue" class="font-bold text-indigo-600">70%</span>
+                                    </label>
+                                    <input type="range" id="confidenceRangeFilter" min="0" max="100" value="70" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+    
+                                <div class="col-span-full flex justify-end gap-4 mt-4">
+                                    <button id="resetFiltersBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2.5 px-6 rounded-lg transition">Reset Filters</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- High-Confidence Picks Table -->
+                        <div class="bg-white rounded-xl shadow-md mb-8">
+                            <div class="p-4 border-b">
+                               <h3 class="text-xl font-bold text-indigo-800">High-Confidence Picks</h3>
+                               <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip" from the results below. Click any row for details.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead id="highConfidenceTableHead" class="bg-slate-50"></thead>
+                                    <tbody id="highConfidenceTableBody" class="bg-white divide-y divide-slate-200">
+                                        <tr><td colspan="8" class="p-8 text-center text-slate-500">Finding best picks...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                             <div id="high-confidence-pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
+                                <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
+                                <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                            </div>
+                        </div>
+    
+                        <!-- All Match Data Table -->
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                             <div class="p-4 border-b">
+                                <h3 class="font-bold text-slate-800">All Match Data</h3>
+                            </div>
+                            <div id="table-container" class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-50">
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody id="dataTableBody" class="bg-white divide-y divide-slate-200">
+                                         <tr><td colspan="10" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Loading data...</p></td></tr>
+                                    </tbody>
+                                </table>
+                                 <div id="no-results" class="hidden p-8 text-center text-slate-500">No records match the current filters.</div>
+                            </div>
+                            <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
+                                <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                <div class="text-sm text-slate-700" id="page-info">Page 1 of 1</div>
+                                <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
     <div id="details-modal" class="fixed inset-0 z-50 hidden">
         <div id="modal-overlay" class="absolute inset-0 bg-black bg-opacity-60 modal-overlay opacity-0"></div>
         <div class="relative bg-white w-full max-w-xl mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95 opacity-0 transform -translate-y-10">
@@ -231,7 +320,11 @@
 
     <script>
         // --- CONFIGURATION ---
-        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv';
+        const SPORTS_DATA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv';
+        
+        // This single URL is used for both signing up (POST) and getting user data (GET)
+        const AUTH_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyZxTXn2G29YFWvwCcc_t5-wW6yj4bVOE-l5F8uGtdtDbJW0JbqNdPokUBtMcRIzKV3/exec'; 
+
         const ROWS_PER_PAGE = 20;
         const HIGH_CONFIDENCE_ROWS_PER_PAGE = 10;
         
@@ -244,12 +337,28 @@
         let sortState = { column: null, direction: 'asc' };
         let currentPage = 1;
         let highConfidenceCurrentPage = 1;
+        let COLUMN_INDICES = {};
 
 
         // --- DOM REFERENCES ---
         const dom = {
+            // Auth
+            authContainer: document.getElementById('auth-container'),
+            loginView: document.getElementById('login-view'),
+            signupView: document.getElementById('signup-view'),
+            loginForm: document.getElementById('login-form'),
+            signupForm: document.getElementById('signup-form'),
+            loginError: document.getElementById('login-error'),
+            signupMessage: document.getElementById('signup-message'),
+            showSignup: document.getElementById('show-signup'),
+            showLogin: document.getElementById('show-login'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            welcomeUser: document.getElementById('welcome-user'),
+
+            // Dashboard
+            dashboardContainer: document.getElementById('dashboard-container'),
             tableBody: document.getElementById('dataTableBody'),
-            tableHeader: document.querySelector('thead tr'),
+            tableHeader: document.querySelector('#dashboard-container thead tr'),
             noResultsDiv: document.getElementById('no-results'),
             
             // Filters
@@ -290,19 +399,171 @@
             syncText: document.getElementById('syncText'),
         };
 
-        const COLUMN_INDICES = {};
 
-        // --- CORE FUNCTIONS ---
+        // --- AUTHENTICATION FUNCTIONS ---
+
+        function showView(view) {
+            dom.loginView.classList.add('hidden');
+            dom.signupView.classList.add('hidden');
+            if (view === 'login') {
+                dom.loginView.classList.remove('hidden');
+            } else {
+                dom.signupView.classList.remove('hidden');
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = dom.loginForm.email.value;
+            const password = dom.loginForm.password.value;
+            dom.loginError.classList.add('hidden');
+
+            try {
+                // Fetch live user data from the Apps Script
+                const response = await fetch(`${AUTH_SCRIPT_URL}?t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error('Could not fetch user data.');
+                
+                const result = await response.json();
+
+                if (result.status !== 'success') {
+                    throw new Error(result.message || 'Failed to parse user data.');
+                }
+                
+                const users = result.users;
+                
+                // Note: Apps Script may return numbers as numbers, so we convert password to string.
+                // Note: Header names from the sheet (e.g., "Email") are case-sensitive.
+                const user = users.find(u => u.Email === email && u.Password.toString() === password);
+
+                if (user) {
+                    if (user.Status && user.Status.toLowerCase() === 'inactive') {
+                        dom.loginError.textContent = 'Your account is inactive. Please contact an administrator.';
+                        dom.loginError.classList.remove('hidden');
+                    } else {
+                        localStorage.setItem('loggedInUser', JSON.stringify({ email: user.Email, name: user.Name }));
+                        showDashboard();
+                    }
+                } else {
+                    dom.loginError.textContent = 'Invalid email or password.';
+                    dom.loginError.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                dom.loginError.textContent = 'An error occurred during login. Please try again.';
+                dom.loginError.classList.remove('hidden');
+            }
+        }
+        
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = dom.signupForm.name.value;
+            const email = dom.signupForm.email.value;
+            const password = dom.signupForm.password.value;
+            dom.signupMessage.classList.add('hidden');
+
+            if (AUTH_SCRIPT_URL === 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                alert('CRITICAL: Signup functionality is not configured. Please follow the setup instructions to create and add your Google Apps Script URL.');
+                return;
+            }
+            
+            const submitButton = dom.signupForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Signing up...';
+
+            try {
+                // The CORS issue with Google Apps Script can often be bypassed by changing the Content-Type.
+                // The script's `JSON.parse(e.postData.contents)` can handle a plain text body.
+                const response = await fetch(AUTH_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain' }, // Changed from 'application/json' to avoid CORS preflight error
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                const result = await response.json();
+                
+                dom.signupMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+                
+                if (result.status === 'success') {
+                    dom.signupMessage.textContent = 'Signup successful! You can now log in.';
+                    dom.signupMessage.classList.add('bg-green-100', 'text-green-700');
+                    dom.signupForm.reset();
+                    setTimeout(() => showView('login'), 2000);
+                } else {
+                    dom.signupMessage.textContent = result.message || 'An unknown error occurred.';
+                    dom.signupMessage.classList.add('bg-red-100', 'text-red-700');
+                }
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                dom.signupMessage.textContent = 'Could not connect to the signup service. Please check your connection or the script URL.';
+                dom.signupMessage.classList.add('bg-red-100', 'text-red-700');
+            } finally {
+                 submitButton.disabled = false;
+                 submitButton.textContent = 'Sign Up';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.reload();
+        }
+        
+        function showDashboard() {
+            const user = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!user) return;
+
+            dom.authContainer.classList.add('hidden');
+            dom.dashboardContainer.classList.remove('hidden');
+            dom.welcomeUser.textContent = `Welcome, ${user.name}!`;
+            
+            // Load the dashboard data
+            handleSyncClick();
+        }
+
+        async function checkAuth() {
+             const user = JSON.parse(localStorage.getItem('loggedInUser'));
+             if (user && user.email) {
+                 // Re-validate user status on page load using live data
+                 try {
+                    const response = await fetch(`${AUTH_SCRIPT_URL}?t=${new Date().getTime()}`);
+                    if (!response.ok) throw new Error();
+                    const result = await response.json();
+                    
+                    if (result.status !== 'success') throw new Error(result.message);
+                    
+                    const users = result.users;
+                    const currentUser = users.find(u => u.Email === user.email);
+                    
+                    if (currentUser && currentUser.Status.toLowerCase() !== 'inactive') {
+                        showDashboard();
+                    } else {
+                        handleLogout(); // User not found or is inactive
+                    }
+                 } catch (e) {
+                     // If we can't verify, log them out to be safe.
+                     console.error("Auth check failed:", e);
+                     handleLogout();
+                 }
+             } else {
+                 dom.authContainer.classList.remove('hidden');
+                 dom.dashboardContainer.classList.add('hidden');
+             }
+        }
+
+
+        // --- CORE DASHBOARD FUNCTIONS ---
         
         async function fetchAndProcessData() {
             try {
-                const response = await fetch(`${GOOGLE_SHEET_URL}&t=${new Date().getTime()}`);
+                const response = await fetch(`${SPORTS_DATA_SHEET_URL}&t=${new Date().getTime()}`);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const csvText = await response.text();
                 
                 const parsed = parseCSV(csvText);
                 
                 originalHeaders = parsed.headers;
+                COLUMN_INDICES = {}; // Reset indices
                 originalHeaders.forEach((header, index) => {
                     COLUMN_INDICES[header.trim()] = index;
                 });
@@ -586,7 +847,9 @@
                     <p class="text-sm text-slate-500 mt-1">${finalScore}</p>
                 </div>
 
+                <!-- Team Stats -->
                 <div class="md:col-span-3 grid grid-cols-2 gap-6">
+                    <!-- Home Team -->
                     <div class="bg-green-50 p-4 rounded-lg border border-green-200">
                         <h4 class="font-bold text-green-800 mb-3">Home Team Stats</h4>
                         <div class="space-y-2 text-sm">
@@ -595,6 +858,7 @@
                             <p><strong class="text-slate-600">Chance to Win:</strong> <span class="font-medium text-slate-800">${homeChance}</span></p>
                         </div>
                     </div>
+                    <!-- Away Team -->
                     <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <h4 class="font-bold text-blue-800 mb-3">Away Team Stats</h4>
                         <div class="space-y-2 text-sm">
@@ -605,6 +869,7 @@
                     </div>
                 </div>
                 
+                <!-- Prediction and Confidence -->
                 <div class="md:col-span-3 mt-4 pt-4 border-t">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
@@ -706,7 +971,14 @@
         }
         
         // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', handleSyncClick);
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        // Auth listeners
+        dom.showSignup.addEventListener('click', (e) => { e.preventDefault(); showView('signup'); });
+        dom.showLogin.addEventListener('click', (e) => { e.preventDefault(); showView('login'); });
+        dom.loginForm.addEventListener('submit', handleLogin);
+        dom.signupForm.addEventListener('submit', handleSignup);
+        dom.logoutBtn.addEventListener('click', handleLogout);
 
         // Filter event listeners
         [dom.dateFilter, dom.preferenceFilter, dom.winningMarginFilter, dom.analyzedPredictionFilter, dom.goalsTipFilter, dom.totalGoalsFilter].forEach(filter => {
@@ -756,3 +1028,4 @@
     </script>
 </body>
 </html>
+
