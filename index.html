@@ -175,7 +175,7 @@
                     <div class="bg-white rounded-xl shadow-md mb-8">
                         <div class="p-4 border-b">
                            <h3 class="text-xl font-bold text-indigo-800">High-Confidence Picks</h3>
-                           <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip". Click any row for details.</p>
+                           <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip" from the results below. Click any row for details.</p>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-200">
@@ -482,7 +482,7 @@
         }
         
         function renderHighConfidencePicksTable() {
-            const picks = allData.filter(row => {
+            const picks = currentFilteredData.filter(row => {
                 const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
                 return analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
             });
@@ -490,7 +490,7 @@
             dom.highConfidencePaginationControls.style.display = picks.length > 0 ? 'flex' : 'none';
 
             if (picks.length === 0) {
-                dom.highConfidenceTableBody.innerHTML = `<tr><td colspan="${HIGH_CONFIDENCE_HEADERS.length}" class="p-8 text-center text-slate-500">No high-confidence picks based on criteria found.</td></tr>`;
+                dom.highConfidenceTableBody.innerHTML = `<tr><td colspan="${HIGH_CONFIDENCE_HEADERS.length}" class="p-8 text-center text-slate-500">No high-confidence picks match the current filters.</td></tr>`;
                 return;
             }
 
@@ -692,7 +692,7 @@
             const rowElement = e.target.closest('tr');
             if (!rowElement || typeof rowElement.dataset.rowIndex === 'undefined') return;
 
-            const picks = allData.filter(row => {
+            const picks = currentFilteredData.filter(row => {
                 const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
                 return analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
             });
@@ -735,7 +735,7 @@
             }
         });
         dom.highConfidenceNextPageBtn.addEventListener('click', () => {
-            const picks = allData.filter(row => {
+            const picks = currentFilteredData.filter(row => {
                 const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
                 return analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
             });
