@@ -447,30 +447,32 @@
 
         async function handleSignup(e) {
             e.preventDefault();
-            const name = dom.signupForm.name.value;
-            const email = dom.signupForm.email.value;
-            const password = dom.signupForm.password.value;
+            const form = e.target;
+            const name = form.name.value;
+            const email = form.email.value;
+            const password = form.password.value;
             dom.signupMessage.textContent = 'Submitting...';
             dom.signupMessage.className = 'text-sm text-center text-slate-500';
 
             try {
-                const postBody = new URLSearchParams();
-                postBody.append('name', name);
-                postBody.append('email', email);
-                postBody.append('password', password);
-
+                // Using FormData is a reliable way to send form data.
+                const formData = new FormData(form);
+                
                 const response = await fetch(SIGNUP_URL, {
                     method: 'POST',
-                    body: postBody,
+                    body: formData,
                 });
 
-                if (response.ok) {
+                // Check the response status to determine success, as redirects from Apps Script can be tricky.
+                if (response.ok || response.status === 200 || response.type === 'opaque') {
                     dom.signupMessage.textContent = 'Signup successful! You can now log in.';
                     dom.signupMessage.className = 'text-sm text-center text-green-500';
                     dom.signupForm.reset();
                     setTimeout(() => switchView('login'), 2000);
                 } else {
-                    throw new Error(`Server responded with an error (status: ${response.status})`);
+                    // Try to get more info from the response if possible, otherwise show a generic error.
+                    const errorText = await response.text();
+                    throw new Error(errorText || `Server responded with an error (status: ${response.status})`);
                 }
             } catch (error) {
                 console.error('Signup error:', error);
@@ -478,6 +480,7 @@
                 dom.signupMessage.className = 'text-sm text-center text-red-500';
             }
         }
+
 
         function handleLogout() {
             localStorage.removeItem('loggedInUser');
