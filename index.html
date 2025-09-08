@@ -324,7 +324,7 @@
 
         // --- CONFIGURATION ---
         const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv';
-        const SIGNUP_URL = 'https://script.google.com/macros/s/AKfycbyZxTXn2G29YFWvwCcc_t5-wW6yj4bVOE-l5F8uGtdtDbJW0JbqNdPokUBtMcRIzKV3/exec';
+        const SIGNUP_URL = 'https://script.google.com/macros/s/AKfycbw1aMNk8N1ksb95v8sHTjYc3auRy-6f7AE85kXvd8Z-P9_kUMW90fINKVHo68CYc3EI/exec';
         const ROWS_PER_PAGE = 20;
         const HIGH_CONFIDENCE_ROWS_PER_PAGE = 10;
         
@@ -448,14 +448,10 @@
         async function handleSignup(e) {
             e.preventDefault();
             const form = e.target;
-            const name = form.name.value;
-            const email = form.email.value;
-            const password = form.password.value;
             dom.signupMessage.textContent = 'Submitting...';
             dom.signupMessage.className = 'text-sm text-center text-slate-500';
 
             try {
-                // Using FormData is a reliable way to send form data.
                 const formData = new FormData(form);
                 
                 const response = await fetch(SIGNUP_URL, {
@@ -463,14 +459,12 @@
                     body: formData,
                 });
 
-                // Check the response status to determine success, as redirects from Apps Script can be tricky.
                 if (response.ok || response.status === 200 || response.type === 'opaque') {
                     dom.signupMessage.textContent = 'Signup successful! You can now log in.';
                     dom.signupMessage.className = 'text-sm text-center text-green-500';
-                    dom.signupForm.reset();
+                    form.reset();
                     setTimeout(() => switchView('login'), 2000);
                 } else {
-                    // Try to get more info from the response if possible, otherwise show a generic error.
                     const errorText = await response.text();
                     throw new Error(errorText || `Server responded with an error (status: ${response.status})`);
                 }
