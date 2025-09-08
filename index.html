@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide-react@0.292.0/dist/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* Use the Inter font */
         body {
@@ -421,7 +421,6 @@
                 if (!response.ok) throw new Error('Network response was not ok.');
                 const result = await response.json();
                 
-                // FIX: Check for result.users instead of result.data
                 if (!result || !Array.isArray(result.users)) {
                     console.error("Invalid data structure received from login API:", result);
                     throw new Error("Could not retrieve valid user data from the server.");
@@ -645,7 +644,8 @@
 
             pageData.forEach((row, index) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-indigo-50 transition-colors';
+                tr.className = 'hover:bg-indigo-50 transition-colors cursor-pointer';
+                tr.dataset.rowIndex = start + index;
                 
                 let cellsHTML = '';
                 MAIN_TABLE_HEADERS.forEach(headerName => {
@@ -670,7 +670,6 @@
                             break;
                         case 'Analyzed Prediction':
                             cellContent = getStyledPredictionBadge(cellValue);
-                            cellClass += ' analyzed-prediction-cell cursor-pointer';
                             break;
                         case 'Accuracy':
                             if ((cellValue || '').toLowerCase() === 'success') {
@@ -685,16 +684,10 @@
                             cellContent = `<button class="view-more-btn bg-indigo-600 text-white px-3 py-1 text-xs rounded-full hover:bg-indigo-700 transition shadow">View</button>`;
                             break;
                     }
-                    // Add data-row-index to clickable cells
-                    if (headerName === 'Analyzed Prediction') {
-                         cellsHTML += `<td class="${cellClass}" data-row-index="${start + index}">${cellContent}</td>`;
-                    } else {
-                        cellsHTML += `<td class="${cellClass}">${cellContent}</td>`;
-                    }
+                    cellsHTML += `<td class="${cellClass}">${cellContent}</td>`;
                 });
                 
                 tr.innerHTML = cellsHTML;
-                tr.querySelector('.view-more-btn')?.addEventListener('click', () => openModal(row));
                 dom.tableBody.appendChild(tr);
             });
             updatePaginationControls(totalPages);
@@ -876,9 +869,9 @@
                 <!-- External Analysis Section -->
                  <div class="md:col-span-3 mt-4 pt-4 border-t">
                      <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
-                        <i data-lucide="search" class="w-4 h-4 mr-2"></i> Get External Analysis
+                        <i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions
                      </button>
-                     <div id="external-analysis-container" class="mt-4 hidden"></div>
+                     <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 hidden" readonly></textarea>
                  </div>
 
                 ${(urlSource && urlSource.startsWith('http')) ? `
@@ -909,39 +902,31 @@
         async function handleExternalAnalysisClick(e) {
             const button = e.currentTarget;
             const { homeTeam, awayTeam } = button.dataset;
-            const container = document.getElementById('external-analysis-container');
+            const textbox = document.getElementById('external-analysis-container');
 
             button.disabled = true;
             button.innerHTML = `<div class="loader !w-5 !h-5 !border-2 !border-t-white/50 mx-auto"></div>`;
-            container.innerHTML = `<div class="text-center p-4 bg-slate-50 rounded-lg"><p class="text-sm text-slate-600">Searching for external analysis...</p></div>`;
-            container.classList.remove('hidden');
+            textbox.value = 'Searching for external analysis...';
+            textbox.classList.remove('hidden');
 
             try {
                 const result = await fetchExternalAnalysis(homeTeam, awayTeam);
-                let resultHTML = `<div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200 space-y-3">
-                                      <h4 class="font-bold text-indigo-800">Analysis Summary</h4>
-                                      <p class="text-sm text-slate-700 leading-relaxed">${result.text.replace(/\n/g, '<br>')}</p>`;
+                let resultText = `Analysis Summary:\n${result.text}`;
 
                 if (result.sources && result.sources.length > 0) {
-                    resultHTML += `<div class="pt-2 border-t border-indigo-200">
-                                     <h5 class="text-xs font-semibold text-slate-500 mb-2">Sources:</h5>
-                                     <ul class="space-y-1 list-disc list-inside">`;
+                    resultText += `\n\nSources:\n`;
                     result.sources.forEach(source => {
-                         resultHTML += `<li><a href="${source.uri}" target="_blank" rel="noopener noreferrer" class="text-xs text-indigo-600 hover:underline">${source.title}</a></li>`;
+                         resultText += `- ${source.title}: ${source.uri}\n`;
                     });
-                    resultHTML += `</ul></div>`;
                 }
-                resultHTML += `</div>`;
-                container.innerHTML = resultHTML;
+                textbox.value = resultText;
 
             } catch (error) {
                 console.error("External analysis failed:", error);
-                container.innerHTML = `<div class="p-4 bg-red-50 rounded-lg border border-red-200">
-                                           <p class="text-sm text-red-700">Sorry, could not retrieve external analysis at this time.</p>
-                                       </div>`;
+                textbox.value = "Sorry, could not retrieve external analysis at this time.";
             } finally {
                 button.disabled = false;
-                 button.innerHTML = `<i data-lucide="search" class="w-4 h-4 mr-2"></i> Get External Analysis`;
+                 button.innerHTML = `<i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions`;
                  lucide.createIcons();
             }
         }
@@ -1047,14 +1032,13 @@
             const rowData = allData[rowIndex];
             if (rowData) openModal(rowData);
         }
-
-        function handleAnalyzedPredictionClick(e) {
-            if (e.target.closest('.analyzed-prediction-cell')) {
-                const cell = e.target.closest('.analyzed-prediction-cell');
-                const rowIndex = parseInt(cell.dataset.rowIndex, 10);
-                const rowData = currentFilteredData[rowIndex];
-                if (rowData) openModal(rowData);
-            }
+        
+        function handleMainTableRowClick(e) {
+            const rowElement = e.target.closest('tr');
+            if (!rowElement || typeof rowElement.dataset.rowIndex === 'undefined') return;
+            const rowIndex = parseInt(rowElement.dataset.rowIndex, 10);
+            const rowData = currentFilteredData[rowIndex];
+            if (rowData) openModal(rowData);
         }
         
         // --- EVENT LISTENERS ---
@@ -1078,7 +1062,7 @@
         
         // Main table listeners
         dom.tableHeader.addEventListener('click', handleSort);
-        dom.tableBody.addEventListener('click', handleAnalyzedPredictionClick);
+        dom.tableBody.addEventListener('click', handleMainTableRowClick);
         dom.prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderMainTablePage(); }});
         dom.nextPageBtn.addEventListener('click', () => {
             const totalPages = Math.ceil(currentFilteredData.length / ROWS_PER_PAGE);
