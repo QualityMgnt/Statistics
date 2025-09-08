@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Compass | Sports Analytics</title>
-    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -93,15 +91,14 @@
 <body class="antialiased text-slate-800 bg-slate-100">
 
     <div class="flex h-screen">
-        <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white shadow-lg flex flex-col flex-shrink-0">
             <div class="p-6 flex items-center space-x-4 border-b border-slate-200">
-                <img src="http://googleusercontent.com/image_generation_content/0" alt="Data Compass Logo" class="h-10 w-10">
+                <img src="https://github.com/QualityMgnt/Statistics/blob/main/logo.png?raw=true" alt="Data Compass Logo" class="h-10 w-10">
                 <h1 class="text-xl font-bold text-indigo-800">Data Compass</h1>
             </div>
             <nav class="flex-1 px-4 py-6 space-y-2">
                 <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
-                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     Dashboard
                 </a>
             </nav>
@@ -110,7 +107,6 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
                 <h1 id="main-header-title" class="text-2xl font-bold text-indigo-800">Dashboard</h1>
@@ -124,11 +120,9 @@
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100 p-4 sm:p-6 lg:p-8">
                 <div id="content-dashboard" class="page-content">
-                    <!-- Filters Section -->
                     <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
                         <h3 class="text-xl font-bold text-indigo-800 mb-4">Filter Data</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <!-- New Filters -->
                             <div>
                                 <label for="dateFilter" class="block text-sm font-medium text-slate-700 mb-2">Date</label>
                                 <select id="dateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
@@ -178,17 +172,16 @@
                         </div>
                     </div>
                     
-                    <!-- High-Confidence Picks Table -->
                     <div class="bg-white rounded-xl shadow-md mb-8">
                         <div class="p-4 border-b">
                            <h3 class="text-xl font-bold text-indigo-800">High-Confidence Picks</h3>
-                           <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip"</p>
+                           <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip". Click any row for details.</p>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-200">
                                 <thead id="highConfidenceTableHead" class="bg-slate-50"></thead>
                                 <tbody id="highConfidenceTableBody" class="bg-white divide-y divide-slate-200">
-                                    <tr><td colspan="6" class="p-8 text-center text-slate-500">Finding best picks...</td></tr>
+                                    <tr><td colspan="8" class="p-8 text-center text-slate-500">Finding best picks...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -199,7 +192,6 @@
                         </div>
                     </div>
 
-                    <!-- All Match Data Table -->
                     <div class="bg-white rounded-xl shadow-md overflow-hidden">
                          <div class="p-4 border-b">
                             <h3 class="font-bold text-slate-800">All Match Data</h3>
@@ -226,7 +218,6 @@
         </div>
     </div>
 
-    <!-- Details Modal -->
     <div id="details-modal" class="fixed inset-0 z-50 hidden">
         <div id="modal-overlay" class="absolute inset-0 bg-black bg-opacity-60 modal-overlay opacity-0"></div>
         <div class="relative bg-white w-full max-w-xl mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95 opacity-0 transform -translate-y-10">
@@ -246,7 +237,7 @@
         
         // --- TABLE HEADERS CONFIGURATION ---
         const MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Match Outcome', 'Accuracy'];
-        const HIGH_CONFIDENCE_HEADERS = ['Home Team', 'Away Team', 'Level of Confidence', 'Preference', 'Winning Margin', 'Analyzed Prediction'];
+        const HIGH_CONFIDENCE_HEADERS = ['Home Team', 'Away Team', 'Level of Confidence', 'Preference', 'Winning Margin', 'Analyzed Prediction', 'Match Outcome', 'Accuracy'];
 
         // --- GLOBAL STATE ---
         let allData = [], currentFilteredData = [], originalHeaders = [];
@@ -508,12 +499,40 @@
             const start = (highConfidenceCurrentPage - 1) * HIGH_CONFIDENCE_ROWS_PER_PAGE;
             const pageData = picks.slice(start, start + HIGH_CONFIDENCE_ROWS_PER_PAGE);
             
-            dom.highConfidenceTableBody.innerHTML = pageData.map(row => {
+            dom.highConfidenceTableBody.innerHTML = pageData.map((row, index) => {
+                const fullIndex = start + index;
                 const cellsHTML = HIGH_CONFIDENCE_HEADERS.map(header => {
                     const value = row[COLUMN_INDICES[header]] || '-';
-                    return `<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">${value}</td>`;
+                    let cellContent = value;
+                    let cellClass = 'px-6 py-4 whitespace-nowrap text-sm text-slate-700 align-middle';
+
+                    switch(header) {
+                        case 'Home Team': case 'Away Team':
+                            cellClass += ' font-semibold text-indigo-900';
+                            break;
+                        case 'Level of Confidence':
+                            const numericConf = parseFloat(value.replace('%','').trim());
+                            let confColor = 'text-slate-800';
+                            if (!isNaN(numericConf)) {
+                                if (numericConf >= 80) confColor = 'text-green-600';
+                                else if (numericConf >= 70) confColor = 'text-yellow-600';
+                                else confColor = 'text-red-600';
+                            }
+                            cellContent = `<span class="font-bold ${confColor}">${value}</span>`;
+                            break;
+                        case 'Accuracy':
+                            if ((value || '').toLowerCase() === 'success') {
+                                cellContent = `<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
+                            } else if ((value || '').toLowerCase() === 'unsuccessful') {
+                                cellContent = `<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
+                            } else {
+                                cellContent = `<span class="text-slate-400">-</span>`;
+                            }
+                            break;
+                    }
+                    return `<td class="${cellClass}">${cellContent}</td>`;
                 }).join('');
-                return `<tr class="hover:bg-indigo-50 transition-colors">${cellsHTML}</tr>`;
+                return `<tr class="hover:bg-indigo-50 transition-colors cursor-pointer" data-row-index="${fullIndex}">${cellsHTML}</tr>`;
             }).join('');
 
             updateHighConfidencePaginationControls(totalPages);
@@ -567,9 +586,7 @@
                     <p class="text-sm text-slate-500 mt-1">${finalScore}</p>
                 </div>
 
-                <!-- Team Stats -->
                 <div class="md:col-span-3 grid grid-cols-2 gap-6">
-                    <!-- Home Team -->
                     <div class="bg-green-50 p-4 rounded-lg border border-green-200">
                         <h4 class="font-bold text-green-800 mb-3">Home Team Stats</h4>
                         <div class="space-y-2 text-sm">
@@ -578,7 +595,6 @@
                             <p><strong class="text-slate-600">Chance to Win:</strong> <span class="font-medium text-slate-800">${homeChance}</span></p>
                         </div>
                     </div>
-                    <!-- Away Team -->
                     <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <h4 class="font-bold text-blue-800 mb-3">Away Team Stats</h4>
                         <div class="space-y-2 text-sm">
@@ -589,7 +605,6 @@
                     </div>
                 </div>
                 
-                <!-- Prediction and Confidence -->
                 <div class="md:col-span-3 mt-4 pt-4 border-t">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
@@ -673,6 +688,23 @@
             applyFiltersAndRender();
         }
         
+        function handleHighConfidenceRowClick(e) {
+            const rowElement = e.target.closest('tr');
+            if (!rowElement || typeof rowElement.dataset.rowIndex === 'undefined') return;
+
+            const picks = allData.filter(row => {
+                const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
+                return analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
+            });
+
+            const rowIndex = parseInt(rowElement.dataset.rowIndex, 10);
+            const rowData = picks[rowIndex];
+
+            if (rowData) {
+                openModal(rowData);
+            }
+        }
+        
         // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', handleSyncClick);
 
@@ -694,7 +726,8 @@
             if (currentPage < totalPages) { currentPage++; renderMainTablePage(); }
         });
 
-        // High-confidence table pagination listeners
+        // High-confidence table pagination and row click listeners
+        dom.highConfidenceTableBody.addEventListener('click', handleHighConfidenceRowClick);
         dom.highConfidencePrevPageBtn.addEventListener('click', () => { 
             if (highConfidenceCurrentPage > 1) { 
                 highConfidenceCurrentPage--; 
@@ -723,6 +756,3 @@
     </script>
 </body>
 </html>
-
-
-
