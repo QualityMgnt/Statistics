@@ -6,6 +6,8 @@
     <title>Data Compass | Sports Analytics</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,6 +62,9 @@
             color: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
+        .page-content.hidden {
+            display: none;
+        }
 
         /* Custom styling for range input */
         input[type="range"] {
@@ -89,6 +94,13 @@
             background: #4f46e5;
             border-radius: 50%;
             cursor: pointer;
+        }
+
+        /* Insight Card Progress Circle */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
         }
     </style>
 </head>
@@ -132,26 +144,26 @@
             <!-- Signup Form -->
             <div id="signup-view" class="hidden">
                  <div class="text-center">
-                     <img src="https://cdn.jsdelivr.net/gh/QualityMgnt/Statistics/logo.png.png" alt="Data Compass Logo" class="mx-auto h-16 w-auto mb-4">
+                      <img src="https://cdn.jsdelivr.net/gh/QualityMgnt/Statistics/logo.png.png" alt="Data Compass Logo" class="mx-auto h-16 w-auto mb-4">
                     <h2 class="text-3xl font-extrabold text-indigo-800">Create an Account</h2>
                     <p class="mt-2 text-sm text-slate-600">Get started with your sports analytics journey</p>
                 </div>
                 <form id="signup-form" class="mt-8 space-y-6">
-                     <div class="space-y-4 rounded-md shadow-sm">
-                        <div>
-                            <label for="signup-name" class="sr-only">Full Name</label>
-                            <input id="signup-name" name="name" type="text" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Full Name">
-                        </div>
-                        <div>
-                            <label for="signup-email" class="sr-only">Email address</label>
-                            <input id="signup-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Email address">
-                        </div>
-                        <div>
-                            <label for="signup-password" class="sr-only">Password</label>
-                            <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Password">
-                        </div>
+                      <div class="space-y-4 rounded-md shadow-sm">
+                          <div>
+                              <label for="signup-name" class="sr-only">Full Name</label>
+                              <input id="signup-name" name="name" type="text" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Full Name">
+                          </div>
+                          <div>
+                              <label for="signup-email" class="sr-only">Email address</label>
+                              <input id="signup-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Email address">
+                          </div>
+                          <div>
+                              <label for="signup-password" class="sr-only">Password</label>
+                              <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Password">
+                          </div>
                     </div>
-                     <p id="signup-message" class="text-sm text-center"></p>
+                      <p id="signup-message" class="text-sm text-center"></p>
                     <div>
                         <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Sign up
@@ -175,14 +187,18 @@
                     <img src="https://cdn.jsdelivr.net/gh/QualityMgnt/Statistics/logo.png.png" alt="Data Compass Logo" class="h-10 w-10">
                     <h1 class="text-xl font-bold text-indigo-800">Data Compass</h1>
                 </div>
-                <nav class="flex-1 px-4 py-6 space-y-2">
+                <nav id="sidebar-nav" class="flex-1 px-4 py-6 space-y-2">
                     <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Dashboard
                     </a>
+                    <a href="#" data-target="content-analytics" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        Analytics
+                    </a>
                 </nav>
                  <div class="p-4 border-t">
-                    <div class="text-xs text-slate-500 mb-2">Logged in as: <span id="user-email-display" class="font-semibold"></span></div>
+                     <div class="text-xs text-slate-500 mb-2">Logged in as: <span id="user-email-display" class="font-semibold"></span></div>
                     <button id="logout-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center justify-center space-x-2 shadow-sm hover:shadow-md">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         <span>Logout</span>
@@ -273,16 +289,16 @@
                                 </table>
                             </div>
                              <div id="high-confidence-pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
-                                <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                                <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
-                                <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                                 <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                 <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
+                                 <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                             </div>
                         </div>
 
                         <!-- All Match Data Table -->
                         <div class="bg-white rounded-xl shadow-md overflow-hidden">
                              <div class="p-4 border-b">
-                                <h3 class="font-bold text-slate-800">All Match Data</h3>
+                                 <h3 class="font-bold text-slate-800">All Match Data</h3>
                             </div>
                             <div id="table-container" class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-slate-200">
@@ -300,6 +316,87 @@
                                 <div class="text-sm text-slate-700" id="page-info">Page 1 of 1</div>
                                 <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                             </div>
+                        </div>
+                    </div>
+                    <!-- Analytics Content -->
+                    <div id="content-analytics" class="page-content hidden">
+                         <!-- Analytics Filters -->
+                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-4">Analytics Filters</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div>
+                                    <label for="analyticsDateFilter" class="block text-sm font-medium text-slate-700 mb-2">Filter by Date</label>
+                                    <select id="analyticsDateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Dates</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="analyticsTotalGoalsFilter" class="block text-sm font-medium text-slate-700 mb-2">Filter by Total Goals</label>
+                                    <select id="analyticsTotalGoalsFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                        <option value="All">All Totals</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Key Insights Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                            <!-- Overall Success Rate -->
+                            <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+                                <div class="relative w-24 h-24">
+                                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                                        <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+                                        <path id="progress-ring-circle" class="progress-ring__circle text-indigo-600" stroke-width="3" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <span id="overall-success-rate-text" class="text-2xl font-bold text-indigo-800">-%</span>
+                                    </div>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-500 text-sm font-medium">Overall Success</h4>
+                                    <p class="text-slate-800 text-lg font-semibold">Accuracy Rate</p>
+                                </div>
+                            </div>
+                             <!-- Best Performing Bet -->
+                            <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+                                <div class="flex-shrink-0 bg-teal-100 text-teal-600 rounded-full h-16 w-16 flex items-center justify-center">
+                                    <i data-lucide="trending-up" class="w-8 h-8"></i>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-500 text-sm font-medium">Best Performing Bet</h4>
+                                    <p id="best-bet-type" class="text-slate-800 text-lg font-bold truncate">-</p>
+                                </div>
+                            </div>
+                             <!-- Optimal Confidence -->
+                            <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+                                <div class="flex-shrink-0 bg-violet-100 text-violet-600 rounded-full h-16 w-16 flex items-center justify-center">
+                                    <i data-lucide="target" class="w-8 h-8"></i>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-500 text-sm font-medium">Optimal Confidence</h4>
+                                    <p id="optimal-confidence" class="text-slate-800 text-lg font-bold">-</p>
+                                </div>
+                            </div>
+                             <!-- Total Bets -->
+                             <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
+                                <div class="flex-shrink-0 bg-amber-100 text-amber-600 rounded-full h-16 w-16 flex items-center justify-center">
+                                    <i data-lucide="hash" class="w-8 h-8"></i>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-500 text-sm font-medium">Total Bets Analyzed</h4>
+                                    <p id="total-bets-analyzed" class="text-slate-800 text-lg font-bold">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Grid -->
+                        <div class="grid grid-cols-1 xl:grid-cols-5 gap-8">
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-3"><canvas id="confidenceChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2"><canvas id="predictionAccuracyChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-5"><canvas id="successOverTimeChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-3"><canvas id="analyzedPredictionChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2"><canvas id="winningMarginChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-3"><canvas id="goalsTipChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2"><canvas id="preferenceChart"></canvas></div>
                         </div>
                     </div>
                 </main>
@@ -331,6 +428,8 @@
         // --- TABLE HEADERS CONFIGURATION ---
         const MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Analyzed Prediction', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Match Outcome', 'Accuracy'];
         const HIGH_CONFIDENCE_HEADERS = ['Home Team', 'Away Team', 'Level of Confidence', 'Preference', 'Winning Margin', 'Analyzed Prediction', 'Match Outcome', 'Accuracy'];
+        const CHART_COLUMNS = ['Preference', 'Winning Margin', 'Analyzed Prediction', 'Goals Tip', 'Level of Confidence'];
+
 
         // --- GLOBAL STATE ---
         let allData = [], currentFilteredData = [], originalHeaders = [];
@@ -338,6 +437,7 @@
         let currentPage = 1;
         let highConfidenceCurrentPage = 1;
         let COLUMN_INDICES = {};
+        let charts = {}; // To hold chart instances
 
         // --- DOM REFERENCES ---
         const dom = {
@@ -354,13 +454,15 @@
             logoutBtn: document.getElementById('logout-btn'),
             userEmailDisplay: document.getElementById('user-email-display'),
             
-            // Dashboard
+            // Dashboard & Navigation
             dashboardContainer: document.getElementById('dashboard-container'),
+            sidebarNav: document.getElementById('sidebar-nav'),
+            mainHeaderTitle: document.getElementById('main-header-title'),
             tableBody: document.getElementById('dataTableBody'),
             tableHeader: document.querySelector('#table-container thead tr'),
             noResultsDiv: document.getElementById('no-results'),
             
-            // Filters
+            // Dashboard Filters
             dateFilter: document.getElementById('dateFilter'),
             preferenceFilter: document.getElementById('preferenceFilter'),
             winningMarginFilter: document.getElementById('winningMarginFilter'),
@@ -370,6 +472,16 @@
             confidenceRangeFilter: document.getElementById('confidenceRangeFilter'),
             confidenceRangeValue: document.getElementById('confidenceRangeValue'),
             resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+
+            // Analytics
+            analyticsDateFilter: document.getElementById('analyticsDateFilter'),
+            analyticsTotalGoalsFilter: document.getElementById('analyticsTotalGoalsFilter'),
+            overallSuccessRateText: document.getElementById('overall-success-rate-text'),
+            progressRingCircle: document.getElementById('progress-ring-circle'),
+            bestBetType: document.getElementById('best-bet-type'),
+            optimalConfidence: document.getElementById('optimal-confidence'),
+            totalBetsAnalyzed: document.getElementById('total-bets-analyzed'),
+
 
             // High Confidence Table
             highConfidenceTableHead: document.getElementById('highConfidenceTableHead'),
@@ -522,6 +634,7 @@
                 renderHighConfidenceHeaders();
                 populateDropdowns();
                 applyFiltersAndRender();
+                updateAnalytics(); // Initial render for analytics tab
 
             } catch (error) {
                 console.error('Failed to fetch/process data:', error);
@@ -540,16 +653,22 @@
         
         function populateDropdowns() {
             const filtersToPopulate = {
+                // Dashboard filters
                 dateFilter: 'Date',
                 preferenceFilter: 'Preference',
                 winningMarginFilter: 'Winning Margin',
                 analyzedPredictionFilter: 'Analyzed Prediction',
                 goalsTipFilter: 'Goals Tip',
-                totalGoalsFilter: 'Total Goals'
+                totalGoalsFilter: 'Total Goals',
+                // Analytics filters
+                analyticsDateFilter: 'Date',
+                analyticsTotalGoalsFilter: 'Total Goals',
             };
 
             for (const [elementId, columnName] of Object.entries(filtersToPopulate)) {
                 const selectElement = dom[elementId];
+                if (!selectElement) continue;
+
                 const columnIndex = COLUMN_INDICES[columnName];
                 
                 if (typeof columnIndex === 'undefined') {
@@ -772,6 +891,236 @@
             updateHighConfidencePaginationControls(totalPages);
         }
 
+        // --- ANALYTICS & CHARTING FUNCTIONS ---
+
+        function updateAnalytics() {
+            if (allData.length === 0) return;
+
+             const dateFilter = dom.analyticsDateFilter.value;
+            const totalGoalsFilter = dom.analyticsTotalGoalsFilter.value;
+
+            const filteredChartData = allData.filter(row => {
+                const dateMatch = dateFilter === 'All' || row[COLUMN_INDICES['Date']] === dateFilter;
+                const goalsMatch = totalGoalsFilter === 'All' || row[COLUMN_INDICES['Total Goals']] === totalGoalsFilter;
+                return dateMatch && goalsMatch;
+            });
+            renderKeyInsights(filteredChartData);
+            renderAnalyticsCharts(filteredChartData);
+        }
+        
+        function renderKeyInsights(data) {
+            const accuracyIndex = COLUMN_INDICES['Accuracy'];
+            if(accuracyIndex === undefined) return;
+
+            let totalSuccess = 0;
+            data.forEach(row => {
+                if (String(row[accuracyIndex]).trim().toLowerCase() === 'success') {
+                    totalSuccess++;
+                }
+            });
+
+            // Overall Success Rate
+            const overallSuccessRate = data.length > 0 ? (totalSuccess / data.length) * 100 : 0;
+            dom.overallSuccessRateText.textContent = `${overallSuccessRate.toFixed(1)}%`;
+            const circle = dom.progressRingCircle;
+            const radius = 15.9155; // The radius is defined in the SVG path's 'd' attribute.
+            const circumference = radius * 2 * Math.PI;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            const offset = circumference - (overallSuccessRate / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            // Best Bet & Optimal Confidence
+            const betStats = processChartData(data, 'Analyzed Prediction');
+            const confidenceStats = processChartData(data, 'Level of Confidence');
+
+            const bestBet = betStats.labels.reduce((best, label, index) => {
+                if (betStats.values[index] > best.value) {
+                    return { label, value: betStats.values[index] };
+                }
+                return best;
+            }, { label: '-', value: 0 });
+
+            const bestConfidence = confidenceStats.labels.reduce((best, label, index) => {
+                if (confidenceStats.values[index] > best.value) {
+                    return { label, value: confidenceStats.values[index] };
+                }
+                return best;
+            }, { label: '-', value: 0 });
+
+            dom.bestBetType.textContent = bestBet.label;
+            dom.optimalConfidence.textContent = bestConfidence.label;
+            dom.totalBetsAnalyzed.textContent = data.length;
+        }
+
+
+        function processChartData(data, columnName) {
+            const accuracyIndex = COLUMN_INDICES['Accuracy'];
+            const colIndex = COLUMN_INDICES[columnName];
+            if (accuracyIndex === undefined || colIndex === undefined) return { labels: [], values: [] };
+
+            const stats = {};
+
+            data.forEach(row => {
+                let category = row[colIndex];
+                if (!category) return; // Skip if category is empty
+
+                // Binning for Level of Confidence
+                if (columnName === 'Level of Confidence') {
+                    const value = parseInt(category.replace('%', ''));
+                    if (isNaN(value)) return;
+                    if (value >= 90) category = '90-100%';
+                    else if (value >= 80) category = '80-89%';
+                    else if (value >= 70) category = '70-79%';
+                    else if (value >= 60) category = '60-69%';
+                    else if (value >= 50) category = '50-59%';
+                    else category = '0-49%';
+                }
+
+                if (!stats[category]) {
+                    stats[category] = { total: 0, success: 0 };
+                }
+                stats[category].total++;
+                if (String(row[accuracyIndex]).trim().toLowerCase() === 'success') {
+                    stats[category].success++;
+                }
+            });
+            
+            const sortedLabels = Object.keys(stats).sort();
+
+            const labels = [];
+            const values = [];
+
+            sortedLabels.forEach(label => {
+                const { total, success } = stats[label];
+                labels.push(label);
+                values.push(total > 0 ? (success / total) * 100 : 0);
+            });
+
+            return { labels, values };
+        }
+
+        function renderAnalyticsCharts(filteredChartData) {
+            
+            const CHART_PALETTE = ['#4f46e5', '#7c3aed', '#14b8a6', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'];
+            
+            const chartConfigs = {
+                'preferenceChart': { type: 'bar', columnName: 'Preference', title: 'Success Rate by Preference' },
+                'winningMarginChart': { type: 'bar', columnName: 'Winning Margin', title: 'Success Rate by Winning Margin' },
+                'analyzedPredictionChart': { type: 'bar', columnName: 'Analyzed Prediction', title: 'Success Rate by Prediction Type' },
+                'goalsTipChart': { type: 'bar', columnName: 'Goals Tip', title: 'Success Rate by Goals Tip' },
+                'confidenceChart': { type: 'bar', columnName: 'Level of Confidence', title: 'Success Rate by Confidence Level' },
+            };
+            
+            Object.entries(chartConfigs).forEach(([canvasId, config]) => {
+                const { labels, values } = processChartData(filteredChartData, config.columnName);
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                
+                if (charts[canvasId]) charts[canvasId].destroy();
+
+                charts[canvasId] = new Chart(ctx, {
+                    type: config.type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Success Rate',
+                            data: values,
+                            backgroundColor: CHART_PALETTE,
+                            borderColor: CHART_PALETTE,
+                            borderWidth: 1,
+                            borderRadius: 5,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            title: { display: true, text: config.title, font: { size: 16, weight: 'bold' }, color: '#1e293b', padding: { bottom: 20 } },
+                            legend: { display: false },
+                             tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Success Rate: ${context.parsed.y.toFixed(1)}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } } }
+                    }
+                });
+            });
+
+            // Special chart: Prediction Accuracy (Doughnut)
+            const accuracyIndex = COLUMN_INDICES['Accuracy'];
+            let successCount = 0, unsuccessCount = 0;
+            if(accuracyIndex !== undefined) {
+                filteredChartData.forEach(row => {
+                    const accuracy = String(row[accuracyIndex]).trim().toLowerCase();
+                    if (accuracy === 'success') successCount++;
+                    else if (accuracy === 'unsuccessful') unsuccessCount++;
+                });
+            }
+            if (charts['predictionAccuracyChart']) charts['predictionAccuracyChart'].destroy();
+            charts['predictionAccuracyChart'] = new Chart(document.getElementById('predictionAccuracyChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Success', 'Unsuccessful'],
+                    datasets: [{ data: [successCount, unsuccessCount], backgroundColor: ['#10b981', '#ef4444'], borderColor: '#fff', borderWidth: 4 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true,
+                    plugins: { 
+                        title: { display: true, text: 'Prediction Accuracy Overview', font: { size: 16, weight: 'bold' }, color: '#1e293b', padding: { bottom: 20 } },
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+             // Special chart: Success over time (Line)
+            const timeData = {};
+            const dateIndex = COLUMN_INDICES['Date'];
+            if(dateIndex !== undefined && accuracyIndex !== undefined) {
+                filteredChartData.forEach(row => {
+                    const date = row[dateIndex];
+                    if(!date) return;
+                    if(!timeData[date]) timeData[date] = { total: 0, success: 0 };
+                    timeData[date].total++;
+                    if(String(row[accuracyIndex]).trim().toLowerCase() === 'success') timeData[date].success++;
+                });
+            }
+            const sortedDates = Object.keys(timeData).sort((a,b) => new Date(a) - new Date(b));
+            const timeLabels = sortedDates;
+            const timeValues = sortedDates.map(date => (timeData[date].success / timeData[date].total) * 100);
+
+            if (charts['successOverTimeChart']) charts['successOverTimeChart'].destroy();
+            charts['successOverTimeChart'] = new Chart(document.getElementById('successOverTimeChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: timeLabels,
+                    datasets: [{
+                        label: 'Success Rate',
+                        data: timeValues,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#4f46e5',
+                        pointRadius: 4
+                    }]
+                },
+                 options: {
+                    responsive: true, maintainAspectRatio: true,
+                    plugins: { 
+                        title: { display: true, text: 'Success Rate Over Time', font: { size: 16, weight: 'bold' }, color: '#1e293b', padding: { bottom: 20 } },
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: context => `Success Rate: ${context.parsed.y.toFixed(1)}%` } }
+                    },
+                    scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } } }
+                }
+            });
+             lucide.createIcons();
+        }
+
+
         // --- UI & MODAL FUNCTIONS ---
 
         function updatePaginationControls(totalPages) {
@@ -863,10 +1212,10 @@
 
                 <!-- External Analysis Section -->
                  <div class="md:col-span-3 mt-4 pt-4 border-t">
-                     <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
-                        <i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions
-                     </button>
-                     <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 hidden" readonly></textarea>
+                      <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
+                          <i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions
+                      </button>
+                      <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 hidden" readonly></textarea>
                  </div>
 
                 ${(urlSource && urlSource.startsWith('http')) ? `
@@ -1012,7 +1361,7 @@
         }
 
         function resetFilters() {
-            document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+            document.querySelectorAll('#content-dashboard select').forEach(s => s.selectedIndex = 0);
             dom.confidenceRangeFilter.value = 70;
             dom.confidenceRangeValue.textContent = '70%';
             sortState = { column: null, direction: 'asc' };
@@ -1031,13 +1380,43 @@
         function handleMainTableRowClick(e) {
             const rowElement = e.target.closest('tr');
             if (!rowElement || typeof rowElement.dataset.rowIndex === 'undefined') return;
-            // Prevent the modal from opening if the 'View' button was the specific target
-            if (e.target.closest('.view-more-btn')) return;
-            const rowIndex = parseInt(rowElement.dataset.rowIndex, 10);
+            const isViewButton = e.target.closest('.view-more-btn');
+            
+            const rowIndex = isViewButton 
+                ? parseInt(rowElement.dataset.rowIndex, 10) 
+                : parseInt(rowElement.dataset.rowIndex, 10);
+                
             const rowData = currentFilteredData[rowIndex];
-            if (rowData) openModal(rowData);
+
+            if (rowData) {
+                openModal(rowData);
+            }
         }
         
+        function handleSidebarClick(e) {
+            e.preventDefault();
+            const link = e.target.closest('.sidebar-link');
+            if (!link) return;
+
+            // Update active link
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            // Show/hide content panes
+            const targetId = link.dataset.target;
+            document.querySelectorAll('.page-content').forEach(pane => {
+                pane.classList.toggle('hidden', pane.id !== targetId);
+            });
+            
+            // Update header title
+            dom.mainHeaderTitle.textContent = link.textContent.trim();
+
+            // Render analytics if that tab is selected
+            if (targetId === 'content-analytics') {
+                updateAnalytics();
+            }
+        }
+
         // --- EVENT LISTENERS ---
 
         // Auth listeners
@@ -1047,7 +1426,10 @@
         dom.signupForm.addEventListener('submit', handleSignup);
         dom.logoutBtn.addEventListener('click', handleLogout);
 
-        // Filter event listeners
+        // Sidebar Navigation
+        dom.sidebarNav.addEventListener('click', handleSidebarClick);
+
+        // Dashboard Filter event listeners
         [dom.dateFilter, dom.preferenceFilter, dom.winningMarginFilter, dom.analyzedPredictionFilter, dom.goalsTipFilter, dom.totalGoalsFilter].forEach(filter => {
             filter.addEventListener('change', applyFiltersAndRender);
         });
@@ -1057,6 +1439,10 @@
         dom.confidenceRangeFilter.addEventListener('change', applyFiltersAndRender);
         dom.resetFiltersBtn.addEventListener('click', resetFilters);
         
+        // Analytics Filter listeners
+        dom.analyticsDateFilter.addEventListener('change', updateAnalytics);
+        dom.analyticsTotalGoalsFilter.addEventListener('change', updateAnalytics);
+
         // Main table listeners
         dom.tableHeader.addEventListener('click', handleSort);
         dom.tableBody.addEventListener('click', handleMainTableRowClick);
