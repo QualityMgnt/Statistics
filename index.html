@@ -8,23 +8,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Fonts: Inter -->
+    <!-- Litepicker for date range selection -->
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+    <!-- Tom Select for multi-select dropdowns -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Use the Inter font */
+        /* Use the Poppins font */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* Slate 100 */
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f4; /* Stone 100 */
         }
         /* Custom scrollbar for better aesthetics */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; } /* Slate 200 */
-        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; } /* Indigo 600 */
-        ::-webkit-scrollbar-thumb:hover { background: #3730a3; } /* Indigo 800 */
+        ::-webkit-scrollbar-track { background: #e7e5e4; } /* Stone 200 */
+        ::-webkit-scrollbar-thumb { background: #0891b2; border-radius: 10px; } /* Cyan 600 */
+        ::-webkit-scrollbar-thumb:hover { background: #0e7490; } /* Cyan 700 */
         
         /* Style for table headers to make them sticky and sortable */
         thead th {
@@ -40,9 +45,9 @@
 
         /* Loading Spinner Animation */
         .loader {
-            border: 5px solid #e0e7ff; /* Indigo 200 */
+            border: 5px solid #cffafe; /* Cyan 100 */
             border-radius: 50%;
-            border-top: 5px solid #4f46e5; /* Indigo 600 */
+            border-top: 5px solid #0891b2; /* Cyan 600 */
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
@@ -58,7 +63,7 @@
 
         /* Sidebar navigation active state */
         .sidebar-link.active {
-            background-color: #4f46e5; /* Indigo 600 */
+            background-color: #0891b2; /* Cyan 600 */
             color: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
@@ -72,7 +77,7 @@
             appearance: none;
             width: 100%;
             height: 8px;
-            background: #e2e8f0; /* slate-200 */
+            background: #e7e5e4; /* stone-200 */
             border-radius: 5px;
             outline: none;
             opacity: 0.7;
@@ -84,14 +89,14 @@
             appearance: none;
             width: 20px;
             height: 20px;
-            background: #4f46e5; /* indigo-600 */
+            background: #0891b2; /* cyan-600 */
             border-radius: 50%;
             cursor: pointer;
         }
         input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
-            background: #4f46e5;
+            background: #0891b2;
             border-radius: 50%;
             cursor: pointer;
         }
@@ -102,77 +107,105 @@
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+
+        /* Drag and Drop styles for Admin panel */
+        .draggable-item { cursor: grab; }
+        .draggable-item:active { cursor: grabbing; }
+        .dragging { opacity: 0.5; background: #cffafe; }
+        .drag-over { border: 2px dashed #0891b2; }
+        
+        /* Tom Select custom styles */
+        .ts-control {
+            border-radius: 0.5rem !important;
+            border-color: #d1d5db !important;
+        }
+        .ts-control:focus-within {
+             border-color: #0891b2 !important;
+             box-shadow: 0 0 0 1px #0891b2 !important;
+        }
     </style>
 </head>
-<body class="antialiased text-slate-800 bg-slate-100">
+<body class="antialiased text-slate-800 bg-stone-100">
 
     <!-- Auth Container -->
-    <div id="auth-container" class="flex items-center justify-center min-h-screen bg-slate-200">
+    <div id="auth-container" class="flex items-center justify-center min-h-screen bg-stone-200">
         <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg">
             
             <!-- Login Form -->
             <div id="login-view">
                 <div class="text-center">
-                    <img src="https://cdn.jsdelivr.net/gh/QualityMgnt/Statistics/logo.png.png" alt="Data Compass Logo" class="mx-auto h-16 w-auto mb-4">
-                    <h2 class="text-3xl font-extrabold text-indigo-800">Welcome Back</h2>
-                    <p class="mt-2 text-sm text-slate-600">Sign in to access your dashboard</p>
+                    <div class="mx-auto h-16 w-16 mb-4 flex items-center justify-center bg-cyan-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-cyan-800">Data Compass</h2>
+                    <p class="mt-2 text-sm text-slate-600">Precision in Prediction. Accuracy in Analytics.</p>
                 </div>
                 <form id="login-form" class="mt-8 space-y-6">
                     <div class="space-y-4 rounded-md shadow-sm">
                         <div>
                             <label for="login-email" class="sr-only">Email address</label>
-                            <input id="login-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Email address">
+                            <input id="login-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Email address">
                         </div>
                         <div>
                             <label for="login-password" class="sr-only">Password</label>
-                            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Password">
+                            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Password">
                         </div>
                     </div>
-                    <p id="login-error" class="text-sm text-center text-red-500"></p>
+                    <p id="login-error" class="text-sm text-center text-rose-500"></p>
                     <div>
-                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-cyan-600 border border-transparent rounded-lg group hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                             Sign in
                         </button>
                     </div>
                 </form>
                 <p class="mt-6 text-sm text-center">
                     Don't have an account?
-                    <a href="#" id="show-signup" class="font-medium text-indigo-600 hover:text-indigo-500">Sign up</a>
+                    <a href="#" id="show-signup" class="font-medium text-cyan-600 hover:text-cyan-500">Sign up</a>
                 </p>
             </div>
 
             <!-- Signup Form -->
             <div id="signup-view" class="hidden">
                  <div class="text-center">
-                      <img src="https://cdn.jsdelivr.net/gh/QualityMgnt/Statistics/logo.png.png" alt="Data Compass Logo" class="mx-auto h-16 w-auto mb-4">
-                    <h2 class="text-3xl font-extrabold text-indigo-800">Create an Account</h2>
+                      <div class="mx-auto h-16 w-16 mb-4 flex items-center justify-center bg-cyan-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-cyan-800">Create an Account</h2>
                     <p class="mt-2 text-sm text-slate-600">Get started with your sports analytics journey</p>
                 </div>
                 <form id="signup-form" class="mt-8 space-y-6">
-                      <div class="space-y-4 rounded-md shadow-sm">
-                          <div>
-                              <label for="signup-name" class="sr-only">Full Name</label>
-                              <input id="signup-name" name="name" type="text" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Full Name">
-                          </div>
-                          <div>
-                              <label for="signup-email" class="sr-only">Email address</label>
-                              <input id="signup-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Email address">
-                          </div>
-                          <div>
-                              <label for="signup-password" class="sr-only">Password</label>
-                              <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10" placeholder="Password">
-                          </div>
+                    <div class="space-y-4 rounded-md shadow-sm">
+                        <div>
+                            <label for="signup-name" class="sr-only">Full Name</label>
+                            <input id="signup-name" name="name" type="text" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Full Name">
+                        </div>
+                        <div>
+                            <label for="signup-email" class="sr-only">Email address</label>
+                            <input id="signup-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Email address">
+                        </div>
+                        <div>
+                            <label for="signup-password" class="sr-only">Password</label>
+                            <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none border-slate-300 text-slate-900 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Password">
+                        </div>
                     </div>
-                      <p id="signup-message" class="text-sm text-center"></p>
+                    <p id="signup-message" class="text-sm text-center"></p>
                     <div>
-                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-lg group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-cyan-600 border border-transparent rounded-lg group hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                             Sign up
                         </button>
                     </div>
                 </form>
                  <p class="mt-6 text-sm text-center">
                     Already have an account?
-                    <a href="#" id="show-login" class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a>
+                    <a href="#" id="show-login" class="font-medium text-cyan-600 hover:text-cyan-500">Sign in</a>
                 </p>
             </div>
         </div>
@@ -183,23 +216,41 @@
         <div class="flex h-screen">
             <!-- Sidebar Navigation -->
             <aside class="w-64 bg-white shadow-lg flex flex-col flex-shrink-0">
-                <div class="p-6 flex items-center space-x-4 border-b border-slate-200">
-                    <img src="https://cdn.jsdelivr.net/gh/QualityMgnt/Statistics/logo.png.png" alt="Data Compass Logo" class="h-10 w-10">
-                    <h1 class="text-xl font-bold text-indigo-800">Data Compass</h1>
+                <div class="p-6 flex items-center space-x-4 border-b border-stone-200">
+                    <div class="h-10 w-10 flex items-center justify-center bg-cyan-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold text-cyan-800">Data Compass</h1>
                 </div>
                 <nav id="sidebar-nav" class="flex-1 px-4 py-6 space-y-2">
-                    <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
+                    <a href="#" data-target="content-dashboard" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Dashboard
                     </a>
-                    <a href="#" data-target="content-analytics" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">
+                    <a href="#" data-target="content-high-confidence" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        High-Confidence
+                    </a>
+                     <a href="#" data-target="content-comparison" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-5M3 4h5V9m13 2l-4-4-4 4-4-4-4 4 4 4-4 4"></path></svg>
+                        Team Comparison
+                    </a>
+                    <a href="#" data-target="content-analytics" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         Analytics
+                    </a>
+                    <a href="#" data-target="content-admin" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Admin
                     </a>
                 </nav>
                  <div class="p-4 border-t">
                      <div class="text-xs text-slate-500 mb-2">Logged in as: <span id="user-email-display" class="font-semibold"></span></div>
-                    <button id="logout-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center justify-center space-x-2 shadow-sm hover:shadow-md">
+                    <button id="logout-btn" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center justify-center space-x-2 shadow-sm hover:shadow-md">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         <span>Logout</span>
                     </button>
@@ -209,63 +260,71 @@
             <!-- Main Content -->
             <div class="flex-1 flex flex-col overflow-hidden">
                 <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
-                    <h1 id="main-header-title" class="text-2xl font-bold text-indigo-800">Dashboard</h1>
+                    <h1 id="main-header-title" class="text-2xl font-bold text-cyan-800">Dashboard</h1>
                     <div class="flex space-x-2">
-                        <button id="syncDataBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
+                        <button id="syncDataBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
                             <svg class="w-4 h-4" id="syncIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.25-4.25l-1.47 1.47c.56.98.82 2.09.82 3.28 0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg>
                             <span id="syncText">Sync Data</span>
                         </button>
                     </div>
                 </header>
 
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100 p-4 sm:p-6 lg:p-8">
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-stone-100 p-4 sm:p-6 lg:p-8">
                     <div id="content-dashboard" class="page-content">
                         <!-- Filters Section -->
-                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
-                            <h3 class="text-xl font-bold text-indigo-800 mb-4">Filter Data</h3>
+                        <div id="dashboard-filters" class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
+                            <h3 class="text-xl font-bold text-cyan-800 mb-4">Filter Data</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <!-- New Filters -->
+                                <div>
+                                    <label for="searchFilter" class="block text-sm font-medium text-slate-700 mb-2">Search Teams</label>
+                                    <div class="relative">
+                                        <input type="text" id="searchFilter" placeholder="e.g., Man United" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 pl-10 transition">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div>
                                     <label for="dateFilter" class="block text-sm font-medium text-slate-700 mb-2">Date</label>
-                                    <select id="dateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="dateFilter" data-filter-key="date" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Dates</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="preferenceFilter" class="block text-sm font-medium text-slate-700 mb-2">Preference</label>
-                                    <select id="preferenceFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="preferenceFilter" data-filter-key="preference" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Preferences</option>
                                     </select>
                                 </div>
                                  <div>
                                     <label for="winningMarginFilter" class="block text-sm font-medium text-slate-700 mb-2">Winning Margin</label>
-                                    <select id="winningMarginFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="winningMarginFilter" data-filter-key="winningMargin" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Margins</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="analyzedPredictionFilter" class="block text-sm font-medium text-slate-700 mb-2">Analyzed Prediction</label>
-                                    <select id="analyzedPredictionFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="analyzedPredictionFilter" data-filter-key="analyzedPrediction" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Predictions</option>
                                     </select>
                                 </div>
                                  <div>
                                     <label for="goalsTipFilter" class="block text-sm font-medium text-slate-700 mb-2">Goals Tip</label>
-                                    <select id="goalsTipFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="goalsTipFilter" data-filter-key="goalsTip" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Goal Tips</option>
                                     </select>
                                 </div>
                                  <div>
                                     <label for="totalGoalsFilter" class="block text-sm font-medium text-slate-700 mb-2">Total Goals</label>
-                                    <select id="totalGoalsFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="totalGoalsFilter" data-filter-key="totalGoals" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Totals</option>
                                     </select>
                                 </div>
-                                <div class="lg:col-span-2">
+                                <div class="lg:col-span-4">
                                     <label for="confidenceRangeFilter" class="block text-sm font-medium text-slate-700 mb-2">
-                                        Level of Confidence: <span id="confidenceRangeValue" class="font-bold text-indigo-600">70%</span>
+                                        Level of Confidence: <span id="confidenceRangeValue" class="font-bold text-cyan-600">70%</span>
                                     </label>
-                                    <input type="range" id="confidenceRangeFilter" min="0" max="100" value="70" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                    <input type="range" id="confidenceRangeFilter" data-filter-key="minConfidence" min="0" max="100" value="70" class="filter-input w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
                                 </div>
 
                                 <div class="col-span-full flex justify-end gap-4 mt-4">
@@ -274,65 +333,160 @@
                             </div>
                         </div>
                         
-                        <!-- High-Confidence Picks Table -->
-                        <div class="bg-white rounded-xl shadow-md mb-8">
-                            <div class="p-4 border-b">
-                               <h3 class="text-xl font-bold text-indigo-800">High-Confidence Picks</h3>
-                               <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip" from the results below. Click any row for details.</p>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-slate-200">
-                                    <thead id="highConfidenceTableHead" class="bg-slate-50"></thead>
-                                    <tbody id="highConfidenceTableBody" class="bg-white divide-y divide-slate-200">
-                                        <tr><td colspan="8" class="p-8 text-center text-slate-500">Finding best picks...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                             <div id="high-confidence-pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
-                                 <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                                 <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
-                                 <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
-                            </div>
-                        </div>
-
                         <!-- All Match Data Table -->
                         <div class="bg-white rounded-xl shadow-md overflow-hidden">
                              <div class="p-4 border-b">
-                                 <h3 class="font-bold text-slate-800">All Match Data</h3>
+                                 <h3 class="text-xl font-bold text-cyan-800">All Match Data</h3>
+                                <p class="text-sm text-slate-500 mt-1">A comprehensive list of all matches. Use the filters above to refine the results.</p>
                             </div>
                             <div id="table-container" class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-slate-200">
-                                    <thead class="bg-slate-50">
+                                <table class="min-w-full divide-y divide-stone-200">
+                                    <thead class="bg-stone-50">
                                         <tr></tr>
                                     </thead>
-                                    <tbody id="dataTableBody" class="bg-white divide-y divide-slate-200">
+                                    <tbody id="dataTableBody" class="bg-white divide-y divide-stone-200">
                                          <tr><td colspan="10" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Loading data...</p></td></tr>
                                     </tbody>
                                 </table>
                                  <div id="no-results" class="hidden p-8 text-center text-slate-500">No records match the current filters.</div>
                             </div>
-                            <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
+                            <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-stone-200">
                                 <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                                 <div class="text-sm text-slate-700" id="page-info">Page 1 of 1</div>
                                 <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                             </div>
                         </div>
                     </div>
+                    <!-- High Confidence Content -->
+                    <div id="content-high-confidence" class="page-content hidden">
+                         <!-- Filters Section (Duplicated) -->
+                        <div id="high-confidence-filters" class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
+                            <h3 class="text-xl font-bold text-cyan-800 mb-4">Filter High-Confidence Picks</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div>
+                                    <label for="hc-searchFilter" class="block text-sm font-medium text-slate-700 mb-2">Search Teams</label>
+                                    <div class="relative">
+                                        <input type="text" id="hc-searchFilter" placeholder="e.g., Man United" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 pl-10 transition">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="hc-dateFilter" class="block text-sm font-medium text-slate-700 mb-2">Date</label>
+                                    <select id="hc-dateFilter" data-filter-key="date" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                        <option value="All">All Dates</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hc-preferenceFilter" class="block text-sm font-medium text-slate-700 mb-2">Preference</label>
+                                    <select id="hc-preferenceFilter" data-filter-key="preference" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                        <option value="All">All Preferences</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label for="hc-winningMarginFilter" class="block text-sm font-medium text-slate-700 mb-2">Winning Margin</label>
+                                    <select id="hc-winningMarginFilter" data-filter-key="winningMargin" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                        <option value="All">All Margins</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hc-analyzedPredictionFilter" class="block text-sm font-medium text-slate-700 mb-2">Analyzed Prediction</label>
+                                    <select id="hc-analyzedPredictionFilter" data-filter-key="analyzedPrediction" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                        <option value="All">All Predictions</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label for="hc-goalsTipFilter" class="block text-sm font-medium text-slate-700 mb-2">Goals Tip</label>
+                                    <select id="hc-goalsTipFilter" data-filter-key="goalsTip" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                        <option value="All">All Goal Tips</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label for="hc-totalGoalsFilter" class="block text-sm font-medium text-slate-700 mb-2">Total Goals</label>
+                                    <select id="hc-totalGoalsFilter" data-filter-key="totalGoals" class="filter-input w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                        <option value="All">All Totals</option>
+                                    </select>
+                                </div>
+                                <div class="lg:col-span-4">
+                                    <label for="hc-confidenceRangeFilter" class="block text-sm font-medium text-slate-700 mb-2">
+                                        Level of Confidence: <span id="hc-confidenceRangeValue" class="font-bold text-cyan-600">70%</span>
+                                    </label>
+                                    <input type="range" id="hc-confidenceRangeFilter" data-filter-key="minConfidence" min="0" max="100" value="70" class="filter-input w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-md mb-8">
+                            <div class="p-4 border-b">
+                               <h3 class="text-xl font-bold text-cyan-800">High-Confidence Picks</h3>
+                               <p class="text-sm text-slate-500 mt-1">Filtered for "Home Best Tip" or "Best Away Tip".</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-stone-200">
+                                    <thead id="highConfidenceTableHead" class="bg-stone-50"></thead>
+                                    <tbody id="highConfidenceTableBody" class="bg-white divide-y divide-stone-200">
+                                        <tr><td colspan="8" class="p-8 text-center text-slate-500">Finding best picks...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                             <div id="high-confidence-pagination-controls" class="p-4 flex items-center justify-between border-t border-stone-200">
+                                 <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                 <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
+                                 <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Team Comparison Content -->
+                    <div id="content-comparison" class="page-content hidden">
+                         <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
+                            <h3 class="text-xl font-bold text-cyan-800 mb-4">Team Comparison</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                                <div class="md:col-span-2">
+                                    <label for="team-select" class="block text-sm font-medium text-slate-700 mb-2">Select Teams (2 or more)</label>
+                                    <select id="team-select" multiple placeholder="Select teams to compare..."></select>
+                                </div>
+                                <div>
+                                    <label for="date-range-picker" class="block text-sm font-medium text-slate-700 mb-2">Select Date Range</label>
+                                    <input type="text" id="date-range-picker" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="comparison-results-container" class="hidden">
+                             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                                 <div class="p-4 border-b">
+                                     <h3 class="text-xl font-bold text-cyan-800">Comparison Results</h3>
+                                </div>
+                                <div id="comparison-table-container" class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-stone-200">
+                                        <thead id="comparison-table-head" class="bg-stone-50"></thead>
+                                        <tbody id="comparison-table-body" class="bg-white divide-y divide-stone-200"></tbody>
+                                    </table>
+                                </div>
+                             </div>
+                        </div>
+                         <div id="comparison-placeholder" class="text-center p-8 bg-white rounded-xl shadow-md text-slate-500">
+                            <i data-lucide="users" class="mx-auto w-12 h-12 text-slate-400 mb-4"></i>
+                            <h4 class="font-semibold text-lg">Ready to Compare</h4>
+                            <p>Select at least two teams and a date range to see their head-to-head match data.</p>
+                         </div>
+                    </div>
                     <!-- Analytics Content -->
                     <div id="content-analytics" class="page-content hidden">
                          <!-- Analytics Filters -->
                         <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
-                            <h3 class="text-xl font-bold text-indigo-800 mb-4">Analytics Filters</h3>
+                            <h3 class="text-xl font-bold text-cyan-800 mb-4">Analytics Filters</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
                                     <label for="analyticsDateFilter" class="block text-sm font-medium text-slate-700 mb-2">Filter by Date</label>
-                                    <select id="analyticsDateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="analyticsDateFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Dates</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="analyticsTotalGoalsFilter" class="block text-sm font-medium text-slate-700 mb-2">Filter by Total Goals</label>
-                                    <select id="analyticsTotalGoalsFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition">
+                                    <select id="analyticsTotalGoalsFilter" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Totals</option>
                                     </select>
                                 </div>
@@ -344,11 +498,11 @@
                             <div class="bg-white p-6 rounded-xl shadow-md flex items-center">
                                 <div class="relative w-24 h-24">
                                     <svg class="w-full h-full" viewBox="0 0 36 36">
-                                        <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
-                                        <path id="progress-ring-circle" class="progress-ring__circle text-indigo-600" stroke-width="3" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                        <path class="text-stone-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+                                        <path id="progress-ring-circle" class="progress-ring__circle text-cyan-600" stroke-width="3" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                                     </svg>
                                     <div class="absolute inset-0 flex items-center justify-center">
-                                        <span id="overall-success-rate-text" class="text-2xl font-bold text-indigo-800">-%</span>
+                                        <span id="overall-success-rate-text" class="text-2xl font-bold text-cyan-800">-%</span>
                                     </div>
                                 </div>
                                 <div class="ml-5">
@@ -399,6 +553,35 @@
                             <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2"><canvas id="preferenceChart"></canvas></div>
                         </div>
                     </div>
+                     <!-- Admin Content -->
+                    <div id="content-admin" class="page-content hidden">
+                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md p-6">
+                            <h3 class="text-xl font-bold text-cyan-800 mb-2">Table Column Management</h3>
+                            <p class="text-sm text-slate-600 mb-6">Drag and drop to reorder columns. Check or uncheck to show or hide them.</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- All Match Data Table Management -->
+                                <div>
+                                    <h4 class="font-bold text-slate-800 mb-4">Dashboard: All Match Data Table</h4>
+                                    <div id="main-table-admin-container" class="space-y-2 p-4 bg-slate-50 rounded-lg border">
+                                        <!-- Columns will be injected here by JS -->
+                                    </div>
+                                </div>
+                                <!-- High Confidence Table Management -->
+                                <div>
+                                    <h4 class="font-bold text-slate-800 mb-4">High-Confidence Table</h4>
+                                    <div id="high-confidence-table-admin-container" class="space-y-2 p-4 bg-slate-50 rounded-lg border">
+                                        <!-- Columns will be injected here by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 flex justify-end gap-4">
+                                <button id="reset-columns-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2.5 px-6 rounded-lg transition">Reset to Default</button>
+                                <button id="save-columns-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm hover:shadow-md">Save Changes</button>
+                            </div>
+                            <p id="admin-message" class="text-sm text-right mt-4 text-emerald-600"></p>
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>
@@ -425,10 +608,10 @@
         const ROWS_PER_PAGE = 20;
         const HIGH_CONFIDENCE_ROWS_PER_PAGE = 10;
         
-        // --- TABLE HEADERS CONFIGURATION ---
-        const MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Analyzed Prediction', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Match Outcome', 'Accuracy'];
-        const HIGH_CONFIDENCE_HEADERS = ['Home Team', 'Away Team', 'Level of Confidence', 'Preference', 'Winning Margin', 'Analyzed Prediction', 'Match Outcome', 'Accuracy'];
-        const CHART_COLUMNS = ['Preference', 'Winning Margin', 'Analyzed Prediction', 'Goals Tip', 'Level of Confidence'];
+        // --- DEFAULT TABLE HEADERS CONFIGURATION ---
+        const DEFAULT_MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Analyzed Prediction', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Match Outcome', 'Accuracy'];
+        const DEFAULT_HIGH_CONFIDENCE_HEADERS = ['Home Team', 'Away Team', 'Level of Confidence', 'Preference', 'Winning Margin', 'Analyzed Prediction', 'Match Outcome', 'Accuracy'];
+        let ALL_POSSIBLE_COLUMNS = [];
 
 
         // --- GLOBAL STATE ---
@@ -438,6 +621,11 @@
         let highConfidenceCurrentPage = 1;
         let COLUMN_INDICES = {};
         let charts = {}; // To hold chart instances
+        let mainTableHeaders = [];
+        let highConfidenceTableHeaders = [];
+        let globalFilters = {};
+        let teamSelect, dateRangePicker;
+
 
         // --- DOM REFERENCES ---
         const dom = {
@@ -462,15 +650,10 @@
             tableHeader: document.querySelector('#table-container thead tr'),
             noResultsDiv: document.getElementById('no-results'),
             
-            // Dashboard Filters
-            dateFilter: document.getElementById('dateFilter'),
-            preferenceFilter: document.getElementById('preferenceFilter'),
-            winningMarginFilter: document.getElementById('winningMarginFilter'),
-            analyzedPredictionFilter: document.getElementById('analyzedPredictionFilter'),
-            goalsTipFilter: document.getElementById('goalsTipFilter'),
-            totalGoalsFilter: document.getElementById('totalGoalsFilter'),
-            confidenceRangeFilter: document.getElementById('confidenceRangeFilter'),
+            // Filters (from both panels)
+            allFilterInputs: document.querySelectorAll('.filter-input'),
             confidenceRangeValue: document.getElementById('confidenceRangeValue'),
+            hcConfidenceRangeValue: document.getElementById('hc-confidenceRangeValue'),
             resetFiltersBtn: document.getElementById('resetFiltersBtn'),
 
             // Analytics
@@ -482,7 +665,6 @@
             optimalConfidence: document.getElementById('optimal-confidence'),
             totalBetsAnalyzed: document.getElementById('total-bets-analyzed'),
 
-
             // High Confidence Table
             highConfidenceTableHead: document.getElementById('highConfidenceTableHead'),
             highConfidenceTableBody: document.getElementById('highConfidenceTableBody'),
@@ -490,6 +672,12 @@
             highConfidencePrevPageBtn: document.getElementById('high-confidence-prev-page'),
             highConfidenceNextPageBtn: document.getElementById('high-confidence-next-page'),
             highConfidencePageInfo: document.getElementById('high-confidence-page-info'),
+            
+            // Team Comparison
+            comparisonResultsContainer: document.getElementById('comparison-results-container'),
+            comparisonPlaceholder: document.getElementById('comparison-placeholder'),
+            comparisonTableHead: document.getElementById('comparison-table-head'),
+            comparisonTableBody: document.getElementById('comparison-table-body'),
 
             // Pagination
             paginationControls: document.getElementById('pagination-controls'),
@@ -503,6 +691,13 @@
             modalCloseBtn: document.getElementById('modal-close-btn'),
             modalTitle: document.getElementById('modal-title'),
             modalBody: document.getElementById('modal-body'),
+
+            // Admin
+            adminMessage: document.getElementById('admin-message'),
+            saveColumnsBtn: document.getElementById('save-columns-btn'),
+            resetColumnsBtn: document.getElementById('reset-columns-btn'),
+            mainTableAdminContainer: document.getElementById('main-table-admin-container'),
+            highConfidenceTableAdminContainer: document.getElementById('high-confidence-table-admin-container'),
 
             // General
             syncDataBtn: document.getElementById('syncDataBtn'),
@@ -524,11 +719,17 @@
 
         async function handleLogin(e) {
             e.preventDefault();
-            const email = dom.loginForm.email.value.trim().toLowerCase();
-            const password = dom.loginForm.password.value;
-            dom.loginError.textContent = 'Checking credentials...';
-
+            const loginBtn = dom.loginForm.querySelector('button[type="submit"]');
+            const originalBtnText = 'Sign in';
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `<div class="loader !w-5 !h-5 !border-2 !border-t-white/50 mx-auto"></div>`;
+            dom.loginError.textContent = '';
+            
             try {
+                const email = dom.loginForm.email.value.trim().toLowerCase();
+                const password = dom.loginForm.password.value;
+
                 const response = await fetch(SIGNUP_URL);
                 if (!response.ok) throw new Error('Network response was not ok.');
                 const result = await response.json();
@@ -549,11 +750,15 @@
                         dom.loginError.textContent = 'Your account is inactive. Please contact admin.';
                     }
                 } else {
+                    await new Promise(resolve => setTimeout(resolve, 500));
                     dom.loginError.textContent = 'Invalid email or password.';
                 }
             } catch (error) {
                 console.error('Login error:', error);
                 dom.loginError.textContent = 'An error occurred during login. Please try again.';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = originalBtnText;
             }
         }
 
@@ -573,7 +778,7 @@
 
                 if (response.ok || response.status === 200 || response.type === 'opaque') {
                     dom.signupMessage.textContent = 'Signup successful! You can now log in.';
-                    dom.signupMessage.className = 'text-sm text-center text-green-500';
+                    dom.signupMessage.className = 'text-sm text-center text-emerald-500';
                     form.reset();
                     setTimeout(() => switchView('login'), 2000);
                 } else {
@@ -583,7 +788,7 @@
             } catch (error) {
                 console.error('Signup error:', error);
                 dom.signupMessage.textContent = `Signup failed. Please try again later.`;
-                dom.signupMessage.className = 'text-sm text-center text-red-500';
+                dom.signupMessage.className = 'text-sm text-center text-rose-500';
             }
         }
 
@@ -602,7 +807,7 @@
             dom.userEmailDisplay.textContent = user.email;
             dom.authContainer.classList.add('hidden');
             dom.dashboardContainer.classList.remove('hidden');
-            handleSyncClick(); // Fetch data on login
+            handleSyncClick();
         }
 
         function showAuth() {
@@ -622,23 +827,35 @@
                 const parsed = parseCSV(csvText);
                 
                 originalHeaders = parsed.headers;
-                COLUMN_INDICES = {}; // Reset before re-populating
+                ALL_POSSIBLE_COLUMNS = [...originalHeaders];
+                COLUMN_INDICES = {};
                 originalHeaders.forEach((header, index) => {
                     COLUMN_INDICES[header.trim()] = index;
                 });
                 
                 allData = parsed.data;
+                 // Sort all data by date descending once, to easily find recent matches
+                allData.sort((a, b) => {
+                    const dateA = new Date(a[COLUMN_INDICES['Date']]);
+                    const dateB = new Date(b[COLUMN_INDICES['Date']]);
+                    return dateB - dateA;
+                });
+                
                 currentFilteredData = [...allData];
 
+                loadColumnConfiguration();
+                renderAdminUI();
                 renderMainTableHeaders();
                 renderHighConfidenceHeaders();
                 populateDropdowns();
-                applyFiltersAndRender();
-                updateAnalytics(); // Initial render for analytics tab
+                initializeComparisonTools();
+                resetFilters();
+
+                updateAnalytics();
 
             } catch (error) {
                 console.error('Failed to fetch/process data:', error);
-                dom.tableBody.innerHTML = `<tr><td colspan="${MAIN_TABLE_HEADERS.length}" class="p-8 text-center text-red-500 font-semibold">Failed to load data. Please try syncing again.</td></tr>`;
+                dom.tableBody.innerHTML = `<tr><td colspan="${mainTableHeaders.length}" class="p-8 text-center text-rose-500 font-semibold">Failed to load data. Please try syncing again.</td></tr>`;
                 throw error;
             }
         }
@@ -652,29 +869,29 @@
         }
         
         function populateDropdowns() {
-            const filtersToPopulate = {
-                // Dashboard filters
-                dateFilter: 'Date',
-                preferenceFilter: 'Preference',
-                winningMarginFilter: 'Winning Margin',
-                analyzedPredictionFilter: 'Analyzed Prediction',
-                goalsTipFilter: 'Goals Tip',
-                totalGoalsFilter: 'Total Goals',
-                // Analytics filters
-                analyticsDateFilter: 'Date',
-                analyticsTotalGoalsFilter: 'Total Goals',
-            };
+             const filtersToPopulate = [
+                { id: 'dateFilter', column: 'Date' },
+                { id: 'hc-dateFilter', column: 'Date' },
+                { id: 'preferenceFilter', column: 'Preference' },
+                { id: 'hc-preferenceFilter', column: 'Preference' },
+                { id: 'winningMarginFilter', column: 'Winning Margin' },
+                { id: 'hc-winningMarginFilter', column: 'Winning Margin' },
+                { id: 'analyzedPredictionFilter', column: 'Analyzed Prediction' },
+                { id: 'hc-analyzedPredictionFilter', column: 'Analyzed Prediction' },
+                { id: 'goalsTipFilter', column: 'Goals Tip' },
+                { id: 'hc-goalsTipFilter', column: 'Goals Tip' },
+                { id: 'totalGoalsFilter', column: 'Total Goals' },
+                { id: 'hc-totalGoalsFilter', column: 'Total Goals' },
+                { id: 'analyticsDateFilter', column: 'Date' },
+                { id: 'analyticsTotalGoalsFilter', column: 'Total Goals' },
+            ];
 
-            for (const [elementId, columnName] of Object.entries(filtersToPopulate)) {
-                const selectElement = dom[elementId];
-                if (!selectElement) continue;
+            filtersToPopulate.forEach(config => {
+                const selectElement = document.getElementById(config.id);
+                if (!selectElement) return;
 
-                const columnIndex = COLUMN_INDICES[columnName];
-                
-                if (typeof columnIndex === 'undefined') {
-                    console.warn(`Column "${columnName}" not found for filter "${elementId}"`);
-                    continue;
-                }
+                const columnIndex = COLUMN_INDICES[config.column];
+                if (typeof columnIndex === 'undefined') return;
 
                 const firstOption = selectElement.options[0];
                 selectElement.innerHTML = '';
@@ -683,31 +900,26 @@
                 const uniqueValues = [...new Set(allData.map(row => row[columnIndex]).filter(Boolean))];
                 uniqueValues.sort();
                 uniqueValues.forEach(val => selectElement.add(new Option(val, val)));
-            }
+            });
         }
         
         function applyFiltersAndRender() {
-            const filters = {
-                date: dom.dateFilter.value,
-                preference: dom.preferenceFilter.value,
-                winningMargin: dom.winningMarginFilter.value,
-                analyzedPrediction: dom.analyzedPredictionFilter.value,
-                goalsTip: dom.goalsTipFilter.value,
-                totalGoals: dom.totalGoalsFilter.value,
-                minConfidence: parseInt(dom.confidenceRangeFilter.value, 10)
-            };
-
             let filtered = allData.filter(row => {
                 const confidenceText = row[COLUMN_INDICES['Level of Confidence']] || '0%';
                 const confidenceValue = parseInt(confidenceText.replace('%', ''), 10);
+                const homeTeam = (row[COLUMN_INDICES['Home Team']] || '').toLowerCase();
+                const awayTeam = (row[COLUMN_INDICES['Away Team']] || '').toLowerCase();
+                const searchTerm = (globalFilters.searchTerm || '').toLowerCase();
+                const searchMatch = searchTerm === '' || homeTeam.includes(searchTerm) || awayTeam.includes(searchTerm);
 
-                return (filters.date === 'All' || row[COLUMN_INDICES['Date']] === filters.date) &&
-                       (filters.preference === 'All' || row[COLUMN_INDICES['Preference']] === filters.preference) &&
-                       (filters.winningMargin === 'All' || row[COLUMN_INDICES['Winning Margin']] === filters.winningMargin) &&
-                       (filters.analyzedPrediction === 'All' || row[COLUMN_INDICES['Analyzed Prediction']] === filters.analyzedPrediction) &&
-                       (filters.goalsTip === 'All' || row[COLUMN_INDICES['Goals Tip']] === filters.goalsTip) &&
-                       (filters.totalGoals === 'All' || row[COLUMN_INDICES['Total Goals']] === filters.totalGoals) &&
-                       (confidenceValue >= filters.minConfidence);
+                return (globalFilters.date === 'All' || row[COLUMN_INDICES['Date']] === globalFilters.date) &&
+                       (globalFilters.preference === 'All' || row[COLUMN_INDICES['Preference']] === globalFilters.preference) &&
+                       (globalFilters.winningMargin === 'All' || row[COLUMN_INDICES['Winning Margin']] === globalFilters.winningMargin) &&
+                       (globalFilters.analyzedPrediction === 'All' || row[COLUMN_INDICES['Analyzed Prediction']] === globalFilters.analyzedPrediction) &&
+                       (globalFilters.goalsTip === 'All' || row[COLUMN_INDICES['Goals Tip']] === globalFilters.goalsTip) &&
+                       (globalFilters.totalGoals === 'All' || row[COLUMN_INDICES['Total Goals']] === globalFilters.totalGoals) &&
+                       (confidenceValue >= globalFilters.minConfidence) &&
+                       searchMatch;
             });
             
             if (sortState.column !== null) {
@@ -728,8 +940,8 @@
         // --- TABLE RENDERING ---
 
         function renderMainTableHeaders() {
-            dom.tableHeader.innerHTML = MAIN_TABLE_HEADERS.map(header => {
-                const isSortable = !['Details', 'Match Outcome', 'Accuracy', 'Analyzed Prediction'].includes(header);
+            dom.tableHeader.innerHTML = mainTableHeaders.map(header => {
+                const isSortable = !['Details'].includes(header);
                 let classes = 'px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider';
                 const originalIndex = COLUMN_INDICES[header];
 
@@ -758,11 +970,11 @@
 
             pageData.forEach((row, index) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-indigo-50 transition-colors cursor-pointer';
-                tr.dataset.rowIndex = start + index;
+                tr.className = 'hover:bg-cyan-50 transition-colors cursor-pointer';
+                tr.dataset.rowIndex = currentFilteredData.indexOf(row);
                 
                 let cellsHTML = '';
-                MAIN_TABLE_HEADERS.forEach(headerName => {
+                mainTableHeaders.forEach(headerName => {
                     const colIndex = COLUMN_INDICES[headerName];
                     const cellValue = colIndex !== undefined ? row[colIndex] : '';
                     let cellClass = 'px-6 py-4 whitespace-nowrap text-sm text-slate-700 align-middle';
@@ -770,15 +982,15 @@
 
                     switch(headerName) {
                         case 'Home Team': case 'Away Team':
-                            cellClass += ' font-semibold text-indigo-900';
+                            cellClass += ' font-semibold text-cyan-900';
                             break;
                         case 'Level of Confidence':
                             const numericConf = parseFloat(cellValue.replace('%','').trim());
                             let confColor = 'text-slate-800';
                             if (!isNaN(numericConf)) {
-                                if (numericConf >= 80) confColor = 'text-green-600';
-                                else if (numericConf >= 70) confColor = 'text-yellow-600';
-                                else confColor = 'text-red-600';
+                                if (numericConf >= 80) confColor = 'text-emerald-600';
+                                else if (numericConf >= 70) confColor = 'text-amber-600';
+                                else confColor = 'text-rose-600';
                             }
                             cellContent = `<span class="font-bold ${confColor}">${cellValue}</span>`;
                             break;
@@ -787,15 +999,15 @@
                             break;
                         case 'Accuracy':
                             if ((cellValue || '').toLowerCase() === 'success') {
-                                cellContent = `<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
+                                cellContent = `<span class="bg-emerald-100 text-emerald-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
                             } else if ((cellValue || '').toLowerCase() === 'unsuccessful') {
-                                cellContent = `<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
+                                cellContent = `<span class="bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
                             } else {
                                 cellContent = `<span class="text-slate-400">-</span>`;
                             }
                             break;
                         case 'Details':
-                            cellContent = `<button class="view-more-btn bg-indigo-600 text-white px-3 py-1 text-xs rounded-full hover:bg-indigo-700 transition shadow">View</button>`;
+                            cellContent = `<button class="view-more-btn bg-cyan-600 text-white px-3 py-1 text-xs rounded-full hover:bg-cyan-700 transition shadow">View</button>`;
                             break;
                     }
                     cellsHTML += `<td class="${cellClass}">${cellContent}</td>`;
@@ -812,23 +1024,21 @@
             let textColor = 'text-slate-800';
             switch(prediction) {
                 case 'Home Best Tip':
-                    bgColor = 'bg-green-100'; textColor = 'text-green-800'; break;
                 case 'Home Good Tip':
-                    bgColor = 'bg-green-100'; textColor = 'text-green-700'; break;
+                    bgColor = 'bg-emerald-100'; textColor = 'text-emerald-800'; break;
                 case 'Home Tip':
                     bgColor = 'bg-lime-100'; textColor = 'text-lime-800'; break;
                 case 'Best Away Tip':
-                    bgColor = 'bg-blue-100'; textColor = 'text-blue-800'; break;
                 case 'Good Away Tip':
-                    bgColor = 'bg-blue-100'; textColor = 'text-blue-700'; break;
+                    bgColor = 'bg-sky-100'; textColor = 'text-sky-800'; break;
                 case 'Over 1.5 Tip': case 'Over 2.5 Tip':
-                    bgColor = 'bg-yellow-100'; textColor = 'text-yellow-800'; break;
+                    bgColor = 'bg-amber-100'; textColor = 'text-amber-800'; break;
             }
             return `<span class="${bgColor} ${textColor} text-xs font-medium px-2.5 py-1 rounded-full">${prediction}</span>`;
         }
         
         function renderHighConfidenceHeaders() {
-            dom.highConfidenceTableHead.innerHTML = `<tr>${HIGH_CONFIDENCE_HEADERS.map(h => `<th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
+            dom.highConfidenceTableHead.innerHTML = `<tr>${highConfidenceTableHeaders.map(h => `<th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
         }
         
         function renderHighConfidencePicksTable() {
@@ -840,7 +1050,7 @@
             dom.highConfidencePaginationControls.style.display = picks.length > 0 ? 'flex' : 'none';
 
             if (picks.length === 0) {
-                dom.highConfidenceTableBody.innerHTML = `<tr><td colspan="${HIGH_CONFIDENCE_HEADERS.length}" class="p-8 text-center text-slate-500">No high-confidence picks match the current filters.</td></tr>`;
+                dom.highConfidenceTableBody.innerHTML = `<tr><td colspan="${highConfidenceTableHeaders.length}" class="p-8 text-center text-slate-500">No high-confidence picks match the current filters.</td></tr>`;
                 return;
             }
 
@@ -851,22 +1061,22 @@
             
             dom.highConfidenceTableBody.innerHTML = pageData.map((row) => {
                 const originalIndex = allData.indexOf(row);
-                const cellsHTML = HIGH_CONFIDENCE_HEADERS.map(header => {
+                const cellsHTML = highConfidenceTableHeaders.map(header => {
                     const value = row[COLUMN_INDICES[header]] || '-';
                     let cellContent = value;
                     let cellClass = 'px-6 py-4 whitespace-nowrap text-sm text-slate-700 align-middle';
 
                     switch(header) {
                         case 'Home Team': case 'Away Team':
-                            cellClass += ' font-semibold text-indigo-900';
+                            cellClass += ' font-semibold text-cyan-900';
                             break;
                         case 'Level of Confidence':
                             const numericConf = parseFloat(value.replace('%','').trim());
-                            let confColor = 'text-slate-800';
+                             let confColor = 'text-slate-800';
                             if (!isNaN(numericConf)) {
-                                if (numericConf >= 80) confColor = 'text-green-600';
-                                else if (numericConf >= 70) confColor = 'text-yellow-600';
-                                else confColor = 'text-red-600';
+                                if (numericConf >= 80) confColor = 'text-emerald-600';
+                                else if (numericConf >= 70) confColor = 'text-amber-600';
+                                else confColor = 'text-rose-600';
                             }
                             cellContent = `<span class="font-bold ${confColor}">${value}</span>`;
                             break;
@@ -875,9 +1085,9 @@
                              break;
                         case 'Accuracy':
                             if ((value || '').toLowerCase() === 'success') {
-                                cellContent = `<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
+                                cellContent = `<span class="bg-emerald-100 text-emerald-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
                             } else if ((value || '').toLowerCase() === 'unsuccessful') {
-                                cellContent = `<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
+                                cellContent = `<span class="bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
                             } else {
                                 cellContent = `<span class="text-slate-400">-</span>`;
                             }
@@ -885,7 +1095,7 @@
                     }
                     return `<td class="${cellClass}">${cellContent}</td>`;
                 }).join('');
-                return `<tr class="hover:bg-indigo-50 transition-colors cursor-pointer" data-row-index="${originalIndex}">${cellsHTML}</tr>`;
+                return `<tr class="hover:bg-cyan-50 transition-colors cursor-pointer" data-row-index="${originalIndex}">${cellsHTML}</tr>`;
             }).join('');
 
             updateHighConfidencePaginationControls(totalPages);
@@ -923,7 +1133,7 @@
             const overallSuccessRate = data.length > 0 ? (totalSuccess / data.length) * 100 : 0;
             dom.overallSuccessRateText.textContent = `${overallSuccessRate.toFixed(1)}%`;
             const circle = dom.progressRingCircle;
-            const radius = 15.9155; // The radius is defined in the SVG path's 'd' attribute.
+            const radius = 15.9155;
             const circumference = radius * 2 * Math.PI;
             circle.style.strokeDasharray = `${circumference} ${circumference}`;
             const offset = circumference - (overallSuccessRate / 100) * circumference;
@@ -962,9 +1172,8 @@
 
             data.forEach(row => {
                 let category = row[colIndex];
-                if (!category) return; // Skip if category is empty
+                if (!category) return;
 
-                // Binning for Level of Confidence
                 if (columnName === 'Level of Confidence') {
                     const value = parseInt(category.replace('%', ''));
                     if (isNaN(value)) return;
@@ -1001,7 +1210,7 @@
 
         function renderAnalyticsCharts(filteredChartData) {
             
-            const CHART_PALETTE = ['#4f46e5', '#7c3aed', '#14b8a6', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'];
+            const CHART_PALETTE = ['#0891b2', '#0d9488', '#6d28d9', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'];
             
             const chartConfigs = {
                 'preferenceChart': { type: 'bar', columnName: 'Preference', title: 'Success Rate by Preference' },
@@ -1064,7 +1273,7 @@
                 type: 'doughnut',
                 data: {
                     labels: ['Success', 'Unsuccessful'],
-                    datasets: [{ data: [successCount, unsuccessCount], backgroundColor: ['#10b981', '#ef4444'], borderColor: '#fff', borderWidth: 4 }]
+                    datasets: [{ data: [successCount, unsuccessCount], backgroundColor: ['#10b981', '#f43f5e'], borderColor: '#fff', borderWidth: 4 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: true,
@@ -1075,7 +1284,6 @@
                 }
             });
 
-             // Special chart: Success over time (Line)
             const timeData = {};
             const dateIndex = COLUMN_INDICES['Date'];
             if(dateIndex !== undefined && accuracyIndex !== undefined) {
@@ -1099,11 +1307,11 @@
                     datasets: [{
                         label: 'Success Rate',
                         data: timeValues,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderColor: '#0891b2',
+                        backgroundColor: 'rgba(8, 145, 178, 0.1)',
                         fill: true,
                         tension: 0.3,
-                        pointBackgroundColor: '#4f46e5',
+                        pointBackgroundColor: '#0891b2',
                         pointRadius: 4
                     }]
                 },
@@ -1118,6 +1326,27 @@
                 }
             });
              lucide.createIcons();
+        }
+
+        // --- TEAM FORM INSIGHT FEATURE ---
+        function getTeamForm(teamName, matchDateStr) {
+            const matchDate = new Date(matchDateStr);
+            // Data is already sorted by date descending
+            const teamMatches = allData.filter(pastMatch => {
+                const pastMatchDate = new Date(pastMatch[COLUMN_INDICES['Date']]);
+                const isParticipant = pastMatch[COLUMN_INDICES['Home Team']] === teamName || pastMatch[COLUMN_INDICES['Away Team']] === teamName;
+                return isParticipant && pastMatchDate < matchDate;
+            }).slice(0, 5);
+
+            return teamMatches.map(match => {
+                const outcome = match[COLUMN_INDICES['Match Outcome']];
+                const wasHome = match[COLUMN_INDICES['Home Team']] === teamName;
+                
+                if (outcome === 'Home Win') return wasHome ? 'W' : 'L';
+                if (outcome === 'Away Win') return wasHome ? 'L' : 'W';
+                if (outcome === 'Draw') return 'D';
+                return '-';
+            });
         }
 
 
@@ -1140,84 +1369,77 @@
             const awayTeam = row[COLUMN_INDICES['Away Team']] || 'N/A';
             dom.modalTitle.textContent = `Match Details`; 
 
-            // Get all the data points
-            const finalScore = row[COLUMN_INDICES['Final Score / Time']] || '-';
-            const prediction = row[COLUMN_INDICES['Prediction']] || '-';
-            const confidenceText = row[COLUMN_INDICES['Confidence']] || '0%';
+            const confidenceText = row[COLUMN_INDICES['Level of Confidence']] || '0%';
             const confidenceValue = parseInt(confidenceText.replace('%', ''), 10) || 0;
-            const hPrScore = row[COLUMN_INDICES['H_PR_Score']] || '-';
-            const aPrScore = row[COLUMN_INDICES['A_PR_Score']] || '-';
-            const homeChance = row[COLUMN_INDICES['Home Team Chance']] || '-';
-            const awayChance = row[COLUMN_INDICES['Away Team Chance']] || '-';
-            const hFinalScore = row[COLUMN_INDICES['H_Final Score']] || '-';
-            const aFinalScore = row[COLUMN_INDICES['A_Final Score']] || '-';
             const urlSource = row[COLUMN_INDICES['SourceURL']];
 
             // Determine confidence bar color
-            let confidenceBarColor = 'bg-red-500';
-            if (confidenceValue >= 70) confidenceBarColor = 'bg-yellow-500';
-            if (confidenceValue >= 80) confidenceBarColor = 'bg-green-500';
+            let confidenceBarColor = 'bg-rose-500';
+            if (confidenceValue >= 70) confidenceBarColor = 'bg-amber-500';
+            if (confidenceValue >= 80) confidenceBarColor = 'bg-emerald-500';
             
-            // Build the new HTML
-            dom.modalBody.innerHTML = `
-                <div class="md:col-span-3 text-center mb-4">
-                    <div class="grid grid-cols-3 items-center">
-                        <h3 class="text-lg font-bold text-slate-800 text-right">${homeTeam}</h3>
-                        <div class="text-2xl font-bold text-slate-400">VS</div>
-                        <h3 class="text-lg font-bold text-slate-800 text-left">${awayTeam}</h3>
-                    </div>
-                    <p class="text-sm text-slate-500 mt-1">${finalScore}</p>
-                </div>
-
-                <!-- Team Stats -->
-                <div class="md:col-span-3 grid grid-cols-2 gap-6">
-                    <!-- Home Team -->
-                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                        <h4 class="font-bold text-green-800 mb-3">Home Team Stats</h4>
-                        <div class="space-y-2 text-sm">
-                            <p><strong class="text-slate-600">Final Score:</strong> <span class="font-medium text-slate-800">${hFinalScore}</span></p>
-                            <p><strong class="text-slate-600">PR Score:</strong> <span class="font-medium text-slate-800">${hPrScore}</span></p>
-                            <p><strong class="text-slate-600">Chance to Win:</strong> <span class="font-medium text-slate-800">${homeChance}</span></p>
-                        </div>
-                    </div>
-                    <!-- Away Team -->
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <h4 class="font-bold text-blue-800 mb-3">Away Team Stats</h4>
-                        <div class="space-y-2 text-sm">
-                            <p><strong class="text-slate-600">Final Score:</strong> <span class="font-medium text-slate-800">${aFinalScore}</span></p>
-                            <p><strong class="text-slate-600">PR Score:</strong> <span class="font-medium text-slate-800">${aPrScore}</span></p>
-                            <p><strong class="text-slate-600">Chance to Win:</strong> <span class="font-medium text-slate-800">${awayChance}</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Prediction and Confidence -->
+            // --- NEW: Get Team Form Data ---
+            const homeTeamForm = getTeamForm(homeTeam, row[COLUMN_INDICES['Date']]);
+            const awayTeamForm = getTeamForm(awayTeam, row[COLUMN_INDICES['Date']]);
+            const getFormHtml = (formArray) => {
+                if (!formArray || formArray.length === 0) return '<span class="text-xs text-slate-400">No recent data</span>';
+                return formArray.map(result => {
+                    let bgColor = 'bg-slate-400'; // Draw
+                    if (result === 'W') bgColor = 'bg-emerald-500';
+                    if (result === 'L') bgColor = 'bg-rose-500';
+                    return `<span class="w-6 h-6 flex items-center justify-center text-xs font-bold text-white ${bgColor} rounded-full">${result}</span>`;
+                }).join('');
+            };
+            const formHTML = `
                 <div class="md:col-span-3 mt-4 pt-4 border-t">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                            <span class="font-semibold text-slate-700">Prediction: <span class="font-bold text-indigo-600">${prediction}</span></span>
+                    <h4 class="font-bold text-slate-700 mb-3 text-base">Recent Form (Last 5 Games)</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-semibold text-slate-800">${homeTeam}</span>
+                            <div class="flex items-center gap-2">${getFormHtml(homeTeamForm)}</div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-semibold text-slate-800">${awayTeam}</span>
+                            <div class="flex items-center gap-2">${getFormHtml(awayTeamForm)}</div>
                         </div>
                     </div>
+                </div>
+            `;
+            // --- END NEW FEATURE ---
+            
+            let modalBodyContent = ``;
+             originalHeaders.forEach(header => {
+                if(header && row[COLUMN_INDICES[header]]) {
+                    modalBodyContent += `<div>
+                        <p class="font-semibold text-slate-600">${header}</p>
+                        <p class="text-slate-800">${row[COLUMN_INDICES[header]]}</p>
+                    </div>`;
+                }
+            });
+
+
+            dom.modalBody.innerHTML = `
+                <div class="md:col-span-3 grid grid-cols-2 gap-4">
+                    ${modalBodyContent}
+                </div>
+                ${formHTML}
+                <div class="md:col-span-3 mt-4 pt-4 border-t">
                     <div class="mt-3">
                         <div class="flex justify-between mb-1">
-                            <span class="text-base font-medium text-slate-700">Confidence</span>
-                            <span class="text-sm font-bold text-indigo-600">${confidenceText}</span>
+                            <span class="text-base font-medium text-slate-700">Level of Confidence</span>
+                            <span class="text-sm font-bold text-cyan-600">${confidenceText}</span>
                         </div>
-                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                        <div class="w-full bg-stone-200 rounded-full h-2.5">
                             <div class="${confidenceBarColor} h-2.5 rounded-full" style="width: ${confidenceValue}%"></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- External Analysis Section -->
-                 <div class="md:col-span-3 mt-4 pt-4 border-t">
-                      <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
-                          <i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions
-                      </button>
-                      <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 hidden" readonly></textarea>
-                 </div>
-
+                <div class="md:col-span-3 mt-4 pt-4 border-t">
+                     <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
+                         <i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions
+                     </button>
+                     <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 hidden" readonly></textarea>
+                </div>
                 ${(urlSource && urlSource.startsWith('http')) ? `
                 <div class="md:col-span-3 mt-6"><a href="${urlSource}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full text-center bg-slate-600 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
                     View Original Source
@@ -1225,14 +1447,13 @@
                 </a></div>` : ''}
             `;
             
-            lucide.createIcons(); // Initialize newly added icons
+            lucide.createIcons();
             dom.modal.classList.remove('hidden');
             setTimeout(() => {
                 dom.modalOverlay.classList.remove('opacity-0');
                 dom.modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0', '-translate-y-10');
             }, 10);
 
-            // Add event listener for the new button
             document.getElementById('getExternalAnalysisBtn').addEventListener('click', handleExternalAnalysisClick);
         }
 
@@ -1242,7 +1463,7 @@
             setTimeout(() => { dom.modal.classList.add('hidden'); }, 300);
         }
 
-        // --- NEW: GEMINI API & EXTERNAL ANALYSIS ---
+        // --- GEMINI API & EXTERNAL ANALYSIS ---
         async function handleExternalAnalysisClick(e) {
             const button = e.currentTarget;
             const { homeTeam, awayTeam } = button.dataset;
@@ -1333,7 +1554,7 @@
             dom.syncDataBtn.disabled = true;
             dom.syncIcon.classList.add('animate-spin');
             dom.syncText.textContent = 'Syncing...';
-            dom.tableBody.innerHTML = `<tr><td colspan="${MAIN_TABLE_HEADERS.length}" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Syncing data...</p></td></tr>`;
+            dom.tableBody.innerHTML = `<tr><td colspan="${mainTableHeaders.length}" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Syncing data...</p></td></tr>`;
             try {
                 await fetchAndProcessData();
             } catch (e) {
@@ -1360,11 +1581,57 @@
             applyFiltersAndRender();
         }
 
+        function handleFilterChange(e) {
+            const input = e.target;
+            let value = input.value;
+            let key;
+
+            if (input.id.includes('search')) {
+                key = 'searchTerm';
+            } else if (input.type === 'range') {
+                key = 'minConfidence';
+                value = parseInt(value, 10);
+            } else {
+                key = input.dataset.filterKey;
+            }
+
+            globalFilters[key] = value;
+
+            document.querySelectorAll(`.filter-input`).forEach(el => {
+                if (el !== input) {
+                    if (el.dataset.filterKey === key || (key === 'searchTerm' && el.id.includes('search'))) {
+                        el.value = value;
+                    }
+                }
+            });
+
+            dom.confidenceRangeValue.textContent = `${globalFilters.minConfidence}%`;
+            dom.hcConfidenceRangeValue.textContent = `${globalFilters.minConfidence}%`;
+            
+            applyFiltersAndRender();
+        }
+
         function resetFilters() {
-            document.querySelectorAll('#content-dashboard select').forEach(s => s.selectedIndex = 0);
-            dom.confidenceRangeFilter.value = 70;
-            dom.confidenceRangeValue.textContent = '70%';
+             globalFilters = {
+                searchTerm: '',
+                date: 'All',
+                preference: 'All',
+                winningMargin: 'All',
+                analyzedPrediction: 'All',
+                goalsTip: 'All',
+                totalGoals: 'All',
+                minConfidence: 70
+            };
             sortState = { column: null, direction: 'asc' };
+
+            document.querySelectorAll('.filter-input').forEach(input => {
+                if (input.id.includes('search')) input.value = '';
+                else if (input.type === 'range') input.value = 70;
+                else input.selectedIndex = 0;
+            });
+            dom.confidenceRangeValue.textContent = '70%';
+            dom.hcConfidenceRangeValue.textContent = '70%';
+
             renderMainTableHeaders();
             applyFiltersAndRender();
         }
@@ -1380,12 +1647,8 @@
         function handleMainTableRowClick(e) {
             const rowElement = e.target.closest('tr');
             if (!rowElement || typeof rowElement.dataset.rowIndex === 'undefined') return;
-            const isViewButton = e.target.closest('.view-more-btn');
             
-            const rowIndex = isViewButton 
-                ? parseInt(rowElement.dataset.rowIndex, 10) 
-                : parseInt(rowElement.dataset.rowIndex, 10);
-                
+            const rowIndex = parseInt(rowElement.dataset.rowIndex, 10);
             const rowData = currentFilteredData[rowIndex];
 
             if (rowData) {
@@ -1398,52 +1661,236 @@
             const link = e.target.closest('.sidebar-link');
             if (!link) return;
 
-            // Update active link
             document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
             link.classList.add('active');
 
-            // Show/hide content panes
             const targetId = link.dataset.target;
             document.querySelectorAll('.page-content').forEach(pane => {
                 pane.classList.toggle('hidden', pane.id !== targetId);
             });
             
-            // Update header title
             dom.mainHeaderTitle.textContent = link.textContent.trim();
 
-            // Render analytics if that tab is selected
-            if (targetId === 'content-analytics') {
-                updateAnalytics();
-            }
+            if (targetId === 'content-analytics') updateAnalytics();
+            if (targetId === 'content-admin') renderAdminUI();
+            if (targetId === 'content-comparison') lucide.createIcons();
+            
         }
 
-        // --- EVENT LISTENERS ---
+        // --- ADMIN & COLUMN MANAGEMENT ---
+        function loadColumnConfiguration() {
+            const savedMain = localStorage.getItem('mainTableHeaders');
+            const savedHighConf = localStorage.getItem('highConfidenceTableHeaders');
 
-        // Auth listeners
+            mainTableHeaders = savedMain ? JSON.parse(savedMain) : [...DEFAULT_MAIN_TABLE_HEADERS];
+            highConfidenceTableHeaders = savedHighConf ? JSON.parse(savedHighConf) : [...DEFAULT_HIGH_CONFIDENCE_HEADERS];
+        }
+
+        function saveColumnConfiguration() {
+            const mainContainer = dom.mainTableAdminContainer;
+            const newMainHeaders = Array.from(mainContainer.querySelectorAll('li'))
+                .filter(li => li.querySelector('input[type="checkbox"]').checked)
+                .map(li => li.dataset.column);
+
+            const highConfContainer = dom.highConfidenceTableAdminContainer;
+            const newHighConfHeaders = Array.from(highConfContainer.querySelectorAll('li'))
+                .filter(li => li.querySelector('input[type="checkbox"]').checked)
+                .map(li => li.dataset.column);
+            
+            mainTableHeaders = newMainHeaders;
+            highConfidenceTableHeaders = newHighConfHeaders;
+
+            localStorage.setItem('mainTableHeaders', JSON.stringify(mainTableHeaders));
+            localStorage.setItem('highConfidenceTableHeaders', JSON.stringify(highConfidenceTableHeaders));
+
+            renderMainTableHeaders();
+            renderHighConfidenceHeaders();
+            applyFiltersAndRender();
+
+            dom.adminMessage.textContent = 'Settings saved successfully!';
+            setTimeout(() => { dom.adminMessage.textContent = ''; }, 3000);
+        }
+
+        function resetColumnConfiguration() {
+            mainTableHeaders = [...DEFAULT_MAIN_TABLE_HEADERS];
+            highConfidenceTableHeaders = [...DEFAULT_HIGH_CONFIDENCE_HEADERS];
+            localStorage.removeItem('mainTableHeaders');
+            localStorage.removeItem('highConfidenceTableHeaders');
+            
+            renderAdminUI();
+            renderMainTableHeaders();
+            renderHighConfidenceHeaders();
+            applyFiltersAndRender();
+            
+            dom.adminMessage.textContent = 'Settings reset to default.';
+            setTimeout(() => { dom.adminMessage.textContent = ''; }, 3000);
+        }
+        
+        function renderAdminUI() {
+            const createColumnItem = (columnName, isVisible) => `
+                <li data-column="${columnName}" class="draggable-item flex items-center justify-between p-2 bg-white rounded-md shadow-sm border" draggable="true">
+                    <div class="flex items-center">
+                        <i data-lucide="grip-vertical" class="w-5 h-5 text-slate-400 mr-2"></i>
+                        <label for="check-${columnName.replace(/\s+/g, '-')}" class="text-sm font-medium text-slate-700">${columnName}</label>
+                    </div>
+                    <input type="checkbox" id="check-${columnName.replace(/\s+/g, '-')}" ${isVisible ? 'checked' : ''} class="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500">
+                </li>
+            `;
+            
+            dom.mainTableAdminContainer.innerHTML = ALL_POSSIBLE_COLUMNS
+                .map(col => createColumnItem(col, mainTableHeaders.includes(col)))
+                .join('');
+            
+            dom.highConfidenceTableAdminContainer.innerHTML = ALL_POSSIBLE_COLUMNS
+                .map(col => createColumnItem(col, highConfidenceTableHeaders.includes(col)))
+                .join('');
+            
+            lucide.createIcons();
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const containers = [dom.mainTableAdminContainer, dom.highConfidenceTableAdminContainer];
+            containers.forEach(container => {
+                let draggingElement = null;
+                container.addEventListener('dragstart', e => {
+                    draggingElement = e.target;
+                    e.dataTransfer.effectAllowed = 'move';
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
+                });
+
+                container.addEventListener('dragend', e => {
+                    e.target.classList.remove('dragging');
+                });
+
+                container.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    const target = e.target.closest('.draggable-item');
+                    if (target && target !== draggingElement) {
+                        const rect = target.getBoundingClientRect();
+                        const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > .5;
+                        if (next) {
+                            container.insertBefore(draggingElement, target.nextSibling);
+                        } else {
+                            container.insertBefore(draggingElement, target);
+                        }
+                    }
+                });
+            });
+        }
+        
+        // --- TEAM COMPARISON FUNCTIONS ---
+        function initializeComparisonTools() {
+             const allTeams = [...new Set(allData.flatMap(row => [row[COLUMN_INDICES['Home Team']], row[COLUMN_INDICES['Away Team']]]))].filter(Boolean).sort();
+             if (teamSelect) teamSelect.destroy();
+             teamSelect = new TomSelect('#team-select', {
+                options: allTeams.map(team => ({value: team, text: team})),
+                plugins: ['remove_button'],
+                onChange: runComparison,
+             });
+             
+             if(dateRangePicker) dateRangePicker.destroy();
+             dateRangePicker = new Litepicker({
+                element: document.getElementById('date-range-picker'),
+                singleMode: false,
+                format: 'YYYY-MM-DD',
+                setup: (picker) => {
+                    picker.on('selected', (date1, date2) => {
+                        runComparison();
+                    });
+                },
+             });
+        }
+        
+        function runComparison() {
+            const selectedTeams = teamSelect.getValue();
+            const startDateObj = dateRangePicker.getStartDate();
+            const endDateObj = dateRangePicker.getEndDate();
+
+            if (selectedTeams.length < 2 || !startDateObj || !endDateObj) {
+                dom.comparisonResultsContainer.classList.add('hidden');
+                dom.comparisonPlaceholder.classList.remove('hidden');
+                return;
+            }
+
+            const startDate = startDateObj.dateInstance;
+            const endDate = endDateObj.dateInstance;
+
+            const comparisonData = allData.filter(row => {
+                const matchDateStr = row[COLUMN_INDICES['Date']];
+                if (!matchDateStr) return false;
+
+                const matchDate = new Date(matchDateStr);
+                if (isNaN(matchDate.getTime())) return false;
+
+                const homeTeam = row[COLUMN_INDICES['Home Team']];
+                const awayTeam = row[COLUMN_INDICES['Away Team']];
+                
+                const isWithinDateRange = matchDate >= startDate && matchDate <= endDate;
+                const involvesSelectedTeams = selectedTeams.some(team => team === homeTeam || team === awayTeam);
+
+                return isWithinDateRange && involvesSelectedTeams;
+            });
+
+            renderComparisonTable(comparisonData);
+            dom.comparisonResultsContainer.classList.remove('hidden');
+            dom.comparisonPlaceholder.classList.add('hidden');
+        }
+
+        function renderComparisonTable(data) {
+            const headers = ['Date', 'Home Team', 'Away Team', 'Final Score / Time', 'Analyzed Prediction', 'Level of Confidence', 'Accuracy'];
+            dom.comparisonTableHead.innerHTML = `<tr>${headers.map(h => `<th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
+
+            if(data.length === 0){
+                dom.comparisonTableBody.innerHTML = `<tr><td colspan="${headers.length}" class="text-center p-8 text-slate-500">No matches found for the selected teams in this period.</td></tr>`;
+                return;
+            }
+            
+            dom.comparisonTableBody.innerHTML = data.map(row => {
+                return `
+                    <tr class="hover:bg-cyan-50">
+                        ${headers.map(header => {
+                            let value = row[COLUMN_INDICES[header]] || '-';
+                            let classes = 'px-6 py-4 whitespace-nowrap text-sm text-slate-700';
+                            
+                            if(header === 'Home Team' || header === 'Away Team') {
+                                classes += ' font-bold text-cyan-900';
+                            }
+                            if(header === 'Analyzed Prediction') {
+                                value = getStyledPredictionBadge(value);
+                            }
+                            if(header === 'Accuracy') {
+                                if ((value || '').toLowerCase() === 'success') {
+                                    value = `<span class="bg-emerald-100 text-emerald-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
+                                } else if ((value || '').toLowerCase() === 'unsuccessful') {
+                                    value = `<span class="bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
+                                } else {
+                                    value = `<span class="text-slate-400">-</span>`;
+                                }
+                            }
+                            return `<td class="${classes}">${value}</td>`
+                        }).join('')}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+
+        // --- EVENT HANDLERS ---
+
         dom.showSignup.addEventListener('click', (e) => { e.preventDefault(); switchView('signup'); });
         dom.showLogin.addEventListener('click', (e) => { e.preventDefault(); switchView('login'); });
         dom.loginForm.addEventListener('submit', handleLogin);
         dom.signupForm.addEventListener('submit', handleSignup);
         dom.logoutBtn.addEventListener('click', handleLogout);
-
-        // Sidebar Navigation
         dom.sidebarNav.addEventListener('click', handleSidebarClick);
-
-        // Dashboard Filter event listeners
-        [dom.dateFilter, dom.preferenceFilter, dom.winningMarginFilter, dom.analyzedPredictionFilter, dom.goalsTipFilter, dom.totalGoalsFilter].forEach(filter => {
-            filter.addEventListener('change', applyFiltersAndRender);
+        dom.allFilterInputs.forEach(input => {
+            input.addEventListener('input', handleFilterChange);
+            input.addEventListener('change', handleFilterChange); // for selects
         });
-        dom.confidenceRangeFilter.addEventListener('input', (e) => {
-             dom.confidenceRangeValue.textContent = `${e.target.value}%`;
-        });
-        dom.confidenceRangeFilter.addEventListener('change', applyFiltersAndRender);
         dom.resetFiltersBtn.addEventListener('click', resetFilters);
-        
-        // Analytics Filter listeners
         dom.analyticsDateFilter.addEventListener('change', updateAnalytics);
         dom.analyticsTotalGoalsFilter.addEventListener('change', updateAnalytics);
-
-        // Main table listeners
         dom.tableHeader.addEventListener('click', handleSort);
         dom.tableBody.addEventListener('click', handleMainTableRowClick);
         dom.prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderMainTablePage(); }});
@@ -1452,7 +1899,6 @@
             if (currentPage < totalPages) { currentPage++; renderMainTablePage(); }
         });
 
-        // High-confidence table listeners
         dom.highConfidenceTableBody.addEventListener('click', handleHighConfidenceRowClick);
         dom.highConfidencePrevPageBtn.addEventListener('click', () => { 
             if (highConfidenceCurrentPage > 1) { 
@@ -1472,12 +1918,11 @@
             }
         });
         
-        // Modal listeners
         dom.modalCloseBtn.addEventListener('click', closeModal);
         dom.modalOverlay.addEventListener('click', closeModal);
         document.addEventListener('keydown', (e) => { if (e.key === "Escape" && !dom.modal.classList.contains('hidden')) closeModal(); });
-
-        // Sync button listener
+        dom.saveColumnsBtn.addEventListener('click', saveColumnConfiguration);
+        dom.resetColumnsBtn.addEventListener('click', resetColumnConfiguration);
         dom.syncDataBtn.addEventListener('click', handleSyncClick);
 
         // --- INITIALIZATION ---
