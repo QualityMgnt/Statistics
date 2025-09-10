@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>More Events | Sports Analytics</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230891b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><title>Data Compass Favicon</title><circle cx='12' cy='12' r='10'></circle><polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'></polygon></svg>">
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Poppins -->
@@ -48,7 +49,7 @@
         <!-- Header -->
         <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
             <div class="flex items-center space-x-4">
-                <a href="#" class="p-2 rounded-md hover:bg-stone-100 transition-colors" aria-label="Back to Dashboard">
+                <a href="index (12).html" class="p-2 rounded-md hover:bg-stone-100 transition-colors" aria-label="Back to Dashboard">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-700"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 </a>
                 <h1 class="text-2xl font-bold text-cyan-800">More Events</h1>
@@ -120,10 +121,12 @@
                         </div>
                     </div>
                     <div>
-                        <label for="date-filter" class="block text-sm font-medium text-slate-700 mb-2">Date</label>
-                        <select id="date-filter" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5">
-                            <option value="All">All Dates</option>
-                        </select>
+                        <label for="start-date-filter" class="block text-sm font-medium text-slate-700 mb-2">Start Date</label>
+                        <input type="date" id="start-date-filter" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5">
+                    </div>
+                    <div>
+                        <label for="end-date-filter" class="block text-sm font-medium text-slate-700 mb-2">End Date</label>
+                        <input type="date" id="end-date-filter" class="w-full bg-slate-50 border border-slate-300 text-sm rounded-lg p-2.5">
                     </div>
                     <div>
                         <label for="prediction-filter" class="block text-sm font-medium text-slate-700 mb-2">Analyzed Prediction</label>
@@ -138,6 +141,7 @@
                         </select>
                     </div>
                     <div class="xl:col-span-6 flex justify-end gap-4 mt-4">
+                        <button id="query-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-6 rounded-lg transition">Query Date Range</button>
                         <button id="reset-filters-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2.5 px-6 rounded-lg transition">Reset</button>
                     </div>
                 </div>
@@ -188,9 +192,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- CONFIGURATION ---
-        // I've replaced the placeholder URL with a publicly accessible, working Google Sheet in CSV format.
-        // You can replace this URL with your own if you have a public Google Sheet you'd like to use.
-        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=0&single=true&output=csv'; 
+        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv'; 
         const ROWS_PER_PAGE = 15;
         
         // --- DOM REFERENCES ---
@@ -204,7 +206,9 @@
             paginationControls: document.getElementById('pagination-controls'),
             // Filters
             searchFilter: document.getElementById('search-filter'),
-            dateFilter: document.getElementById('date-filter'),
+            startDateFilter: document.getElementById('start-date-filter'),
+            endDateFilter: document.getElementById('end-date-filter'),
+            queryBtn: document.getElementById('query-btn'),
             predictionFilter: document.getElementById('prediction-filter'),
             marginFilter: document.getElementById('margin-filter'),
             resetFiltersBtn: document.getElementById('reset-filters-btn'),
@@ -232,39 +236,34 @@
         async function fetchAndProcessData() {
             setLoadingState(true);
             try {
-                // The cache-busting timestamp ensures we get the latest data
                 const response = await fetch(`${GOOGLE_SHEET_URL}&t=${new Date().getTime()}`);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const csvText = await response.text();
                 
                 const parsed = parseCSV(csvText);
                 const headers = parsed.headers;
+                const headerCount = headers.length;
                 
-                // Map headers to indices for robust data access
                 columnIndices = {
                     date: headers.indexOf('Date'),
-                    home: headers.indexOf('Home'),
-                    away: headers.indexOf('Away'),
+                    home: headers.indexOf('Home Team'),
+                    away: headers.indexOf('Away Team'),
                     confidence: headers.indexOf('Level of Confidence'),
                     margin: headers.indexOf('Winning Margin'),
                     totalGoals: headers.indexOf('Total Goals'),
                     prediction: headers.indexOf('Analyzed Prediction'),
-                    ftOutcome: headers.indexOf('FT Outcome'),
-                    result: headers.indexOf('Result'),
+                    result: headers.indexOf('Accuracy'),
                     finalScore: headers.indexOf('Final Score / Time'),
-                    aPrScore: headers.indexOf('A_Pr_Score'),
-                    hPrScore: headers.indexOf('H_Pr_Score'),
-                    aFinal: headers.indexOf('A_Final'),
-                    hFinal: headers.indexOf('H_Final'),
-                    oddsH: headers.indexOf('Odds_H'),
-                    oddsD: headers.indexOf('Odds_D'),
-                    oddsA: headers.indexOf('Odds_A'),
-                    matchURL: headers.indexOf('MatchURL'),
-                    modalPrediction: headers.indexOf('Prediction')
+                    matchURL: headers.indexOf('SourceURL'),
                 };
                 
-                // Filter out invalid rows (e.g., empty or malformed)
-                allData = parsed.data.filter(row => row.length === headers.length).map((row, index) => ({ id: index, data: row }));
+                const sanitizedData = parsed.data.map(row => {
+                    if (row.length > headerCount) return row.slice(0, headerCount);
+                    if (row.length < headerCount) return [...row, ...Array(headerCount - row.length).fill('')];
+                    return row;
+                });
+
+                allData = sanitizedData.map((row, index) => ({ id: index, data: row }));
                 
                 filteredData = [...allData];
                 currentPage = 1;
@@ -281,30 +280,48 @@
             }
         }
         
-        // A more robust CSV parser that handles commas inside quoted fields
         function parseCSV(text) {
-            const rows = text.split(/\r?\n/);
-            const headerRow = rows.shift() || [];
-            const headers = headerRow.map(h => h.trim());
-            const data = rows.map(row => {
-                const result = [];
-                let inQuote = false;
-                let currentField = '';
-                for (let i = 0; i < row.length; i++) {
-                    const char = row[i];
-                    if (char === '"') {
-                        inQuote = !inQuote;
-                    } else if (char === ',' && !inQuote) {
-                        result.push(currentField.trim());
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (inQuotes) {
+                    if (char === '"' && nextChar === '"') {
+                        currentField += '"';
+                        i++;
+                    } else if (char === '"') {
+                        inQuotes = false;
+                    } else {
+                        currentField += char;
+                    }
+                } else {
+                     if (char === '"') {
+                        inQuotes = true;
+                    } else if (char === ',') {
+                        currentRow.push(currentField);
+                        currentField = '';
+                    } else if (char === '\n') {
+                        currentRow.push(currentField);
+                        rows.push(currentRow);
+                        currentRow = [];
                         currentField = '';
                     } else {
                         currentField += char;
                     }
                 }
-                result.push(currentField.trim());
-                return result;
-            });
-            return { headers, data };
+            }
+            if (currentRow.length > 0 || currentField) {
+                 currentRow.push(currentField);
+                 rows.push(currentRow);
+            }
+            const headers = rows.shift() || [];
+            return { headers, data: rows.filter(row => row.some(cell => cell && cell.trim() !== '')) };
         }
 
         // --- UI RENDERING ---
@@ -316,15 +333,9 @@
         }
 
         function populateDropdowns() {
-            const createOptions = (columnIndex, sortFn) => {
+            const createOptions = (columnIndex) => {
                 if(columnIndex === -1) return [];
-                const values = [...new Set(allData.map(item => item.data[columnIndex]))].filter(Boolean);
-                if (sortFn) {
-                    values.sort(sortFn);
-                } else {
-                    values.sort();
-                }
-                return values;
+                return [...new Set(allData.map(item => item.data[columnIndex]))].filter(Boolean).sort();
             };
 
             const populate = (selectElement, values) => {
@@ -333,11 +344,7 @@
                 selectElement.appendChild(placeholder);
                 values.forEach(val => selectElement.add(new Option(val, val)));
             };
-
-            // Custom sort function for dates to ensure proper chronological order
-            const sortDates = (a, b) => new Date(b) - new Date(a);
             
-            populate(dom.dateFilter, createOptions(columnIndices.date, sortDates));
             populate(dom.predictionFilter, createOptions(columnIndices.prediction));
             populate(dom.marginFilter, createOptions(columnIndices.margin));
         }
@@ -346,7 +353,6 @@
             dom.tableBody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredData.length / ROWS_PER_PAGE));
             currentPage = Math.max(1, Math.min(currentPage, totalPages));
-
             const start = (currentPage - 1) * ROWS_PER_PAGE;
             const pageData = filteredData.slice(start, start + ROWS_PER_PAGE);
 
@@ -367,8 +373,9 @@
                 else if (confidence >= 75) confColor = 'text-amber-600 font-semibold';
                 
                 let resultClass = '';
-                if(row[columnIndices.result]?.toLowerCase() === 'success') resultClass = 'bg-emerald-100 text-emerald-800';
-                else if(row[columnIndices.result]?.toLowerCase() === 'fail') resultClass = 'bg-rose-100 text-rose-800';
+                const resultText = row[columnIndices.result] || 'N/A';
+                if(resultText.toLowerCase() === 'success') resultClass = 'bg-emerald-100 text-emerald-800';
+                else if(resultText.toLowerCase() === 'unsuccessful') resultClass = 'bg-rose-100 text-rose-800';
                 else resultClass = 'bg-slate-100 text-slate-800';
 
                 tr.innerHTML = `
@@ -378,7 +385,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-center ${confColor}">${row[columnIndices.confidence] || '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">${row[columnIndices.prediction] || '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-center text-xs font-medium">
-                        <span class="px-2.5 py-1 rounded-full ${resultClass}">${row[columnIndices.result] || 'N/A'}</span>
+                        <span class="px-2.5 py-1 rounded-full ${resultClass}">${resultText}</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
                         <button class="view-btn bg-cyan-600 text-white px-3 py-1 text-xs rounded-full hover:bg-cyan-700 transition shadow-sm">View</button>
@@ -401,30 +408,24 @@
         function updateInsights() {
             const total = allData.length;
             dom.totalEvents.textContent = total;
-
             const successful = allData.filter(item => item.data[columnIndices.result]?.toLowerCase() === 'success');
-            const accuracy = total > 0 ? (successful.length / total) * 100 : 0;
+            const accuracy = allData.length > 0 ? (successful.length / allData.length) * 100 : 0;
             dom.overallAccuracyText.textContent = `${accuracy.toFixed(1)}%`;
-            
             const circle = dom.accuracyCircle;
             const radius = 15.9155;
             const circumference = radius * 2 * Math.PI;
             circle.style.strokeDasharray = `${circumference} ${circumference}`;
             const offset = circumference - (accuracy / 100) * circumference;
             circle.style.strokeDashoffset = offset;
-            
             const predictionStats = {};
-            allData.forEach(item => { // Changed from successful to allData for a more complete count
+            successful.forEach(item => {
                 const pred = item.data[columnIndices.prediction];
-                const result = item.data[columnIndices.result]?.toLowerCase();
-                if(pred && result === 'success') {
+                if(pred) {
                      predictionStats[pred] = (predictionStats[pred] || 0) + 1;
                 }
             });
-
             const bestPrediction = Object.entries(predictionStats).sort((a,b) => b[1] - a[1])[0];
             dom.bestPredictionType.textContent = bestPrediction ? bestPrediction[0] : '-';
-            
             const highestConf = successful.reduce((max, item) => {
                  const conf = parseFloat(item.data[columnIndices.confidence]?.replace('%','')) || 0;
                  return conf > max ? conf : max;
@@ -435,7 +436,17 @@
         // --- FILTERING LOGIC ---
         function applyFilters() {
             const searchTerm = dom.searchFilter.value.toLowerCase();
-            const date = dom.dateFilter.value;
+            const startDateStr = dom.startDateFilter.value;
+            const endDateStr = dom.endDateFilter.value;
+            
+            // Get the time at the beginning of the start day
+            const startDate = startDateStr ? new Date(startDateStr) : null;
+            if(startDate) startDate.setHours(0, 0, 0, 0);
+
+            // Get the time at the end of the end day
+            const endDate = endDateStr ? new Date(endDateStr) : null;
+            if (endDate) endDate.setHours(23, 59, 59, 999);
+
             const prediction = dom.predictionFilter.value;
             const margin = dom.marginFilter.value;
 
@@ -443,7 +454,22 @@
                 const row = item.data;
                 const homeMatch = row[columnIndices.home]?.toLowerCase().includes(searchTerm);
                 const awayMatch = row[columnIndices.away]?.toLowerCase().includes(searchTerm);
-                const dateMatch = date === 'All' || row[columnIndices.date] === date;
+                
+                const dateStr = row[columnIndices.date];
+                const rowDate = dateStr ? new Date(dateStr) : null;
+                
+                let dateMatch = true;
+                if (startDate || endDate) { // Only apply date filter if a range is set
+                    // Check if the date from the sheet is valid
+                    if (rowDate && !isNaN(rowDate.getTime())) {
+                        if (startDate && rowDate < startDate) dateMatch = false;
+                        if (endDate && rowDate > endDate) dateMatch = false;
+                    } else {
+                        // If we have a date filter but couldn't parse the row's date, exclude it.
+                        dateMatch = false;
+                    }
+                }
+
                 const predictionMatch = prediction === 'All' || row[columnIndices.prediction] === prediction;
                 const marginMatch = margin === 'All' || row[columnIndices.margin] === margin;
 
@@ -457,26 +483,20 @@
         // --- MODAL LOGIC ---
         function openModal(item) {
             const row = item.data;
-            const detailItem = (label, value, isButton = false, url = '#') => `
-                <div class="grid grid-cols-2 gap-4 py-2 border-b border-stone-100">
-                    <p class="font-semibold text-slate-600">${label}</p>
-                    ${isButton ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-white bg-cyan-600 hover:bg-cyan-700 font-medium rounded-lg text-sm px-4 py-1.5 text-center">${value}</a>` : `<p class="text-slate-800">${value || '-'}</p>`}
-                </div>
-            `;
+            let modalContent = '';
+             Object.keys(columnIndices).forEach(key => {
+                const headerName = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim(); // Format key to Header Name
+                const value = row[columnIndices[key]] || '-';
+                if(columnIndices[key] !== -1) {
+                    modalContent += `
+                        <div class="grid grid-cols-2 gap-4 py-2 border-b border-stone-100">
+                            <p class="font-semibold text-slate-600">${headerName}</p>
+                            <p class="text-slate-800">${value}</p>
+                        </div>`;
+                }
+            });
 
-            dom.modalBody.innerHTML = `
-                ${detailItem('Final Score / Time', row[columnIndices.finalScore])}
-                ${detailItem('Home Predicted Score', row[columnIndices.hPrScore])}
-                ${detailItem('Away Predicted Score', row[columnIndices.aPrScore])}
-                ${detailItem('Home Final Goals', row[columnIndices.hFinal])}
-                ${detailItem('Away Final Goals', row[columnIndices.aFinal])}
-                ${detailItem('Home Win Odds', row[columnIndices.oddsH])}
-                ${detailItem('Draw Odds', row[columnIndices.oddsD])}
-                ${detailItem('Away Win Odds', row[columnIndices.oddsA])}
-                ${detailItem('Confidence', row[columnIndices.confidence])}
-                ${detailItem('Prediction', row[columnIndices.modalPrediction])}
-                ${detailItem('Match URL', 'View Source', true, row[columnIndices.matchURL])}
-            `;
+            dom.modalBody.innerHTML = modalContent;
 
             dom.modal.classList.remove('hidden');
             setTimeout(() => {
@@ -493,16 +513,20 @@
         
         // --- EVENT LISTENERS ---
         dom.syncDataBtn.addEventListener('click', fetchAndProcessData);
+        
         dom.resetFiltersBtn.addEventListener('click', () => {
             dom.searchFilter.value = '';
-            dom.dateFilter.selectedIndex = 0;
+            dom.startDateFilter.value = '';
+            dom.endDateFilter.value = '';
             dom.predictionFilter.selectedIndex = 0;
             dom.marginFilter.selectedIndex = 0;
-            applyFilters();
+            // After resetting, we should re-apply the (now empty) filters to show all data
+            filteredData = [...allData];
+            renderTablePage();
         });
 
-        [dom.searchFilter, dom.dateFilter, dom.predictionFilter, dom.marginFilter].forEach(el => {
-            el.addEventListener('input', applyFilters);
+        dom.queryBtn.addEventListener('click', applyFilters);
+        [dom.searchFilter, dom.predictionFilter, dom.marginFilter].forEach(el => {
             el.addEventListener('change', applyFilters);
         });
 
@@ -534,3 +558,4 @@
     </script>
 </body>
 </html>
+
