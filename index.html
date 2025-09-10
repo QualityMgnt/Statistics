@@ -476,58 +476,44 @@
                             <h1 class="text-4xl md:text-5xl font-extrabold text-center text-slate-100 mb-8">All Events</h1>
                     
                             <!-- Filter and Search Section -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
-                                <!-- Date Filter -->
-                                <div class="col-span-1 lg:col-span-1">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-6">
+                                <div class="col-span-1">
                                     <label for="ae-dateFilter" class="block text-sm font-medium text-slate-300 mb-1">Date</label>
-                                    <input type="date" id="ae-dateFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <select id="ae-dateFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                        <option value="">All</option>
+                                    </select>
                                 </div>
-                                <!-- Goals Tip Filter -->
-                                <div class="col-span-1 lg:col-span-1">
+                                <div class="col-span-1">
                                     <label for="ae-goalsTipFilter" class="block text-sm font-medium text-slate-300 mb-1">Goals Tip</label>
                                     <select id="ae-goalsTipFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
                                         <option value="">All</option>
-                                        <option value="Over 0.5">Over 0.5</option>
-                                        <option value="Over 1.5">Over 1.5</option>
-                                        <option value="Over 2.5">Over 2.5</option>
-                                        <option value="Under 2.5">Under 2.5</option>
-                                        <option value="Under 3.5">Under 3.5</option>
-                                        <option value="GG">GG</option>
-                                        <option value="No GG">No GG</option>
                                     </select>
                                 </div>
-                                <!-- Accuracy Filter -->
-                                <div class="col-span-1 lg:col-span-1">
+                                <div class="col-span-1">
                                     <label for="ae-accuracyFilter" class="block text-sm font-medium text-slate-300 mb-1">Accuracy</label>
                                     <select id="ae-accuracyFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
                                         <option value="">All</option>
-                                        <option value="Accurate">Accurate</option>
-                                        <option value="Inaccurate">Inaccurate</option>
                                     </select>
                                 </div>
-                                <!-- Analyzed Prediction Filter -->
-                                <div class="col-span-1 lg:col-span-1">
+                                <div class="col-span-1">
                                     <label for="ae-predictionFilter" class="block text-sm font-medium text-slate-300 mb-1">Prediction</label>
                                     <select id="ae-predictionFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
                                         <option value="">All</option>
-                                        <option value="Home Win">Home Win</option>
-                                        <option value="Away Win">Away Win</option>
-                                        <option value="Draw">Draw</option>
-                                        <option value="Double Chance">Double Chance</option>
                                     </select>
                                 </div>
-                                <!-- Winning Margin Filter -->
-                                <div class="col-span-1 lg:col-span-1">
+                                <div class="col-span-1">
+                                    <label for="ae-analyzedPredictionFilter" class="block text-sm font-medium text-slate-300 mb-1">Analyzed Prediction</label>
+                                    <select id="ae-analyzedPredictionFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                        <option value="">All</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-1">
                                     <label for="ae-winningMarginFilter" class="block text-sm font-medium text-slate-300 mb-1">Winning Margin</label>
                                     <select id="ae-winningMarginFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
                                         <option value="">All</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
                                     </select>
                                 </div>
-                                <!-- Search Input -->
-                                <div class="col-span-1 lg:col-span-1">
+                                <div class="col-span-1">
                                     <label for="ae-teamSearch" class="block text-sm font-medium text-slate-300 mb-1">Search Team</label>
                                     <input type="text" id="ae-teamSearch" placeholder="e.g., Man Utd" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
                                 </div>
@@ -2217,6 +2203,7 @@
                 goalsTipFilter: document.getElementById('ae-goalsTipFilter'),
                 accuracyFilter: document.getElementById('ae-accuracyFilter'),
                 predictionFilter: document.getElementById('ae-predictionFilter'),
+                analyzedPredictionFilter: document.getElementById('ae-analyzedPredictionFilter'),
                 winningMarginFilter: document.getElementById('ae-winningMarginFilter'),
                 teamSearch: document.getElementById('ae-teamSearch'),
                 resetBtn: document.getElementById('ae-resetFiltersBtn'),
@@ -2240,6 +2227,44 @@
             };
 
             // --- Logic Functions for this tab ---
+            const ae_populateFilters = () => {
+                const filtersToPopulate = [
+                    { id: 'ae-dateFilter', column: 'Date' },
+                    { id: 'ae-goalsTipFilter', column: 'Goals Tip' },
+                    { id: 'ae-predictionFilter', column: 'Prediction' },
+                    { id: 'ae-winningMarginFilter', column: 'Winning Margin' },
+                    { id: 'ae-analyzedPredictionFilter', column: 'Analyzed Prediction' }
+                ];
+
+                filtersToPopulate.forEach(config => {
+                    const selectElement = document.getElementById(config.id);
+                    if (!selectElement) return;
+
+                    const uniqueValues = [...new Set(ae_allEvents.map(item => item[config.column]).filter(Boolean))];
+                    
+                    while (selectElement.options.length > 1) {
+                        selectElement.remove(1);
+                    }
+                    
+                    if (config.column === 'Date') {
+                        uniqueValues.sort((a, b) => new Date(b) - new Date(a));
+                    } else {
+                        uniqueValues.sort();
+                    }
+
+                    uniqueValues.forEach(val => {
+                        selectElement.add(new Option(val, val));
+                    });
+                });
+
+                const accuracyFilter = ae_dom.accuracyFilter;
+                while (accuracyFilter.options.length > 1) {
+                    accuracyFilter.remove(1);
+                }
+                accuracyFilter.add(new Option('Accurate', 'Accurate'));
+                accuracyFilter.add(new Option('Inaccurate', 'Inaccurate'));
+            };
+            
             const ae_fetchData = async () => {
                 const originalUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRT3kZ4vvPbc6XIsOlmhLE-jGL0o5Ut4VtTE2Z3SAh1FZAmKc8uW39DNAyr33GuwGJfxW0U7SPN9Blz/pub?gid=2114931346&single=true&output=csv';
 
@@ -2260,6 +2285,7 @@
                     });
                     ae_allEvents = data;
                     ae_filteredEvents = ae_allEvents;
+                    ae_populateFilters();
                     ae_renderTable();
                 } catch (error) {
                     console.error('Could not fetch the data for All Events tab:', error);
@@ -2293,7 +2319,6 @@
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-slate-700 cursor-pointer transition-colors duration-200';
                     
-                    const fullItemIndex = ae_allEvents.indexOf(item);
                     row.onclick = () => ae_openModal(item);
 
                     row.innerHTML = `
@@ -2303,7 +2328,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">${item['Level of Confidence'] || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">${item['Winning Margin'] || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">${item['Total Goals'] || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden lg:table-cell">${item['Analyzed Prediction'] || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden lg:table-cell">${item['Prediction'] || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden lg:table-cell">${item['FT Outcome'] || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${resultClass}">${resultText}</span>
@@ -2343,6 +2368,7 @@
                 ae_dom.goalsTipFilter.value = '';
                 ae_dom.accuracyFilter.value = '';
                 ae_dom.predictionFilter.value = '';
+                ae_dom.analyzedPredictionFilter.value = '';
                 ae_dom.winningMarginFilter.value = '';
                 ae_dom.teamSearch.value = '';
                 ae_applyFilters();
@@ -2353,18 +2379,20 @@
                 const goalsTipFilter = ae_dom.goalsTipFilter.value;
                 const accuracyFilter = ae_dom.accuracyFilter.value;
                 const predictionFilter = ae_dom.predictionFilter.value;
+                const analyzedPredictionFilter = ae_dom.analyzedPredictionFilter.value;
                 const winningMarginFilter = ae_dom.winningMarginFilter.value;
                 const teamSearch = ae_dom.teamSearch.value.toLowerCase();
 
                 ae_filteredEvents = ae_allEvents.filter(item => {
                     const matchDate = !dateFilter || item.Date === dateFilter;
-                    const matchGoalsTip = !goalsTipFilter || (item['Total Goals'] || '') === goalsTipFilter;
+                    const matchGoalsTip = !goalsTipFilter || (item['Goals Tip'] || '') === goalsTipFilter;
                     const result = item.Result || '';
-                    const matchAccuracy = !accuracyFilter || (accuracyFilter === 'Accurate' && result.toLowerCase() === 'won') || (accuracyFilter === 'Inaccurate' && result.toLowerCase() === 'lost');
-                    const matchPrediction = !predictionFilter || (item['Analyzed Prediction'] || '') === predictionFilter;
+                    const matchAccuracy = !accuracyFilter || (accuracyFilter === 'Accurate' && result.toLowerCase() === 'won') || (accuracyFilter === 'Inaccurate' && (result.toLowerCase() === 'lost' || result.toLowerCase() === 'draw'));
+                    const matchPrediction = !predictionFilter || (item['Prediction'] || '') === predictionFilter;
+                    const matchAnalyzedPrediction = !analyzedPredictionFilter || (item['Analyzed Prediction'] || '') === analyzedPredictionFilter;
                     const matchWinningMargin = !winningMarginFilter || (item['Winning Margin'] || '') === winningMarginFilter;
                     const matchTeam = !teamSearch || (item.Home || '').toLowerCase().includes(teamSearch) || (item.Away || '').toLowerCase().includes(teamSearch);
-                    return matchDate && matchGoalsTip && matchAccuracy && matchPrediction && matchWinningMargin && matchTeam;
+                    return matchDate && matchGoalsTip && matchAccuracy && matchPrediction && matchWinningMargin && matchTeam && matchAnalyzedPrediction;
                 });
                 ae_currentPage = 1;
                 ae_renderTable();
@@ -2390,8 +2418,19 @@
             };
 
             // --- Event Listeners for this tab ---
-            const allFilters = [ae_dom.dateFilter, ae_dom.goalsTipFilter, ae_dom.accuracyFilter, ae_dom.predictionFilter, ae_dom.winningMarginFilter, ae_dom.teamSearch];
-            allFilters.forEach(el => el.addEventListener('input', ae_applyFilters));
+            const allFilters = [
+                ae_dom.dateFilter, 
+                ae_dom.goalsTipFilter, 
+                ae_dom.accuracyFilter, 
+                ae_dom.predictionFilter, 
+                ae_dom.winningMarginFilter, 
+                ae_dom.teamSearch,
+                ae_dom.analyzedPredictionFilter
+            ];
+            allFilters.forEach(el => {
+                el.addEventListener('input', ae_applyFilters);
+                el.addEventListener('change', ae_applyFilters);
+            });
             ae_dom.resetBtn.addEventListener('click', ae_resetFilters);
             ae_dom.prevBtn.addEventListener('click', ae_goToPreviousPage);
             ae_dom.nextBtn.addEventListener('click', ae_goToNextPage);
@@ -2467,3 +2506,4 @@
     </script>
 </body>
 </html>
+
