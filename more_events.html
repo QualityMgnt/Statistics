@@ -45,7 +45,21 @@
 </head>
 <body class="antialiased text-slate-800 bg-stone-100">
 
-    <div class="flex flex-col h-screen">
+    <!-- Auth Check Container (Shown by default if not logged in) -->
+    <div id="auth-check-container" class="flex items-center justify-center min-h-screen">
+        <div class="text-center p-8 bg-white rounded-xl shadow-md">
+            <i data-lucide="shield-off" class="w-16 h-16 mx-auto text-rose-500 mb-4"></i>
+            <h1 class="text-2xl font-bold text-slate-800">Access Denied</h1>
+            <p class="text-slate-600 mt-2 mb-6">You must be logged in to view this page.</p>
+            <a href="index (12).html" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-6 rounded-lg transition inline-flex items-center">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+                Return to Login
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden by default, shown after auth check) -->
+    <div id="main-content" class="hidden flex-col h-screen">
         <!-- Header -->
         <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0">
             <div class="flex items-center space-x-4">
@@ -191,6 +205,24 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+        // --- AUTHENTICATION CHECK ---
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        const authCheckContainer = document.getElementById('auth-check-container');
+        const mainContentContainer = document.getElementById('main-content');
+
+        if (!loggedInUser) {
+            authCheckContainer.style.display = 'flex';
+            mainContentContainer.style.display = 'none';
+            lucide.createIcons(); // Create icon for the auth message
+            return; // Stop further execution if not logged in
+        }
+        
+        // If logged in, hide auth message and show main content
+        authCheckContainer.style.display = 'none';
+        mainContentContainer.style.display = 'flex';
+
+
         // --- CONFIGURATION ---
         const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQNrXyGqj1DKdAk4GHfjNnkh7s9Jmti4ccb-K6EwJUAfzs8vJ0CUSj8KVi6_jZmrwCaJ1ODMY5bDJRK/pub?gid=337419731&single=true&output=csv'; 
         const ROWS_PER_PAGE = 15;
@@ -558,4 +590,5 @@
     </script>
 </body>
 </html>
+
 
