@@ -235,9 +235,9 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         High-Confidence
                     </a>
-                    <a href="#" data-target="content-my-selection" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M4 17v4M2 19h4M17 3l4 4M21 17l-4 4M17 21l4-4M3 17l4 4M7 3l-4 4"></path></svg>
-                        My Selection
+                    <a href="more_events.html" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        More Events
                     </a>
                      <a href="#" data-target="content-comparison" class="sidebar-link flex items-center px-4 py-2.5 text-slate-700 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-5M3 4h5V9m13 2l-4-4-4 4-4-4-4 4 4 4-4 4"></path></svg>
@@ -438,48 +438,6 @@
                                  <button id="high-confidence-prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
                                  <div class="text-sm text-slate-700" id="high-confidence-page-info">Page 1 of 1</div>
                                  <button id="high-confidence-next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
-                            </div>
-                        </div>
-                    </div>
-                     <!-- My Selection Content -->
-                    <div id="content-my-selection" class="page-content hidden">
-                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6">
-                            <div class="flex flex-wrap justify-between items-center gap-4">
-                                <div>
-                                    <h3 class="text-xl font-bold text-cyan-800">My Selection Slip</h3>
-                                    <p class="text-sm text-slate-500 mt-1">An accumulator of 4 high-confidence picks for the selected date.</p>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <div>
-                                        <label for="selection-date-filter" class="sr-only">Select Date</label>
-                                        <input type="date" id="selection-date-filter" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2 transition">
-                                    </div>
-                                    <button id="generate-selection-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
-                                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                                        <span>Generate New Selection</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-stone-200">
-                                    <thead class="bg-stone-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Match</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Selection</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Prediction Type</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Odds</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="selection-table-body" class="bg-white divide-y divide-stone-200">
-                                       <!-- JS will populate this -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="p-4 flex items-center justify-end border-t border-stone-200 bg-stone-50">
-                                <span class="text-sm font-medium text-slate-700">Total Odds:</span>
-                                <span id="total-odds" class="ml-2 text-lg font-bold text-cyan-800">-</span>
                             </div>
                         </div>
                     </div>
@@ -801,12 +759,6 @@
 
             if (targetId === 'content-analytics') updateAnalytics();
             if (targetId === 'content-admin') renderAdminUI();
-            if (targetId === 'content-my-selection') {
-                if (!dom.selectionDateFilter.value) {
-                    dom.selectionDateFilter.value = getTodayString();
-                }
-                generateAndDisplaySelection();
-            }
             if (targetId === 'content-comparison') lucide.createIcons();
             
         }
@@ -878,12 +830,6 @@
             highConfidenceNextPageBtn: document.getElementById('high-confidence-next-page'),
             highConfidencePageInfo: document.getElementById('high-confidence-page-info'),
             
-            // My Selection
-            generateSelectionBtn: document.getElementById('generate-selection-btn'),
-            selectionTableBody: document.getElementById('selection-table-body'),
-            totalOdds: document.getElementById('total-odds'),
-            selectionDateFilter: document.getElementById('selection-date-filter'),
-
             // Team Comparison
             comparisonResultsContainer: document.getElementById('comparison-results-container'),
             comparisonPlaceholder: document.getElementById('comparison-placeholder'),
@@ -1109,7 +1055,13 @@
                 selectElement.add(firstOption);
 
                 const uniqueValues = [...new Set(allData.map(row => row[columnIndex]).filter(Boolean))];
-                uniqueValues.sort();
+                
+                if (config.column === 'Date') {
+                    uniqueValues.sort((a, b) => new Date(b) - new Date(a));
+                } else {
+                    uniqueValues.sort();
+                }
+
                 uniqueValues.forEach(val => selectElement.add(new Option(val, val)));
             });
         }
@@ -1311,93 +1263,6 @@
 
             updateHighConfidencePaginationControls(totalPages);
         }
-
-        // --- MY SELECTION ---
-        function getTodayString() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function generateAndDisplaySelection() {
-            const selectionBody = dom.selectionTableBody;
-            const totalOddsEl = dom.totalOdds;
-            selectionBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Generating selection...</p></td></tr>';
-            totalOddsEl.textContent = '-';
-
-            const selectedDate = dom.selectionDateFilter.value;
-
-            if (!selectedDate) {
-                selectionBody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500">Please select a date to generate a selection.</td></tr>`;
-                return;
-            }
-
-            const potentialPicks = allData.filter(row => {
-                const prediction = row[COLUMN_INDICES['Analyzed Prediction']];
-                const matchDateStr = row[COLUMN_INDICES['Date']];
-                
-                if (!matchDateStr) return false;
-                
-                const isSameDay = matchDateStr === selectedDate;
-                const isHighConfidence = prediction === 'Home Best Tip' || prediction === 'Best Away Tip';
-                
-                return isSameDay && isHighConfidence;
-            });
-
-            const shuffled = potentialPicks.sort(() => 0.5 - Math.random());
-            const selection = shuffled.slice(0, 4);
-
-            if (selection.length === 0) {
-                 selectionBody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500">No high-confidence matches found for ${selectedDate}.</td></tr>`;
-                return;
-            }
-             if (selection.length < 4) {
-                selectionBody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500">Not enough high-confidence matches on ${selectedDate} to generate a selection of 4. Found ${selection.length}.</td></tr>`;
-                return;
-            }
-
-
-            let totalOdds = 1;
-            let rowsHtml = '';
-            selection.forEach(row => {
-                const homeTeam = row[COLUMN_INDICES['Home Team']];
-                const awayTeam = row[COLUMN_INDICES['Away Team']];
-                const prediction = row[COLUMN_INDICES['Analyzed Prediction']];
-                
-                let selectedTeam = '';
-                let odds = 0;
-
-                if (prediction === 'Home Best Tip') {
-                    selectedTeam = homeTeam;
-                    odds = parseFloat(row[COLUMN_INDICES['Home Odds']]);
-                } else if (prediction === 'Best Away Tip') {
-                    selectedTeam = awayTeam;
-                    odds = parseFloat(row[COLUMN_INDICES['Away Odds']]);
-                }
-
-                if (!isNaN(odds) && odds > 0) {
-                    totalOdds *= odds;
-                    rowsHtml += `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">${homeTeam} vs ${awayTeam}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-cyan-900">${selectedTeam}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">${getStyledPredictionBadge(prediction)}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">${odds.toFixed(2)}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            if (totalOdds > 1) {
-                selectionBody.innerHTML = rowsHtml;
-                totalOddsEl.textContent = totalOdds.toFixed(2);
-            } else {
-                 selectionBody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500">Could not generate a selection due to missing odds data for the selected matches.</td></tr>`;
-            }
-        }
-
 
         // --- ANALYTICS & CHARTING FUNCTIONS ---
 
@@ -2164,8 +2029,6 @@
         dom.saveColumnsBtn.addEventListener('click', saveColumnConfiguration);
         dom.resetColumnsBtn.addEventListener('click', resetColumnConfiguration);
         dom.syncDataBtn.addEventListener('click', handleSyncClick);
-        dom.generateSelectionBtn.addEventListener('click', generateAndDisplaySelection);
-        dom.selectionDateFilter.addEventListener('change', generateAndDisplaySelection);
 
         // --- INITIALIZATION ---
         if (localStorage.getItem('loggedInUser')) {
@@ -2177,4 +2040,5 @@
     </script>
 </body>
 </html>
+
 
