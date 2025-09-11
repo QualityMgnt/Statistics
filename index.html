@@ -303,6 +303,22 @@
 
                 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-900 p-4 sm:p-6 lg:p-8">
                     <div id="content-dashboard" class="page-content">
+                        <!-- Stats Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8" id="dashboard-stats-cards">
+                             <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700 col-span-1 xl:col-span-1">
+                                <div class="flex-shrink-0 bg-cyan-500/10 text-cyan-400 rounded-full h-16 w-16 flex items-center justify-center">
+                                    <i data-lucide="hash" class="w-8 h-8"></i>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-400 text-sm font-medium">Filtered Events</h4>
+                                    <p id="dashboard-total-events" class="text-slate-200 text-2xl font-bold">-</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-6 col-span-1 md:col-span-1 xl:col-span-4" id="dashboard-prediction-counts">
+                                <!-- Prediction counts will be injected here -->
+                            </div>
+                        </div>
+
                         <!-- Filters Section -->
                         <div id="dashboard-filters" class="bg-slate-800/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6 border border-slate-700">
                             <h3 class="text-xl font-bold text-cyan-400 mb-4">Filter Data</h3>
@@ -391,14 +407,29 @@
                     </div>
                     <!-- High Confidence Content -->
                     <div id="content-high-confidence" class="page-content hidden">
-                         <!-- Filters Section (Duplicated) -->
+                        <!-- Stats Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8" id="high-confidence-stats-cards">
+                             <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700 col-span-1 xl:col-span-1">
+                                <div class="flex-shrink-0 bg-cyan-500/10 text-cyan-400 rounded-full h-16 w-16 flex items-center justify-center">
+                                    <i data-lucide="hash" class="w-8 h-8"></i>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-400 text-sm font-medium">Filtered Events</h4>
+                                    <p id="high-confidence-total-events" class="text-slate-200 text-2xl font-bold">-</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-6 col-span-1 md:col-span-1 xl:col-span-4" id="high-confidence-prediction-counts">
+                                <!-- Prediction counts will be injected here -->
+                            </div>
+                        </div>
+                         <!-- Filters Section -->
                         <div id="high-confidence-filters" class="bg-slate-800/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6 border border-slate-700">
                             <h3 class="text-xl font-bold text-cyan-400 mb-4">Filter High-Confidence Picks</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
                                     <label for="hc-searchFilter" class="block text-sm font-medium text-slate-300 mb-2">Search Teams</label>
                                     <div class="relative">
-                                        <input type="text" id="hc-searchFilter" placeholder="e.g., Man United" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 pl-10 transition">
+                                        <input type="text" id="hc-searchFilter" placeholder="e.g., Man United" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 pl-10 transition">
                                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                             <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                         </div>
@@ -406,37 +437,37 @@
                                 </div>
                                 <div>
                                     <label for="hc-dateFilter" class="block text-sm font-medium text-slate-300 mb-2">Date</label>
-                                    <select id="hc-dateFilter" data-filter-key="date" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <select id="hc-dateFilter" data-filter-key="date" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Dates</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="hc-preferenceFilter" class="block text-sm font-medium text-slate-300 mb-2">Preference</label>
-                                    <select id="hc-preferenceFilter" data-filter-key="preference" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <select id="hc-preferenceFilter" data-filter-key="preference" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Preferences</option>
                                     </select>
                                 </div>
                                  <div>
                                     <label for="hc-winningMarginFilter" class="block text-sm font-medium text-slate-300 mb-2">Winning Margin</label>
-                                    <select id="hc-winningMarginFilter" data-filter-key="winningMargin" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <select id="hc-winningMarginFilter" data-filter-key="winningMargin" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Margins</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="hc-analyzedPredictionFilter" class="block text-sm font-medium text-slate-300 mb-2">Analyzed Prediction</label>
-                                    <select id="hc-analyzedPredictionFilter" data-filter-key="analyzedPrediction" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <select id="hc-analyzedPredictionFilter" data-filter-key="analyzedPrediction" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Predictions</option>
                                     </select>
                                 </div>
                                  <div>
                                     <label for="hc-goalsTipFilter" class="block text-sm font-medium text-slate-300 mb-2">Goals Tip</label>
-                                    <select id="hc-goalsTipFilter" data-filter-key="goalsTip" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <select id="hc-goalsTipFilter" data-filter-key="goalsTip" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Goal Tips</option>
                                     </select>
                                 </div>
                                  <div>
                                     <label for="hc-totalGoalsFilter" class="block text-sm font-medium text-slate-300 mb-2">Total Goals</label>
-                                    <select id="hc-totalGoalsFilter" data-filter-key="totalGoals" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <select id="hc-totalGoalsFilter" data-filter-key="totalGoals" class="hc-filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
                                         <option value="All">All Totals</option>
                                     </select>
                                 </div>
@@ -444,7 +475,10 @@
                                     <label for="hc-confidenceRangeFilter" class="block text-sm font-medium text-slate-300 mb-2">
                                         Level of Confidence: <span id="hc-confidenceRangeValue" class="font-bold text-cyan-400">70%</span>
                                     </label>
-                                    <input type="range" id="hc-confidenceRangeFilter" data-filter-key="minConfidence" min="0" max="100" value="70" class="filter-input w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                    <input type="range" id="hc-confidenceRangeFilter" data-filter-key="minConfidence" min="0" max="100" value="70" class="hc-filter-input w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                                <div class="col-span-full flex justify-end gap-4 mt-4">
+                                    <button id="reset-hc-filters-btn" class="bg-slate-600 hover:bg-slate-500 text-slate-200 font-bold py-2.5 px-6 rounded-lg transition">Reset Filters</button>
                                 </div>
                             </div>
                         </div>
@@ -471,9 +505,24 @@
                     </div>
                      <!-- All Events Content -->
                     <div id="content-all-events" class="page-content hidden">
-                        <div class="max-w-7xl mx-auto bg-slate-800 rounded-3xl shadow-xl p-6 md:p-10 border border-slate-700">
+                        <!-- Stats Cards -->
+                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8" id="ae-stats-cards">
+                             <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700 col-span-1 xl:col-span-1">
+                                <div class="flex-shrink-0 bg-cyan-500/10 text-cyan-400 rounded-full h-16 w-16 flex items-center justify-center">
+                                    <i data-lucide="hash" class="w-8 h-8"></i>
+                                </div>
+                                <div class="ml-5">
+                                    <h4 class="text-slate-400 text-sm font-medium">Filtered Events</h4>
+                                    <p id="ae-total-events" class="text-slate-200 text-2xl font-bold">-</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-6 col-span-1 md:col-span-1 xl:col-span-4" id="ae-prediction-counts">
+                                <!-- Prediction counts will be injected here -->
+                            </div>
+                        </div>
 
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-center text-slate-100 mb-8">All Events</h1>
+                        <div class="max-w-7xl mx-auto bg-slate-800 rounded-3xl shadow-xl p-6 md:p-10 border border-slate-700">
+                            <h2 class="text-xl font-bold text-cyan-400 mb-4">Filter All Events</h2>
                     
                             <!-- Filter and Search Section -->
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-6">
@@ -797,7 +846,9 @@
 
 
         // --- GLOBAL STATE ---
-        let allData = [], currentFilteredData = [], originalHeaders = [];
+        let allData = [], originalHeaders = [];
+        let dashboardFilteredData = [], highConfidenceFilteredData = [];
+
         let sortState = { column: null, direction: 'asc' };
         let currentPage = 1;
         let highConfidenceCurrentPage = 1;
@@ -805,9 +856,23 @@
         let charts = {}; // To hold chart instances
         let mainTableHeaders = [];
         let highConfidenceTableHeaders = [];
-        let globalFilters = {};
         let teamSelect, dateRangePicker;
         let allEventsInitialized = false;
+
+        const initialFilterState = () => ({
+            searchTerm: '',
+            date: 'All',
+            preference: 'All',
+            winningMargin: 'All',
+            analyzedPrediction: 'All',
+            goalsTip: 'All',
+            totalGoals: 'All',
+            minConfidence: 70
+        });
+
+        let dashboardFilters = initialFilterState();
+        let highConfidenceFilters = initialFilterState();
+
 
         // --- EVENT HANDLERS (DEFINED EARLY) ---
         
@@ -818,11 +883,9 @@
             dom.tableBody.innerHTML = `<tr><td colspan="${mainTableHeaders.length}" class="p-8 text-center text-slate-400"><div class="loader mx-auto"></div><p class="mt-4">Syncing data...</p></td></tr>`;
             try {
                 await fetchAndProcessData();
-                 // If the all events tab was already initialized, re-initialize it with fresh data
                 if (allEventsInitialized) {
                     initializeAppEvents();
                 }
-
             } catch (e) {
                 // Error handled in fetch function
             } finally {
@@ -832,7 +895,7 @@
             }
         }
 
-        function handleSort(e) {
+        function handleDashboardSort(e) {
             const target = e.target.closest('th');
             if (!target || !target.dataset.originalIndex) return;
             const originalColumnIndex = parseInt(target.dataset.originalIndex);
@@ -844,10 +907,10 @@
                 sortState.direction = 'asc';
             }
             renderMainTableHeaders();
-            applyFiltersAndRender();
+            applyDashboardFilters();
         }
 
-        function handleFilterChange(e) {
+        function handleDashboardFilterChange(e) {
             const input = e.target;
             let value = input.value;
             let key;
@@ -857,53 +920,56 @@
             } else if (input.type === 'range') {
                 key = 'minConfidence';
                 value = parseInt(value, 10);
+                dom.confidenceRangeValue.textContent = `${value}%`;
             } else {
                 key = input.dataset.filterKey;
             }
 
-            globalFilters[key] = value;
+            dashboardFilters[key] = value;
+            applyDashboardFilters();
+        }
+        
+        function handleHighConfidenceFilterChange(e) {
+            const input = e.target;
+            let value = input.value;
+            let key;
 
-            document.querySelectorAll(`.filter-input`).forEach(el => {
-                if (el !== input) {
-                    if (el.dataset.filterKey === key || (key === 'searchTerm' && el.id.includes('search'))) {
-                        el.value = value;
-                    }
-                }
-            });
-
-            dom.confidenceRangeValue.textContent = `${globalFilters.minConfidence}%`;
-            if(dom.hcConfidenceRangeValue) {
-                dom.hcConfidenceRangeValue.textContent = `${globalFilters.minConfidence}%`;
+            if (input.id.includes('search')) {
+                key = 'searchTerm';
+            } else if (input.type === 'range') {
+                key = 'minConfidence';
+                value = parseInt(value, 10);
+                dom.hcConfidenceRangeValue.textContent = `${value}%`;
+            } else {
+                key = input.dataset.filterKey;
             }
-            
-            applyFiltersAndRender();
+
+            highConfidenceFilters[key] = value;
+            applyHighConfidenceFilters();
         }
 
-        function resetFilters() {
-             globalFilters = {
-                searchTerm: '',
-                date: 'All',
-                preference: 'All',
-                winningMargin: 'All',
-                analyzedPrediction: 'All',
-                goalsTip: 'All',
-                totalGoals: 'All',
-                minConfidence: 70
-            };
-            sortState = { column: null, direction: 'asc' };
-
-            document.querySelectorAll('.filter-input').forEach(input => {
+        function resetDashboardFilters() {
+             dashboardFilters = initialFilterState();
+             sortState = { column: null, direction: 'asc' };
+             document.querySelectorAll('#dashboard-filters .filter-input').forEach(input => {
                 if (input.id.includes('search')) input.value = '';
                 else if (input.type === 'range') input.value = 70;
                 else input.selectedIndex = 0;
             });
             dom.confidenceRangeValue.textContent = '70%';
-            if(dom.hcConfidenceRangeValue){
-                dom.hcConfidenceRangeValue.textContent = '70%';
-            }
-
             renderMainTableHeaders();
-            applyFiltersAndRender();
+            applyDashboardFilters();
+        }
+        
+        function resetHighConfidenceFilters() {
+             highConfidenceFilters = initialFilterState();
+             document.querySelectorAll('#high-confidence-filters .hc-filter-input').forEach(input => {
+                if (input.id.includes('search')) input.value = '';
+                else if (input.type === 'range') input.value = 70;
+                else input.selectedIndex = 0;
+            });
+            dom.hcConfidenceRangeValue.textContent = '70%';
+            applyHighConfidenceFilters();
         }
         
         function handleHighConfidenceRowClick(e) {
@@ -918,7 +984,7 @@
             const rowElement = e.target.closest('tr');
              if (e.target.closest('.view-more-btn')) {
                 const rowIndex = parseInt(rowElement.dataset.rowIndex, 10);
-                const rowData = currentFilteredData[rowIndex];
+                const rowData = dashboardFilteredData[rowIndex];
                 if (rowData) openModal(rowData);
             }
         }
@@ -991,11 +1057,13 @@
             tableHeader: document.querySelector('#table-container thead tr'),
             noResultsDiv: document.getElementById('no-results'),
             
-            // Filters (from both panels)
-            allFilterInputs: document.querySelectorAll('.filter-input'),
+            // Filters
+            dashboardFilterInputs: document.querySelectorAll('.filter-input'),
+            hcFilterInputs: document.querySelectorAll('.hc-filter-input'),
             confidenceRangeValue: document.getElementById('confidenceRangeValue'),
             hcConfidenceRangeValue: document.getElementById('hc-confidenceRangeValue'),
             resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+            resetHcFiltersBtn: document.getElementById('reset-hc-filters-btn'),
 
             // Analytics
             analyticsDateFilter: document.getElementById('analyticsDateFilter'),
@@ -1006,7 +1074,7 @@
             optimalConfidence: document.getElementById('optimal-confidence'),
             totalBetsAnalyzed: document.getElementById('total-bets-analyzed'),
 
-            // High Confidence Table
+            // High Confidence
             highConfidenceTableHead: document.getElementById('highConfidenceTableHead'),
             highConfidenceTableBody: document.getElementById('highConfidenceTableBody'),
             highConfidencePaginationControls: document.getElementById('high-confidence-pagination-controls'),
@@ -1175,14 +1243,9 @@
                 });
                 
                 allData = parsed.data;
-                 // Sort all data by date descending once, to easily find recent matches
-                allData.sort((a, b) => {
-                    const dateA = new Date(a[COLUMN_INDICES['Date']]);
-                    const dateB = new Date(b[COLUMN_INDICES['Date']]);
-                    return dateB - dateA;
-                });
+                allData.sort((a, b) => new Date(b[COLUMN_INDICES['Date']]) - new Date(a[COLUMN_INDICES['Date']]));
                 
-                currentFilteredData = [...allData];
+                dashboardFilteredData = [...allData];
 
                 loadColumnConfiguration();
                 renderAdminUI();
@@ -1190,7 +1253,9 @@
                 renderHighConfidenceHeaders();
                 populateDropdowns();
                 initializeComparisonTools();
-                resetFilters();
+                
+                applyDashboardFilters(); 
+                applyHighConfidenceFilters();
 
                 updateAnalytics();
 
@@ -1249,23 +1314,25 @@
                 uniqueValues.forEach(val => selectElement.add(new Option(val, val)));
             });
         }
-        
-        function applyFiltersAndRender() {
+
+        // --- FILTERING LOGIC ---
+
+        function applyDashboardFilters() {
             let filtered = allData.filter(row => {
                 const confidenceText = row[COLUMN_INDICES['Level of Confidence']] || '0%';
                 const confidenceValue = parseInt(confidenceText.replace('%', ''), 10);
                 const homeTeam = (row[COLUMN_INDICES['Home Team']] || '').toLowerCase();
                 const awayTeam = (row[COLUMN_INDICES['Away Team']] || '').toLowerCase();
-                const searchTerm = (globalFilters.searchTerm || '').toLowerCase();
+                const searchTerm = (dashboardFilters.searchTerm || '').toLowerCase();
                 const searchMatch = searchTerm === '' || homeTeam.includes(searchTerm) || awayTeam.includes(searchTerm);
 
-                return (globalFilters.date === 'All' || row[COLUMN_INDICES['Date']] === globalFilters.date) &&
-                       (globalFilters.preference === 'All' || row[COLUMN_INDICES['Preference']] === globalFilters.preference) &&
-                       (globalFilters.winningMargin === 'All' || row[COLUMN_INDICES['Winning Margin']] === globalFilters.winningMargin) &&
-                       (globalFilters.analyzedPrediction === 'All' || row[COLUMN_INDICES['Analyzed Prediction']] === globalFilters.analyzedPrediction) &&
-                       (globalFilters.goalsTip === 'All' || row[COLUMN_INDICES['Goals Tip']] === globalFilters.goalsTip) &&
-                       (globalFilters.totalGoals === 'All' || row[COLUMN_INDICES['Total Goals']] === globalFilters.totalGoals) &&
-                       (confidenceValue >= globalFilters.minConfidence) &&
+                return (dashboardFilters.date === 'All' || row[COLUMN_INDICES['Date']] === dashboardFilters.date) &&
+                       (dashboardFilters.preference === 'All' || row[COLUMN_INDICES['Preference']] === dashboardFilters.preference) &&
+                       (dashboardFilters.winningMargin === 'All' || row[COLUMN_INDICES['Winning Margin']] === dashboardFilters.winningMargin) &&
+                       (dashboardFilters.analyzedPrediction === 'All' || row[COLUMN_INDICES['Analyzed Prediction']] === dashboardFilters.analyzedPrediction) &&
+                       (dashboardFilters.goalsTip === 'All' || row[COLUMN_INDICES['Goals Tip']] === dashboardFilters.goalsTip) &&
+                       (dashboardFilters.totalGoals === 'All' || row[COLUMN_INDICES['Total Goals']] === dashboardFilters.totalGoals) &&
+                       (confidenceValue >= dashboardFilters.minConfidence) &&
                        searchMatch;
             });
             
@@ -1277,14 +1344,79 @@
                 });
             }
 
-            currentFilteredData = filtered;
+            dashboardFilteredData = filtered;
             currentPage = 1;
-            highConfidenceCurrentPage = 1;
+            updateDashboardCards(dashboardFilteredData);
             renderMainTablePage();
+        }
+
+        function applyHighConfidenceFilters() {
+            highConfidenceFilteredData = allData.filter(row => {
+                const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
+                const isHighConfidencePick = analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
+                if (!isHighConfidencePick) return false;
+
+                const confidenceText = row[COLUMN_INDICES['Level of Confidence']] || '0%';
+                const confidenceValue = parseInt(confidenceText.replace('%', ''), 10);
+                const homeTeam = (row[COLUMN_INDICES['Home Team']] || '').toLowerCase();
+                const awayTeam = (row[COLUMN_INDICES['Away Team']] || '').toLowerCase();
+                const searchTerm = (highConfidenceFilters.searchTerm || '').toLowerCase();
+                const searchMatch = searchTerm === '' || homeTeam.includes(searchTerm) || awayTeam.includes(searchTerm);
+
+                return (highConfidenceFilters.date === 'All' || row[COLUMN_INDICES['Date']] === highConfidenceFilters.date) &&
+                       (highConfidenceFilters.preference === 'All' || row[COLUMN_INDICES['Preference']] === highConfidenceFilters.preference) &&
+                       (highConfidenceFilters.winningMargin === 'All' || row[COLUMN_INDICES['Winning Margin']] === highConfidenceFilters.winningMargin) &&
+                       (highConfidenceFilters.analyzedPrediction === 'All' || row[COLUMN_INDICES['Analyzed Prediction']] === highConfidenceFilters.analyzedPrediction) &&
+                       (highConfidenceFilters.goalsTip === 'All' || row[COLUMN_INDICES['Goals Tip']] === highConfidenceFilters.goalsTip) &&
+                       (highConfidenceFilters.totalGoals === 'All' || row[COLUMN_INDICES['Total Goals']] === highConfidenceFilters.totalGoals) &&
+                       (confidenceValue >= highConfidenceFilters.minConfidence) &&
+                       searchMatch;
+            });
+            highConfidenceCurrentPage = 1;
+            updateHighConfidenceCards(highConfidenceFilteredData);
             renderHighConfidencePicksTable();
         }
 
-        // --- TABLE RENDERING ---
+        // --- CARD & TABLE RENDERING ---
+
+        function updateCardCounts(totalElId, containerElId, data, predictionColumnName) {
+            document.getElementById(totalElId).textContent = data.length;
+
+            const predictionCounts = {};
+            const predictionIndex = COLUMN_INDICES[predictionColumnName];
+            if (predictionIndex === undefined) return;
+            
+            data.forEach(row => {
+                const prediction = row[predictionIndex] || 'N/A';
+                predictionCounts[prediction] = (predictionCounts[prediction] || 0) + 1;
+            });
+
+            const container = document.getElementById(containerElId);
+            container.innerHTML = ''; 
+
+            const colorMap = {
+                'Home Best Tip': 'border-emerald-500', 'Best Away Tip': 'border-sky-500',
+                'Home Good Tip': 'border-emerald-400', 'Good Away Tip': 'border-sky-400',
+                'Home Tip': 'border-lime-500', 'Over 2.5 Tip': 'border-amber-500',
+                'Draw Tip': 'border-yellow-500'
+            };
+            const defaultColor = 'border-slate-500';
+
+            const sortedPredictions = Object.entries(predictionCounts).sort((a,b) => b[1] - a[1]);
+
+            for (const [prediction, count] of sortedPredictions) {
+                const color = colorMap[prediction] || defaultColor;
+                const cardHTML = `
+                    <div class="bg-slate-800 p-4 rounded-xl shadow-md border-t-4 ${color} flex flex-col justify-center">
+                        <p class="text-slate-400 text-xs font-medium truncate">${prediction}</p>
+                        <p class="text-slate-200 text-xl font-bold">${count}</p>
+                    </div>`;
+                container.innerHTML += cardHTML;
+            }
+        }
+
+        const updateDashboardCards = (data) => updateCardCounts('dashboard-total-events', 'dashboard-prediction-counts', data, 'Analyzed Prediction');
+        const updateHighConfidenceCards = (data) => updateCardCounts('high-confidence-total-events', 'high-confidence-prediction-counts', data, 'Analyzed Prediction');
 
         function renderMainTableHeaders() {
             dom.tableHeader.innerHTML = mainTableHeaders.map(header => {
@@ -1303,10 +1435,10 @@
         }
         
         function renderMainTablePage() {
-            const totalPages = Math.max(1, Math.ceil(currentFilteredData.length / ROWS_PER_PAGE));
+            const totalPages = Math.max(1, Math.ceil(dashboardFilteredData.length / ROWS_PER_PAGE));
             currentPage = Math.max(1, Math.min(currentPage, totalPages));
             const start = (currentPage - 1) * ROWS_PER_PAGE;
-            const pageData = currentFilteredData.slice(start, start + ROWS_PER_PAGE);
+            const pageData = dashboardFilteredData.slice(start, start + ROWS_PER_PAGE);
             
             dom.tableBody.innerHTML = '';
             dom.noResultsDiv.classList.toggle('hidden', pageData.length > 0 || allData.length === 0);
@@ -1318,7 +1450,7 @@
             pageData.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-700 transition-colors';
-                tr.dataset.rowIndex = currentFilteredData.indexOf(row);
+                tr.dataset.rowIndex = allData.indexOf(row);
                 
                 let cellsHTML = '';
                 mainTableHeaders.forEach(headerName => {
@@ -1381,7 +1513,7 @@
                 case 'Over 1.5 Tip': case 'Over 2.5 Tip':
                     bgColor = 'bg-amber-500/10'; textColor = 'text-amber-400'; break;
             }
-            return `<span class="${bgColor} ${textColor} text-xs font-medium px-2.5 py-1 rounded-full">${prediction}</span>`;
+            return `<span class="${bgColor} ${textColor} text-xs font-medium px-2.5 py-1 rounded-full">${prediction || 'N/A'}</span>`;
         }
         
         function renderHighConfidenceHeaders() {
@@ -1389,22 +1521,17 @@
         }
         
         function renderHighConfidencePicksTable() {
-            const picks = currentFilteredData.filter(row => {
-                const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
-                return analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
-            });
+            dom.highConfidencePaginationControls.style.display = highConfidenceFilteredData.length > 0 ? 'flex' : 'none';
 
-            dom.highConfidencePaginationControls.style.display = picks.length > 0 ? 'flex' : 'none';
-
-            if (picks.length === 0) {
+            if (highConfidenceFilteredData.length === 0) {
                 dom.highConfidenceTableBody.innerHTML = `<tr><td colspan="${highConfidenceTableHeaders.length}" class="p-8 text-center text-slate-400">No high-confidence picks match the current filters.</td></tr>`;
                 return;
             }
 
-            const totalPages = Math.max(1, Math.ceil(picks.length / HIGH_CONFIDENCE_ROWS_PER_PAGE));
+            const totalPages = Math.max(1, Math.ceil(highConfidenceFilteredData.length / HIGH_CONFIDENCE_ROWS_PER_PAGE));
             highConfidenceCurrentPage = Math.max(1, Math.min(highConfidenceCurrentPage, totalPages));
             const start = (highConfidenceCurrentPage - 1) * HIGH_CONFIDENCE_ROWS_PER_PAGE;
-            const pageData = picks.slice(start, start + HIGH_CONFIDENCE_ROWS_PER_PAGE);
+            const pageData = highConfidenceFilteredData.slice(start, start + HIGH_CONFIDENCE_ROWS_PER_PAGE);
             
             dom.highConfidenceTableBody.innerHTML = pageData.map((row) => {
                 const originalIndex = allData.indexOf(row);
@@ -2017,7 +2144,7 @@
 
             renderMainTableHeaders();
             renderHighConfidenceHeaders();
-            applyFiltersAndRender();
+            applyDashboardFilters();
 
             dom.adminMessage.textContent = 'Settings saved successfully!';
             setTimeout(() => { dom.adminMessage.textContent = ''; }, 3000);
@@ -2032,7 +2159,7 @@
             renderAdminUI();
             renderMainTableHeaders();
             renderHighConfidenceHeaders();
-            applyFiltersAndRender();
+            applyDashboardFilters();
             
             dom.adminMessage.textContent = 'Settings reset to default.';
             setTimeout(() => { dom.adminMessage.textContent = ''; }, 3000);
@@ -2189,15 +2316,11 @@
 
         // --- ALL EVENTS TAB FUNCTIONS (NEWLY INTEGRATED) ---
         function initializeAppEvents() {
-            // This function encapsulates all the logic from the second HTML file.
-            
-            // --- State for this specific tab ---
             let ae_allEvents = [];
             let ae_filteredEvents = [];
             let ae_currentPage = 1;
             const ae_eventsPerPage = 20;
 
-            // --- DOM elements for this tab (prefixed with ae_) ---
             const ae_dom = {
                 dateFilter: document.getElementById('ae-dateFilter'),
                 goalsTipFilter: document.getElementById('ae-goalsTipFilter'),
@@ -2225,8 +2348,10 @@
                 modalPrediction: document.getElementById('ae-modalPrediction'),
                 modalMatchURL: document.getElementById('ae-modalMatchURL')
             };
+            
+            const ae_updateCards = (data) => updateCardCounts('ae-total-events', 'ae-prediction-counts', data.map(obj => Object.values(obj)), 'Analyzed Prediction');
 
-            // --- Logic Functions for this tab ---
+
             const ae_populateFilters = () => {
                 const filtersToPopulate = [
                     { id: 'ae-dateFilter', column: 'Date' },
@@ -2235,7 +2360,7 @@
                     { id: 'ae-winningMarginFilter', column: 'Winning Margin' },
                     { id: 'ae-analyzedPredictionFilter', column: 'Analyzed Prediction' }
                 ];
-
+                
                 filtersToPopulate.forEach(config => {
                     const selectElement = document.getElementById(config.id);
                     if (!selectElement) return;
@@ -2298,6 +2423,8 @@
                 const startIndex = (ae_currentPage - 1) * ae_eventsPerPage;
                 const endIndex = startIndex + ae_eventsPerPage;
                 const eventsToShow = ae_filteredEvents.slice(startIndex, endIndex);
+                
+                ae_updateCards(ae_filteredEvents);
 
                 if (eventsToShow.length === 0) {
                     ae_dom.dataTableBody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-slate-400">No events found matching the filters.</td></tr>`;
@@ -2455,18 +2582,26 @@
         dom.signupForm.addEventListener('submit', handleSignup);
         dom.logoutBtn.addEventListener('click', handleLogout);
         dom.sidebarNav.addEventListener('click', handleSidebarClick);
-        dom.allFilterInputs.forEach(input => {
-            input.addEventListener('input', handleFilterChange);
-            input.addEventListener('change', handleFilterChange); // for selects
+        
+        dom.dashboardFilterInputs.forEach(input => {
+            input.addEventListener('input', handleDashboardFilterChange);
+            input.addEventListener('change', handleDashboardFilterChange);
         });
-        dom.resetFiltersBtn.addEventListener('click', resetFilters);
+        dom.hcFilterInputs.forEach(input => {
+            input.addEventListener('input', handleHighConfidenceFilterChange);
+            input.addEventListener('change', handleHighConfidenceFilterChange);
+        });
+
+        dom.resetFiltersBtn.addEventListener('click', resetDashboardFilters);
+        dom.resetHcFiltersBtn.addEventListener('click', resetHighConfidenceFilters);
+
         dom.analyticsDateFilter.addEventListener('change', updateAnalytics);
         dom.analyticsTotalGoalsFilter.addEventListener('change', updateAnalytics);
-        dom.tableHeader.addEventListener('click', handleSort);
+        dom.tableHeader.addEventListener('click', handleDashboardSort);
         dom.tableBody.addEventListener('click', handleMainTableRowClick);
         dom.prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderMainTablePage(); }});
         dom.nextPageBtn.addEventListener('click', () => {
-            const totalPages = Math.ceil(currentFilteredData.length / ROWS_PER_PAGE);
+            const totalPages = Math.ceil(dashboardFilteredData.length / ROWS_PER_PAGE);
             if (currentPage < totalPages) { currentPage++; renderMainTablePage(); }
         });
 
@@ -2478,11 +2613,7 @@
             }
         });
         dom.highConfidenceNextPageBtn.addEventListener('click', () => {
-            const picks = currentFilteredData.filter(row => {
-                const analyzedPrediction = row[COLUMN_INDICES['Analyzed Prediction']];
-                return analyzedPrediction === 'Home Best Tip' || analyzedPrediction === 'Best Away Tip';
-            });
-            const totalPages = Math.ceil(picks.length / HIGH_CONFIDENCE_ROWS_PER_PAGE);
+            const totalPages = Math.ceil(highConfidenceFilteredData.length / HIGH_CONFIDENCE_ROWS_PER_PAGE);
             if (highConfidenceCurrentPage < totalPages) { 
                 highConfidenceCurrentPage++; 
                 renderHighConfidencePicksTable(); 
