@@ -880,7 +880,8 @@
         const ROWS_PER_PAGE = 20;
         
         // --- DEFAULT TABLE HEADERS CONFIGURATION ---
-        const DEFAULT_MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Analyzed Prediction', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Match Outcome', 'Accuracy'];
+        // MODIFIED: Replaced 'Match Outcome' and 'Accuracy'
+        const DEFAULT_MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Analyzed Prediction', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Prediction Status', 'Match Result'];
         let ALL_POSSIBLE_COLUMNS = [];
 
 
@@ -1426,14 +1427,16 @@
                         case 'Analyzed Prediction':
                             cellContent = getStyledPredictionBadge(cellValue);
                             break;
-                        case 'Accuracy':
-                            if ((cellValue || '').toLowerCase() === 'success') {
-                                cellContent = `<span class="bg-emerald-500/10 text-emerald-400 text-xs font-medium px-2.5 py-0.5 rounded-full">Success</span>`;
-                            } else if ((cellValue || '').toLowerCase() === 'unsuccessful') {
-                                cellContent = `<span class="bg-rose-500/10 text-rose-400 text-xs font-medium px-2.5 py-0.5 rounded-full">Unsuccessful</span>`;
-                            } else {
-                                cellContent = `<span class="text-slate-500">-</span>`;
+                        // MODIFIED: Replaced 'Accuracy' case with 'Prediction Status'
+                        case 'Prediction Status':
+                            let statusClass = 'bg-slate-700 text-slate-300';
+                            const lowerCellValue = (cellValue || '').toLowerCase();
+                            if (lowerCellValue === 'won' || lowerCellValue === 'success') {
+                                statusClass = 'bg-emerald-500/10 text-emerald-400';
+                            } else if (lowerCellValue === 'lost' || lowerCellValue === 'unsuccessful') {
+                                statusClass = 'bg-rose-500/10 text-rose-400';
                             }
+                            cellContent = `<span class="${statusClass} text-xs font-medium px-2.5 py-0.5 rounded-full">${cellValue || 'N/A'}</span>`;
                             break;
                         case 'Details':
                             cellContent = `<button class="view-more-btn bg-cyan-600 text-white px-3 py-1 text-xs rounded-full hover:bg-cyan-700 transition shadow">View</button>`;
@@ -2672,6 +2675,8 @@
             // Initial Call
             ba_fetchData();
             bestAnalysisInitialized = true;
+            // ADDED: Auto-refresh data every 60 seconds
+            setInterval(ba_fetchData, 60000); 
         }
 
         // --- EVENT LISTENERS ---
@@ -2717,4 +2722,3 @@
     </script>
 </body>
 </html>
-
