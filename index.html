@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Compass | Sports Analytics</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230891b2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><title>Data Compass Favicon</title><circle cx='12' cy='12' r='10'></circle><polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'></polygon></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231e40af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><title>Data Compass Favicon</title><circle cx='12' cy='12' r='10'></circle><polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'></polygon></svg>">
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for data visualization -->
@@ -20,16 +20,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- jsPDF for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf-autotable.min.js"></script>
     <style>
         /* Use the Poppins font */
         body {
             font-family: 'Poppins', sans-serif;
         }
-        /* Custom scrollbar for better aesthetics in dark mode */
+        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #1e293b; } /* slate-800 */
-        ::-webkit-scrollbar-thumb { background: #0891b2; border-radius: 10px; } /* Cyan 600 */
-        ::-webkit-scrollbar-thumb:hover { background: #0e7490; } /* Cyan 700 */
+        ::-webkit-scrollbar-track { background: #f1f5f9; } /* slate-100 */
+        ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 10px; } /* blue-900 */
+        ::-webkit-scrollbar-thumb:hover { background: #1e40af; } /* blue-800 */
         
         /* Style for table headers to make them sticky and sortable */
         thead th {
@@ -45,9 +48,9 @@
 
         /* Loading Spinner Animation */
         .loader {
-            border: 5px solid #1e293b; 
+            border: 5px solid #e2e8f0; /* slate-200 */
             border-radius: 50%;
-            border-top: 5px solid #0891b2; /* Cyan 600 */
+            border-top: 5px solid #1e3a8a; /* blue-900 */
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
@@ -61,7 +64,6 @@
         .modal-overlay { transition: opacity 0.3s ease; }
         .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
 
-        /* All Events & Best Analysis Modal styles */
         .custom-modal {
             display: none;
             position: fixed;
@@ -85,7 +87,7 @@
 
         /* Sidebar navigation active state */
         .sidebar-link.active {
-            background-color: #0891b2; /* Cyan 600 */
+            background-color: #1d4ed8; /* blue-700 */
             color: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
@@ -99,7 +101,7 @@
             appearance: none;
             width: 100%;
             height: 8px;
-            background: #334155; /* slate-700 */
+            background: #cbd5e1; /* slate-300 */
             border-radius: 5px;
             outline: none;
             opacity: 0.7;
@@ -111,14 +113,14 @@
             appearance: none;
             width: 20px;
             height: 20px;
-            background: #0891b2; /* cyan-600 */
+            background: #1e3a8a; /* blue-900 */
             border-radius: 50%;
             cursor: pointer;
         }
         input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
-            background: #0891b2;
+            background: #1e3a8a;
             border-radius: 50%;
             cursor: pointer;
         }
@@ -133,118 +135,118 @@
         /* Drag and Drop styles for Admin panel */
         .draggable-item { cursor: grab; }
         .draggable-item:active { cursor: grabbing; }
-        .dragging { opacity: 0.5; background: #0f172a; }
-        .drag-over { border: 2px dashed #0891b2; }
+        .dragging { opacity: 0.5; background: #e2e8f0; }
+        .drag-over { border: 2px dashed #1e3a8a; }
         
-        /* Tom Select custom dark styles */
+        /* Tom Select custom light styles */
         .ts-control {
             border-radius: 0.5rem !important;
-            background-color: #334155 !important;
-            border-color: #475569 !important;
-            color: #e2e8f0;
+            background-color: #f1f5f9 !important; /* slate-100 */
+            border-color: #cbd5e1 !important; /* slate-300 */
+            color: #1e293b;
         }
         .ts-control:focus-within {
-             border-color: #0891b2 !important;
-             box-shadow: 0 0 0 1px #0891b2 !important;
+             border-color: #1d4ed8 !important; /* blue-700 */
+             box-shadow: 0 0 0 1px #1d4ed8 !important;
         }
         .ts-dropdown {
-            background: #1e293b !important;
-            border-color: #475569 !important;
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important; /* slate-200 */
         }
         .ts-dropdown .ts-option {
-            color: #cbd5e1;
+            color: #334155;
         }
         .ts-dropdown .ts-option.active, .ts-dropdown .ts-option:hover {
-            background-color: #0891b2 !important;
+            background-color: #1d4ed8 !important;
             color: white !important;
         }
         .ts-control .item {
-            background: #0891b2 !important;
+            background: #1d4ed8 !important;
             color: white !important;
         }
     </style>
 </head>
-<body class="antialiased text-slate-300 bg-slate-900">
+<body class="antialiased text-slate-700 bg-slate-50">
 
     <!-- Auth Container -->
-    <div id="auth-container" class="flex items-center justify-center min-h-screen bg-slate-900">
-        <div class="w-full max-w-md p-8 space-y-8 bg-slate-800 rounded-2xl shadow-lg border border-slate-700">
+    <div id="auth-container" class="flex items-center justify-center min-h-screen bg-slate-100">
+        <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg border border-slate-200">
             
             <!-- Login Form -->
             <div id="login-view">
                 <div class="text-center">
-                    <div class="mx-auto h-16 w-16 mb-4 flex items-center justify-center bg-cyan-900/50 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400">
+                    <div class="mx-auto h-16 w-16 mb-4 flex items-center justify-center bg-blue-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-800">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
                             <circle cx="12" cy="12" r="3"></circle>
                         </svg>
                     </div>
-                    <h2 class="text-3xl font-extrabold text-cyan-400">Data Compass</h2>
-                    <p class="mt-2 text-sm text-slate-400">Precision in Prediction. Accuracy in Analytics.</p>
+                    <h2 class="text-3xl font-extrabold text-blue-800">Data Compass</h2>
+                    <p class="mt-2 text-sm text-slate-500">Precision in Prediction. Accuracy in Analytics.</p>
                 </div>
                 <form id="login-form" class="mt-8 space-y-6">
                     <div class="space-y-4 rounded-md shadow-sm">
                         <div>
                             <label for="login-email" class="sr-only">Email address</label>
-                            <input id="login-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-700 border-slate-600 text-slate-200 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Email address">
+                            <input id="login-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-50 border-slate-300 text-slate-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10" placeholder="Email address">
                         </div>
                         <div>
                             <label for="login-password" class="sr-only">Password</label>
-                            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-700 border-slate-600 text-slate-200 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Password">
+                            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-50 border-slate-300 text-slate-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10" placeholder="Password">
                         </div>
                     </div>
                     <p id="login-error" class="text-sm text-center text-rose-500"></p>
                     <div>
-                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-cyan-600 border border-transparent rounded-lg group hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-800 border border-transparent rounded-lg group hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Sign in
                         </button>
                     </div>
                 </form>
                 <p class="mt-6 text-sm text-center">
                     Don't have an account?
-                    <a href="#" id="show-signup" class="font-medium text-cyan-500 hover:text-cyan-400">Sign up</a>
+                    <a href="#" id="show-signup" class="font-medium text-blue-700 hover:text-blue-600">Sign up</a>
                 </p>
             </div>
 
             <!-- Signup Form -->
             <div id="signup-view" class="hidden">
                  <div class="text-center">
-                     <div class="mx-auto h-16 w-16 mb-4 flex items-center justify-center bg-cyan-900/50 rounded-lg">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400">
+                     <div class="mx-auto h-16 w-16 mb-4 flex items-center justify-center bg-blue-100 rounded-lg">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-800">
                              <circle cx="12" cy="12" r="10"></circle>
                              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
                              <circle cx="12" cy="12" r="3"></circle>
                          </svg>
                     </div>
-                    <h2 class="text-3xl font-extrabold text-cyan-400">Create an Account</h2>
-                    <p class="mt-2 text-sm text-slate-400">Get started with your sports analytics journey</p>
+                    <h2 class="text-3xl font-extrabold text-blue-800">Create an Account</h2>
+                    <p class="mt-2 text-sm text-slate-500">Get started with your sports analytics journey</p>
                 </div>
                 <form id="signup-form" class="mt-8 space-y-6">
                     <div class="space-y-4 rounded-md shadow-sm">
                         <div>
                             <label for="signup-name" class="sr-only">Full Name</label>
-                            <input id="signup-name" name="name" type="text" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-700 border-slate-600 text-slate-200 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Full Name">
+                            <input id="signup-name" name="name" type="text" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-50 border-slate-300 text-slate-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10" placeholder="Full Name">
                         </div>
                         <div>
                             <label for="signup-email" class="sr-only">Email address</label>
-                            <input id="signup-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-700 border-slate-600 text-slate-200 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Email address">
+                            <input id="signup-email" name="email" type="email" autocomplete="email" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-50 border-slate-300 text-slate-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10" placeholder="Email address">
                         </div>
                         <div>
                             <label for="signup-password" class="sr-only">Password</label>
-                            <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-700 border-slate-600 text-slate-200 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10" placeholder="Password">
+                            <input id="signup-password" name="password" type="password" autocomplete="new-password" required class="relative block w-full px-3 py-3 text-sm placeholder-slate-400 border rounded-lg appearance-none bg-slate-50 border-slate-300 text-slate-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10" placeholder="Password">
                         </div>
                     </div>
                     <p id="signup-message" class="text-sm text-center"></p>
                     <div>
-                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-cyan-600 border border-transparent rounded-lg group hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                        <button type="submit" class="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-blue-800 border border-transparent rounded-lg group hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Sign up
                         </button>
                     </div>
                 </form>
                  <p class="mt-6 text-sm text-center">
                     Already have an account?
-                    <a href="#" id="show-login" class="font-medium text-cyan-500 hover:text-cyan-400">Sign in</a>
+                    <a href="#" id="show-login" class="font-medium text-blue-700 hover:text-blue-600">Sign in</a>
                 </p>
             </div>
         </div>
@@ -254,41 +256,45 @@
     <div id="dashboard-container" class="hidden h-screen">
         <div class="flex h-screen">
             <!-- Sidebar Navigation -->
-            <aside class="w-64 bg-slate-800 shadow-lg flex flex-col flex-shrink-0 border-r border-slate-700">
-                <div class="p-6 flex items-center space-x-4 border-b border-slate-700">
-                    <div class="h-10 w-10 flex items-center justify-center bg-cyan-900/50 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400">
+            <aside class="w-64 bg-blue-900 shadow-lg flex flex-col flex-shrink-0 text-blue-100">
+                <div class="p-6 flex items-center space-x-4 border-b border-blue-800">
+                    <div class="h-10 w-10 flex items-center justify-center bg-white/20 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
                             <circle cx="12" cy="12" r="3"></circle>
                         </svg>
                     </div>
-                    <h1 class="text-xl font-bold text-cyan-400">Data Compass</h1>
+                    <h1 class="text-xl font-bold text-white">Data Compass</h1>
                 </div>
                 <nav id="sidebar-nav" class="flex-1 px-4 py-6 space-y-2">
-                     <a href="#" data-target="content-best-analysis" class="sidebar-link active flex items-center px-4 py-2.5 text-slate-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                     <a href="#" data-target="content-todays-best" class="sidebar-link active flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-700 hover:text-white transition-colors">
+                        <i data-lucide="award" class="w-5 h-5 mr-3"></i>
+                        Today's Best
+                    </a>
+                    <a href="#" data-target="content-best-analysis" class="sidebar-link flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-700 hover:text-white transition-colors">
                          <i data-lucide="bar-chart-big" class="w-5 h-5 mr-3"></i>
                          Best Analysis
                      </a>
-                    <a href="#" data-target="content-dashboard" class="sidebar-link flex items-center px-4 py-2.5 text-slate-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                    <a href="#" data-target="content-dashboard" class="sidebar-link flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-700 hover:text-white transition-colors">
                          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Matches
                     </a>
-                    <a href="#" data-target="content-all-events" class="sidebar-link flex items-center px-4 py-2.5 text-slate-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                    <a href="#" data-target="content-all-events" class="sidebar-link flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-700 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         All Events
                     </a>
-                    <a href="#" data-target="content-analytics" class="sidebar-link flex items-center px-4 py-2.5 text-slate-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                    <a href="#" data-target="content-analytics" class="sidebar-link flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-700 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         Analytics
                     </a>
-                    <a href="#" data-target="content-admin" class="sidebar-link flex items-center px-4 py-2.5 text-slate-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors">
+                    <a href="#" data-target="content-admin" class="sidebar-link flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-700 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         Admin
                     </a>
                 </nav>
-                 <div class="p-4 border-t border-slate-700">
-                     <div class="text-xs text-slate-400 mb-2">Logged in as: <span id="user-email-display" class="font-semibold"></span></div>
+                 <div class="p-4 border-t border-blue-800">
+                     <div class="text-xs text-blue-200 mb-2">Logged in as: <span id="user-email-display" class="font-semibold"></span></div>
                     <button id="logout-btn" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center justify-center space-x-2 shadow-sm hover:shadow-md">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         <span>Logout</span>
@@ -298,27 +304,27 @@
 
             <!-- Main Content -->
             <div class="flex-1 flex flex-col overflow-hidden">
-                <header class="bg-slate-800 shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0 border-b border-slate-700">
-                    <h1 id="main-header-title" class="text-2xl font-bold text-cyan-400">Best Analysis</h1>
+                <header class="bg-white shadow-sm p-4 flex justify-between items-center z-20 flex-shrink-0 border-b border-slate-200">
+                    <h1 id="main-header-title" class="text-2xl font-bold text-blue-900">Today's Best</h1>
                     <div class="flex space-x-2">
-                        <button id="syncDataBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
+                        <button id="syncDataBtn" class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center space-x-2 shadow-sm hover:shadow-md">
                             <svg class="w-4 h-4" id="syncIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.25-4.25l-1.47 1.47c.56.98.82 2.09.82 3.28 0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg>
                             <span id="syncText">Sync Data</span>
                         </button>
                     </div>
                 </header>
 
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-900 p-4 sm:p-6 lg:p-8">
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 p-4 sm:p-6 lg:p-8">
                     <div id="content-dashboard" class="page-content hidden">
                         <!-- Stats Cards -->
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8" id="dashboard-stats-cards">
-                             <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700 col-span-1 xl:col-span-1">
-                                 <div class="flex-shrink-0 bg-cyan-500/10 text-cyan-400 rounded-full h-16 w-16 flex items-center justify-center">
+                             <div class="bg-white p-6 rounded-xl shadow-md flex items-center border border-slate-200 col-span-1 xl:col-span-1">
+                                 <div class="flex-shrink-0 bg-blue-100 text-blue-800 rounded-full h-16 w-16 flex items-center justify-center">
                                      <i data-lucide="hash" class="w-8 h-8"></i>
                                  </div>
                                  <div class="ml-5">
-                                     <h4 class="text-slate-400 text-sm font-medium">Filtered Events</h4>
-                                     <p id="dashboard-total-events" class="text-slate-200 text-2xl font-bold">-</p>
+                                     <h4 class="text-slate-500 text-sm font-medium">Filtered Events</h4>
+                                     <p id="dashboard-total-events" class="text-slate-800 text-2xl font-bold">-</p>
                                  </div>
                              </div>
                             <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-6 col-span-1 md:col-span-1 xl:col-span-4" id="dashboard-prediction-counts">
@@ -327,88 +333,88 @@
                         </div>
 
                         <!-- Filters Section -->
-                        <div id="dashboard-filters" class="bg-slate-800/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6 border border-slate-700">
-                            <h3 class="text-xl font-bold text-cyan-400 mb-4">Filter Data</h3>
+                        <div id="dashboard-filters" class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6 border border-slate-200">
+                            <h3 class="text-xl font-bold text-blue-900 mb-4">Filter Data</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
-                                    <label for="searchFilter" class="block text-sm font-medium text-slate-300 mb-2">Search Teams</label>
+                                    <label for="searchFilter" class="block text-sm font-medium text-slate-600 mb-2">Search Teams</label>
                                     <div class="relative">
-                                        <input type="text" id="searchFilter" placeholder="e.g., Man United" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 pl-10 transition">
+                                        <input type="text" id="searchFilter" placeholder="e.g., Man United" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 pl-10 transition">
                                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                             <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <label for="dateFilter" class="block text-sm font-medium text-slate-300 mb-2">Date</label>
-                                    <select id="dateFilter" data-filter-key="date" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="dateFilter" class="block text-sm font-medium text-slate-600 mb-2">Date</label>
+                                    <select id="dateFilter" data-filter-key="date" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Dates</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="preferenceFilter" class="block text-sm font-medium text-slate-300 mb-2">Preference</label>
-                                    <select id="preferenceFilter" data-filter-key="preference" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="preferenceFilter" class="block text-sm font-medium text-slate-600 mb-2">Preference</label>
+                                    <select id="preferenceFilter" data-filter-key="preference" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Preferences</option>
                                     </select>
                                 </div>
                                  <div>
-                                    <label for="winningMarginFilter" class="block text-sm font-medium text-slate-300 mb-2">Winning Margin</label>
-                                    <select id="winningMarginFilter" data-filter-key="winningMargin" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="winningMarginFilter" class="block text-sm font-medium text-slate-600 mb-2">Winning Margin</label>
+                                    <select id="winningMarginFilter" data-filter-key="winningMargin" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Margins</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="analyzedPredictionFilter" class="block text-sm font-medium text-slate-300 mb-2">Analyzed Prediction</label>
-                                    <select id="analyzedPredictionFilter" data-filter-key="analyzedPrediction" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="analyzedPredictionFilter" class="block text-sm font-medium text-slate-600 mb-2">Analyzed Prediction</label>
+                                    <select id="analyzedPredictionFilter" data-filter-key="analyzedPrediction" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Predictions</option>
                                     </select>
                                 </div>
                                  <div>
-                                    <label for="goalsTipFilter" class="block text-sm font-medium text-slate-300 mb-2">Goals Tip</label>
-                                    <select id="goalsTipFilter" data-filter-key="goalsTip" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="goalsTipFilter" class="block text-sm font-medium text-slate-600 mb-2">Goals Tip</label>
+                                    <select id="goalsTipFilter" data-filter-key="goalsTip" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Goal Tips</option>
                                     </select>
                                 </div>
                                  <div>
-                                    <label for="totalGoalsFilter" class="block text-sm font-medium text-slate-300 mb-2">Total Goals</label>
-                                    <select id="totalGoalsFilter" data-filter-key="totalGoals" class="filter-input w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="totalGoalsFilter" class="block text-sm font-medium text-slate-600 mb-2">Total Goals</label>
+                                    <select id="totalGoalsFilter" data-filter-key="totalGoals" class="filter-input w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Totals</option>
                                     </select>
                                 </div>
                                 <div class="lg:col-span-4">
-                                    <label for="confidenceRangeFilter" class="block text-sm font-medium text-slate-300 mb-2">
-                                        Level of Confidence: <span id="confidenceRangeValue" class="font-bold text-cyan-400">70%</span>
+                                    <label for="confidenceRangeFilter" class="block text-sm font-medium text-slate-600 mb-2">
+                                        Level of Confidence: <span id="confidenceRangeValue" class="font-bold text-blue-800">70%</span>
                                     </label>
-                                    <input type="range" id="confidenceRangeFilter" data-filter-key="minConfidence" min="0" max="100" value="70" class="filter-input w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                                    <input type="range" id="confidenceRangeFilter" data-filter-key="minConfidence" min="0" max="100" value="70" class="filter-input w-full h-2 rounded-lg appearance-none cursor-pointer">
                                 </div>
 
                                 <div class="col-span-full flex justify-end gap-4 mt-4">
-                                    <button id="resetFiltersBtn" class="bg-slate-600 hover:bg-slate-500 text-slate-200 font-bold py-2.5 px-6 rounded-lg transition">Reset Filters</button>
+                                    <button id="resetFiltersBtn" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2.5 px-6 rounded-lg transition">Reset Filters</button>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- All Match Data Table -->
-                        <div class="bg-slate-800 rounded-xl shadow-md overflow-hidden border border-slate-700">
-                             <div class="p-4 border-b border-slate-700">
-                                 <h3 class="text-xl font-bold text-cyan-400">All Match Data</h3>
-                                <p class="text-sm text-slate-400 mt-1">A comprehensive list of all matches. Use the filters above to refine the results.</p>
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
+                             <div class="p-4 border-b border-slate-200">
+                                 <h3 class="text-xl font-bold text-blue-900">All Match Data</h3>
+                                <p class="text-sm text-slate-500 mt-1">A comprehensive list of all matches. Use the filters above to refine the results.</p>
                             </div>
                             <div id="table-container" class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-slate-700">
-                                    <thead class="bg-slate-700/50">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-100">
                                         <tr></tr>
                                     </thead>
-                                    <tbody id="dataTableBody" class="divide-y divide-slate-700">
-                                         <tr><td colspan="10" class="p-8 text-center text-slate-400"><div class="loader mx-auto"></div><p class="mt-4">Loading data...</p></td></tr>
+                                    <tbody id="dataTableBody" class="divide-y divide-slate-200">
+                                         <tr><td colspan="10" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Loading data...</p></td></tr>
                                     </tbody>
                                 </table>
-                                 <div id="no-results" class="hidden p-8 text-center text-slate-400">No records match the current filters.</div>
+                                 <div id="no-results" class="hidden p-8 text-center text-slate-500">No records match the current filters.</div>
                             </div>
-                            <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-700">
-                                <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-slate-300 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
-                                <div class="text-sm text-slate-400" id="page-info">Page 1 of 1</div>
-                                <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-600 text-sm font-medium rounded-md text-slate-300 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                            <div id="pagination-controls" class="p-4 flex items-center justify-between border-t border-slate-200">
+                                <button id="prev-page" class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                                <div class="text-sm text-slate-500" id="page-info">Page 1 of 1</div>
+                                <button id="next-page" class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
                             </div>
                         </div>
                     </div>
@@ -416,13 +422,13 @@
                     <div id="content-all-events" class="page-content hidden">
                         <!-- Stats Cards -->
                          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8" id="ae-stats-cards">
-                             <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700 col-span-1 xl:col-span-1">
-                                 <div class="flex-shrink-0 bg-cyan-500/10 text-cyan-400 rounded-full h-16 w-16 flex items-center justify-center">
+                             <div class="bg-white p-6 rounded-xl shadow-md flex items-center border border-slate-200 col-span-1 xl:col-span-1">
+                                 <div class="flex-shrink-0 bg-blue-100 text-blue-800 rounded-full h-16 w-16 flex items-center justify-center">
                                      <i data-lucide="hash" class="w-8 h-8"></i>
                                  </div>
                                  <div class="ml-5">
-                                     <h4 class="text-slate-400 text-sm font-medium">Filtered Events</h4>
-                                     <p id="ae-total-events" class="text-slate-200 text-2xl font-bold">-</p>
+                                     <h4 class="text-slate-500 text-sm font-medium">Filtered Events</h4>
+                                     <p id="ae-total-events" class="text-slate-800 text-2xl font-bold">-</p>
                                  </div>
                              </div>
                             <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-6 col-span-1 md:col-span-1 xl:col-span-4" id="ae-prediction-counts">
@@ -430,88 +436,88 @@
                             </div>
                         </div>
 
-                        <div class="max-w-7xl mx-auto bg-slate-800 rounded-3xl shadow-xl p-6 md:p-10 border border-slate-700">
-                            <h2 class="text-xl font-bold text-cyan-400 mb-4">Filter All Events</h2>
+                        <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-10 border border-slate-200">
+                            <h2 class="text-xl font-bold text-blue-900 mb-4">Filter All Events</h2>
                         
                             <!-- Filter and Search Section -->
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-6">
                                 <div class="col-span-1">
-                                    <label for="ae-dateFilter" class="block text-sm font-medium text-slate-300 mb-1">Date</label>
-                                    <select id="ae-dateFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-dateFilter" class="block text-sm font-medium text-slate-600 mb-1">Date</label>
+                                    <select id="ae-dateFilter" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                         <option value="">All</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1">
-                                    <label for="ae-goalsTipFilter" class="block text-sm font-medium text-slate-300 mb-1">Goals Tip</label>
-                                    <select id="ae-goalsTipFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-goalsTipFilter" class="block text-sm font-medium text-slate-600 mb-1">Goals Tip</label>
+                                    <select id="ae-goalsTipFilter" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                         <option value="">All</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1">
-                                    <label for="ae-accuracyFilter" class="block text-sm font-medium text-slate-300 mb-1">Accuracy</label>
-                                    <select id="ae-accuracyFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-accuracyFilter" class="block text-sm font-medium text-slate-600 mb-1">Accuracy</label>
+                                    <select id="ae-accuracyFilter" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                         <option value="">All</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1">
-                                    <label for="ae-predictionFilter" class="block text-sm font-medium text-slate-300 mb-1">Prediction</label>
-                                    <select id="ae-predictionFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-predictionFilter" class="block text-sm font-medium text-slate-600 mb-1">Prediction</label>
+                                    <select id="ae-predictionFilter" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                         <option value="">All</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1">
-                                    <label for="ae-analyzedPredictionFilter" class="block text-sm font-medium text-slate-300 mb-1">Analyzed Prediction</label>
-                                    <select id="ae-analyzedPredictionFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-analyzedPredictionFilter" class="block text-sm font-medium text-slate-600 mb-1">Analyzed Prediction</label>
+                                    <select id="ae-analyzedPredictionFilter" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                         <option value="">All</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1">
-                                    <label for="ae-winningMarginFilter" class="block text-sm font-medium text-slate-300 mb-1">Winning Margin</label>
-                                    <select id="ae-winningMarginFilter" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-winningMarginFilter" class="block text-sm font-medium text-slate-600 mb-1">Winning Margin</label>
+                                    <select id="ae-winningMarginFilter" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                         <option value="">All</option>
                                     </select>
                                 </div>
                                 <div class="col-span-1">
-                                    <label for="ae-teamSearch" class="block text-sm font-medium text-slate-300 mb-1">Search Team</label>
-                                    <input type="text" id="ae-teamSearch" placeholder="e.g., Man Utd" class="w-full rounded-lg bg-slate-700 border-slate-600 text-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 transition-all duration-200">
+                                    <label for="ae-teamSearch" class="block text-sm font-medium text-slate-600 mb-1">Search Team</label>
+                                    <input type="text" id="ae-teamSearch" placeholder="e.g., Man Utd" class="w-full rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                                 </div>
                             </div>
                             <div class="flex justify-end mb-6">
-                                <button id="ae-resetFiltersBtn" class="px-4 py-2 bg-slate-600 text-slate-200 rounded-lg shadow-sm hover:bg-slate-500 transition-colors duration-200">
+                                <button id="ae-resetFiltersBtn" class="px-4 py-2 bg-slate-500 text-white rounded-lg shadow-sm hover:bg-slate-600 transition-colors duration-200">
                                     Reset Filters
                                 </button>
                             </div>
                         
                             <!-- Data Table -->
                             <div class="rounded-2xl shadow-lg scrollable-table-container">
-                                <table class="min-w-full divide-y divide-slate-700">
-                                    <thead class="bg-slate-700/50 sticky top-0 z-10">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-100 sticky top-0 z-10">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Date</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Home</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Away</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider hidden md:table-cell">Confidence</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider hidden md:table-cell">Winning Margin</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider hidden md:table-cell">Total Goals</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider hidden lg:table-cell">Prediction</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider hidden lg:table-cell">FT Outcome</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Result</th>
-                                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-400 uppercase tracking-wider">Details</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Home</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Away</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">Confidence</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">Winning Margin</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">Total Goals</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden lg:table-cell">Prediction</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden lg:table-cell">FT Outcome</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Result</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Details</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="ae-dataTableBody" class="divide-y divide-slate-700">
-                                        <tr><td colspan="10" class="text-center py-4 text-slate-400">Loading data...</td></tr>
+                                    <tbody id="ae-dataTableBody" class="divide-y divide-slate-200">
+                                        <tr><td colspan="10" class="text-center py-4 text-slate-500">Loading data...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         
                             <!-- Pagination Controls -->
                             <div class="flex justify-between items-center mt-6">
-                                <button id="ae-prevBtn" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg shadow-sm hover:bg-slate-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button id="ae-prevBtn" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg shadow-sm hover:bg-slate-200 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Previous
                                 </button>
-                                <span id="ae-pageInfo" class="text-sm text-slate-400"></span>
-                                <button id="ae-nextBtn" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg shadow-sm hover:bg-slate-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span id="ae-pageInfo" class="text-sm text-slate-500"></span>
+                                <button id="ae-nextBtn" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg shadow-sm hover:bg-slate-200 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Next
                                 </button>
                             </div>
@@ -520,57 +526,57 @@
                     
                         <!-- Pop-up Modal -->
                         <div id="ae-popupModal" class="custom-modal">
-                            <div class="bg-slate-800 rounded-3xl p-8 max-w-xl w-full shadow-2xl relative border border-slate-700">
-                                <button id="ae-closeModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100 transition-transform transform hover:scale-110">
+                            <div class="bg-white rounded-3xl p-8 max-w-xl w-full shadow-2xl relative border border-slate-200">
+                                <button id="ae-closeModalBtn" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 transition-transform transform hover:scale-110">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
-                                <h2 class="text-3xl font-bold mb-6 text-center text-slate-200">Match Details</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 text-slate-300">
+                                <h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Match Details</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 text-slate-700">
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Final Score / Time</span>
+                                        <span class="text-sm font-medium text-slate-500">Final Score / Time</span>
                                         <span id="ae-modalFinalScore" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Analyzed Prediction Score (A)</span>
+                                        <span class="text-sm font-medium text-slate-500">Analyzed Prediction Score (A)</span>
                                         <span id="ae-modalAPrScore" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Analyzed Prediction Score (H)</span>
+                                        <span class="text-sm font-medium text-slate-500">Analyzed Prediction Score (H)</span>
                                         <span id="ae-modalHPrScore" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Away Final Score</span>
+                                        <span class="text-sm font-medium text-slate-500">Away Final Score</span>
                                         <span id="ae-modalAFinal" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Home Final Score</span>
+                                        <span class="text-sm font-medium text-slate-500">Home Final Score</span>
                                         <span id="ae-modalHFinal" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Odds (Home)</span>
+                                        <span class="text-sm font-medium text-slate-500">Odds (Home)</span>
                                         <span id="ae-modalOddsH" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Odds (Draw)</span>
+                                        <span class="text-sm font-medium text-slate-500">Odds (Draw)</span>
                                         <span id="ae-modalOddsD" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Odds (Away)</span>
+                                        <span class="text-sm font-medium text-slate-500">Odds (Away)</span>
                                         <span id="ae-modalOddsA" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-slate-400">Confidence</span>
+                                        <span class="text-sm font-medium text-slate-500">Confidence</span>
                                         <span id="ae-modalConfidence" class="text-lg font-semibold"></span>
                                     </div>
                                     <div class="flex flex-col col-span-1 md:col-span-2">
-                                        <span class="text-sm font-medium text-slate-400">Prediction</span>
+                                        <span class="text-sm font-medium text-slate-500">Prediction</span>
                                         <span id="ae-modalPrediction" class="text-lg font-semibold"></span>
                                     </div>
                                 </div>
                                 <div class="mt-8 flex justify-center">
-                                    <a id="ae-modalMatchURL" target="_blank" class="px-6 py-3 bg-cyan-600 text-white font-medium rounded-lg hover:bg-cyan-700 transition-colors duration-200 shadow-md">
+                                    <a id="ae-modalMatchURL" target="_blank" class="px-6 py-3 bg-blue-800 text-white font-medium rounded-lg hover:bg-blue-900 transition-colors duration-200 shadow-md">
                                         View Match
                                     </a>
                                 </div>
@@ -578,93 +584,99 @@
                         </div>
                     </div>
                     <!-- Best Analysis Content -->
-                    <div id="content-best-analysis" class="page-content">
+                    <div id="content-best-analysis" class="page-content hidden">
                          <div class="max-w-7xl mx-auto space-y-8">
 
                             <!-- Header and Filters -->
-                            <header class="bg-slate-800 rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4 border border-slate-700">
+                            <header class="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4 border border-slate-200">
                                 <div class="flex-grow">
-                                    <h1 class="text-3xl font-bold text-cyan-400">Data Compass Analysis</h1>
-                                    <p class="text-xl text-slate-400 mt-1">Accuracy and Precision</p>
+                                    <h1 class="text-3xl font-bold text-blue-900">Data Compass Analysis</h1>
+                                    <p class="text-xl text-slate-500 mt-1">Accuracy and Precision</p>
                                 </div>
-                                <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full md:w-auto shadow-md p-4 rounded-lg">
-                                    <select id="ba-dateFilter" class="p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full sm:w-auto text-sm">
+                                <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
+                                    <select id="ba-dateFilter" class="p-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto text-sm">
                                         <option value="">All Dates</option>
                                     </select>
-                                    <select id="ba-leagueFilter" class="p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full sm:w-auto text-sm">
+                                    <select id="ba-leagueFilter" class="p-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto text-sm">
                                         <option value="">All Leagues</option>
                                     </select>
-                                    <select id="ba-analyzedPredictionFilter" class="p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full sm:w-auto text-sm">
+                                    <select id="ba-analyzedPredictionFilter" class="p-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto text-sm">
                                         <option value="">All Predictions</option>
                                     </select>
-                                    <select id="ba-goalTipFilter" class="p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full sm:w-auto text-sm">
+                                    <select id="ba-goalTipFilter" class="p-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto text-sm">
                                         <option value="">All Goal Tips</option>
                                     </select>
-                                    <button id="ba-refreshButton" class="p-3 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full sm:w-auto text-sm">Refresh</button>
+                                    <button id="ba-refreshButton" class="p-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full sm:w-auto text-sm">Refresh</button>
                                 </div>
                             </header>
 
                             <!-- Summary Cards -->
                             <div id="ba-dashboardCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
-                                    <h3 class="text-lg font-semibold text-slate-400">Total Matches</h3>
-                                    <p id="ba-totalMatches" class="text-3xl font-bold text-slate-200 mt-2">0</p>
-                                    <p class="text-sm text-slate-500 mt-1">Today / Upcoming</p>
+                                <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+                                    <h3 class="text-lg font-semibold text-slate-500">Total Matches</h3>
+                                    <p id="ba-totalMatches" class="text-3xl font-bold text-slate-800 mt-2">0</p>
+                                    <p class="text-sm text-slate-400 mt-1">Today / Upcoming</p>
                                 </div>
-                                <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
-                                    <h3 class="text-lg font-semibold text-slate-400">Prediction Status</h3>
+                                <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+                                    <h3 class="text-lg font-semibold text-slate-500">Prediction Status</h3>
                                     <div class="flex items-center space-x-2 mt-2">
-                                        <span id="ba-wonStatus" class="text-xl font-bold text-green-500">0</span>
-                                        <span class="text-sm text-slate-400">Won</span>
-                                        <span id="ba-lostStatus" class="text-xl font-bold text-red-500">0</span>
-                                        <span class="text-sm text-slate-400">Lost</span>
-                                        <span id="ba-pendingStatus" class="text-xl font-bold text-slate-400">0</span>
-                                        <span class="text-sm text-slate-400">Pending</span>
+                                        <span id="ba-wonStatus" class="text-xl font-bold text-green-600">0</span>
+                                        <span class="text-sm text-slate-500">Won</span>
+                                        <span id="ba-lostStatus" class="text-xl font-bold text-red-600">0</span>
+                                        <span class="text-sm text-slate-500">Lost</span>
+                                        <span id="ba-pendingStatus" class="text-xl font-bold text-slate-500">0</span>
+                                        <span class="text-sm text-slate-500">Pending</span>
                                     </div>
-                                    <p id="ba-wonPercentage" class="text-sm text-green-500 font-medium mt-1">0% Won</p>
+                                    <p id="ba-wonPercentage" class="text-sm text-green-600 font-medium mt-1">0% Won</p>
                                 </div>
-                                <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
-                                    <h3 class="text-lg font-semibold text-slate-400">Tips Distribution on Odds</h3>
+                                <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+                                    <h3 class="text-lg font-semibold text-slate-500">Tips Distribution on Odds</h3>
                                     <div id="ba-tipsDistribution" class="flex items-center space-x-4 mt-2">
                                     </div>
-                                    <p class="text-sm text-slate-500 mt-1">Home vs Away vs Draw Tips</p>
+                                    <p class="text-sm text-slate-400 mt-1">Home vs Away vs Draw Tips</p>
                                 </div>
-                                <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
-                                    <h3 class="text-lg font-semibold text-slate-400">Average Confidence</h3>
-                                    <p id="ba-avgConfidence" class="text-3xl font-bold text-blue-500 mt-2">0%</p>
-                                    <p class="text-sm text-slate-500 mt-1">Goals Tip</p>
+                                <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+                                    <h3 class="text-lg font-semibold text-slate-500">Average Confidence</h3>
+                                    <p id="ba-avgConfidence" class="text-3xl font-bold text-blue-800 mt-2">0%</p>
+                                    <p class="text-sm text-slate-400 mt-1">Goals Tip</p>
                                 </div>
                             </div>
 
                             <!-- Main Content Section: Tabs -->
-                            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
-                                <div class="flex border-b border-slate-700">
-                                    <button id="ba-bestTipsTabBtn" class="py-2 px-4 font-semibold text-sm rounded-t-lg border-b-2 border-transparent hover:text-slate-300 transition-colors duration-200 focus:outline-none bg-green-600 text-white">Best Tips</button>
-                                    <button id="ba-tableTabBtn" class="py-2 px-4 font-semibold text-sm rounded-t-lg border-b-2 border-transparent text-slate-400 hover:text-slate-300 transition-colors duration-200 focus:outline-none">Data Table</button>
-                                    <button id="ba-analyticsTabBtn" class="py-2 px-4 font-semibold text-sm rounded-t-lg border-b-2 border-transparent text-slate-400 hover:text-slate-300 transition-colors duration-200 focus:outline-none">Match Analytics</button>
+                            <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+                                <div class="flex border-b border-slate-200">
+                                    <button id="ba-bestTipsTabBtn" class="py-2 px-4 font-semibold text-sm rounded-t-lg border-b-2 border-transparent hover:text-slate-700 transition-colors duration-200 focus:outline-none bg-green-600 text-white">Best Tips</button>
+                                    <button id="ba-tableTabBtn" class="py-2 px-4 font-semibold text-sm rounded-t-lg border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition-colors duration-200 focus:outline-none">Data Table</button>
+                                    <button id="ba-analyticsTabBtn" class="py-2 px-4 font-semibold text-sm rounded-t-lg border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition-colors duration-200 focus:outline-none">Match Analytics</button>
                                 </div>
 
                                 <!-- Tab Content: Best Tips -->
                                 <div id="ba-bestTipsContent" class="mt-4">
+                                    <div class="flex justify-end mb-4">
+                                        <button id="ba-bestTips-exportPdfBtn" class="p-2 px-4 rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 text-sm flex items-center space-x-2">
+                                            <i data-lucide="file-down" class="w-4 h-4"></i>
+                                            <span>Export to PDF</span>
+                                        </button>
+                                    </div>
                                     <div class="overflow-x-auto scrollable-table">
-                                        <table id="ba-bestTipsTable" class="min-w-full divide-y divide-slate-700">
-                                            <thead class="bg-slate-700/50 sticky top-0">
+                                        <table id="ba-bestTipsTable" class="min-w-full divide-y divide-slate-200">
+                                            <thead class="bg-slate-100 sticky top-0">
                                                 <tr>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Date">Date</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="HomeTeam">Home Team</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="HomeFormRate">H. Form %</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="AwayTeam">Away Team</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="AwayFormRate">A. Form %</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="OddsH">Home Odds</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="OddsD">Draw Odds</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="OddsA">Away Odds</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Confidence">Conf. %</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="AnalyzedPrediction">Analyzed Pred.</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="MatchResult">Match Result</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="PredictionStatus">Status</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Date">Date</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="HomeTeam">Home Team</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="HomeFormRate">H. Form %</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="AwayTeam">Away Team</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="AwayFormRate">A. Form %</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="OddsH">Home Odds</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="OddsD">Draw Odds</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="OddsA">Away Odds</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Confidence">Conf. %</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="AnalyzedPrediction">Analyzed Pred.</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="MatchResult">Match Result</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="PredictionStatus">Status</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="ba-bestTipsTableBody" class="divide-y divide-slate-700"></tbody>
+                                            <tbody id="ba-bestTipsTableBody" class="divide-y divide-slate-200"></tbody>
                                         </table>
                                     </div>
                                     <div id="ba-bestTipsPagination" class="flex justify-between items-center mt-4"></div>
@@ -673,36 +685,40 @@
                                 <!-- Tab Content: Match Table -->
                                 <div id="ba-tableContent" class="mt-4 hidden">
                                     <div class="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
-                                        <h2 class="text-2xl font-semibold text-slate-200">Match Predictions Table</h2>
+                                        <h2 class="text-2xl font-semibold text-slate-800">Match Predictions Table</h2>
                                         <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-                                            <input type="text" id="ba-teamSearch" placeholder="Search team names..." class="p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full text-sm">
-                                            <select id="ba-statusFilter" class="p-3 rounded-lg bg-slate-700 border border-slate-600 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-full text-sm">
+                                            <input type="text" id="ba-teamSearch" placeholder="Search team names..." class="p-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm">
+                                            <select id="ba-statusFilter" class="p-3 rounded-lg bg-slate-100 border border-slate-300 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm">
                                                 <option value="">All Statuses</option>
                                                 <option value="Won">Won</option>
                                                 <option value="Lost">Lost</option>
                                                 <option value="Awaiting Results">Awaiting Results</option>
                                             </select>
+                                            <button id="ba-table-exportPdfBtn" class="p-3 rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 text-sm flex items-center space-x-2 w-full sm:w-auto justify-center">
+                                                <i data-lucide="file-down" class="w-4 h-4"></i>
+                                                <span>Export PDF</span>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="overflow-x-auto scrollable-table">
-                                        <table id="ba-matchTable" class="min-w-full divide-y divide-slate-700">
-                                            <thead class="bg-slate-700/50 sticky top-0">
+                                        <table id="ba-matchTable" class="min-w-full divide-y divide-slate-200">
+                                            <thead class="bg-slate-100 sticky top-0">
                                                 <tr>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Date">Date</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="HomeTeam">Home Team</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="HomeFormRate">H. Form %</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="AwayTeam">Away Team</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="AwayFormRate">A. Form %</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="OddsH">Home Odds</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="OddsD">Draw Odds</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="OddsA">Away Odds</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Confidence">Conf. %</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="AnalyzedPrediction">Analyzed Pred.</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="MatchResult">Match Result</th>
-                                                    <th class="px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider sort-header" data-sort-key="PredictionStatus">Status</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Date">Date</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="HomeTeam">Home Team</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="HomeFormRate">H. Form %</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="AwayTeam">Away Team</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="AwayFormRate">A. Form %</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="OddsH">Home Odds</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="OddsD">Draw Odds</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="OddsA">Away Odds</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer sort-header" data-sort-key="Confidence">Conf. %</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="AnalyzedPrediction">Analyzed Pred.</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="MatchResult">Match Result</th>
+                                                    <th class="px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider sort-header" data-sort-key="PredictionStatus">Status</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="ba-matchTableBody" class="divide-y divide-slate-700"></tbody>
+                                            <tbody id="ba-matchTableBody" class="divide-y divide-slate-200"></tbody>
                                         </table>
                                     </div>
                                     <div id="ba-tablePagination" class="flex justify-between items-center mt-4"></div>
@@ -710,22 +726,22 @@
                                 
                                 <!-- Tab Content: Analytics -->
                                 <div id="ba-analyticsContent" class="mt-4 hidden">
-                                    <h2 class="text-2xl font-semibold text-slate-200 mb-4">Analytics</h2>
+                                    <h2 class="text-2xl font-semibold text-slate-800 mb-4">Analytics</h2>
                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                        <div class="bg-slate-800 rounded-xl shadow-lg p-4 border border-slate-700">
-                                            <h3 class="text-lg font-medium text-slate-300 text-center">Prediction Accuracy</h3>
+                                        <div class="bg-white rounded-xl shadow-lg p-4 border border-slate-200">
+                                            <h3 class="text-lg font-medium text-slate-700 text-center">Prediction Accuracy</h3>
                                             <div class="w-full h-48 flex justify-center items-center"><canvas id="ba-accuracyPieChart"></canvas></div>
                                         </div>
-                                        <div class="bg-slate-800 rounded-xl shadow-lg p-4 border border-slate-700">
-                                            <h3 class="text-lg font-medium text-slate-300 text-center">Confidence Ranges</h3>
+                                        <div class="bg-white rounded-xl shadow-lg p-4 border border-slate-200">
+                                            <h3 class="text-lg font-medium text-slate-700 text-center">Confidence Ranges</h3>
                                             <div class="w-full h-48 flex justify-center items-center"><canvas id="ba-confidenceBarChart"></canvas></div>
                                         </div>
-                                        <div class="bg-slate-800 rounded-xl shadow-lg p-4 col-span-1 md:col-span-2 border border-slate-700">
-                                            <h3 class="text-lg font-medium text-slate-300 text-center">Accuracy Trend Over Time</h3>
+                                        <div class="bg-white rounded-xl shadow-lg p-4 col-span-1 md:col-span-2 border border-slate-200">
+                                            <h3 class="text-lg font-medium text-slate-700 text-center">Accuracy Trend Over Time</h3>
                                             <div class="w-full h-48 flex justify-center items-center"><canvas id="ba-accuracyLineChart"></canvas></div>
                                         </div>
-                                        <div class="bg-slate-800 rounded-xl shadow-lg p-4 col-span-1 md:col-span-2 lg:col-span-2 border border-slate-700">
-                                            <h3 class="text-lg font-medium text-slate-300 text-center">Prediction Analysis</h3>
+                                        <div class="bg-white rounded-xl shadow-lg p-4 col-span-1 md:col-span-2 lg:col-span-2 border border-slate-200">
+                                            <h3 class="text-lg font-medium text-slate-700 text-center">Prediction Analysis</h3>
                                             <div class="w-full h-48 flex justify-center items-center"><canvas id="ba-analyzedPredictionChart"></canvas></div>
                                         </div>
                                     </div>
@@ -735,30 +751,64 @@
 
                         <!-- Match Details Modal -->
                         <div id="ba-matchModal" class="custom-modal">
-                            <div class="modal-content p-8 w-11/12 md:w-3/4 lg:w-2/3 bg-slate-800 border border-slate-700 text-slate-300">
+                            <div class="modal-content p-8 w-11/12 md:w-3/4 lg:w-2/3 bg-white border border-slate-200 text-slate-700">
                                 <div class="flex justify-between items-start mb-4">
-                                    <h2 id="ba-modalTitle" class="text-2xl font-bold text-slate-200">Match Details</h2>
-                                    <button id="ba-closeModal" class="text-slate-400 hover:text-slate-200 transition-colors duration-200 text-3xl font-light leading-none">&times;</button>
+                                    <h2 id="ba-modalTitle" class="text-2xl font-bold text-slate-800">Match Details</h2>
+                                    <button id="ba-closeModal" class="text-slate-500 hover:text-slate-800 transition-colors duration-200 text-3xl font-light leading-none">&times;</button>
                                 </div>
                                 <div id="ba-modalContent" class="space-y-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Today's Best Content -->
+                    <div id="content-todays-best" class="page-content">
+                        <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-10 border border-slate-200">
+                            <h2 class="text-3xl font-bold text-blue-900 mb-4">Today's Best Tips</h2>
+                            <p class="text-slate-500 mb-6">A curated list of today's high-value tips. Use the filter to view tips for a specific date.</p>
+                            
+                            <!-- Filter Section -->
+                            <div class="mb-6">
+                                <label for="tb-dateFilter" class="block text-sm font-medium text-slate-600 mb-1">Filter by Date</label>
+                                <select id="tb-dateFilter" class="w-full md:w-1/3 rounded-lg bg-slate-100 border-slate-300 text-slate-800 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
+                                    <option value="">All Available Dates</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Data Table -->
+                            <div class="rounded-2xl shadow-lg overflow-x-auto">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-100 sticky top-0 z-10">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">League</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Match</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Confidence</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Analyzed Prediction</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tb-dataTableBody" class="divide-y divide-slate-200">
+                                        <tr><td colspan="6" class="text-center py-8 text-slate-500">Loading tips...</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                     <!-- Analytics Content -->
                     <div id="content-analytics" class="page-content hidden">
                          <!-- Analytics Filters -->
-                        <div class="bg-slate-800/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6 border border-slate-700">
-                            <h3 class="text-xl font-bold text-cyan-400 mb-4">Analytics Filters</h3>
+                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md mb-8 p-6 border border-slate-200">
+                            <h3 class="text-xl font-bold text-blue-900 mb-4">Analytics Filters</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
-                                    <label for="analyticsDateFilter" class="block text-sm font-medium text-slate-300 mb-2">Filter by Date</label>
-                                    <select id="analyticsDateFilter" class="w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="analyticsDateFilter" class="block text-sm font-medium text-slate-600 mb-2">Filter by Date</label>
+                                    <select id="analyticsDateFilter" class="w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Dates</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="analyticsTotalGoalsFilter" class="block text-sm font-medium text-slate-300 mb-2">Filter by Total Goals</label>
-                                    <select id="analyticsTotalGoalsFilter" class="w-full bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 transition">
+                                    <label for="analyticsTotalGoalsFilter" class="block text-sm font-medium text-slate-600 mb-2">Filter by Total Goals</label>
+                                    <select id="analyticsTotalGoalsFilter" class="w-full bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition">
                                         <option value="All">All Totals</option>
                                     </select>
                                 </div>
@@ -767,89 +817,89 @@
                         <!-- Key Insights Section -->
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
                             <!-- Overall Success Rate -->
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700">
+                            <div class="bg-white p-6 rounded-xl shadow-md flex items-center border border-slate-200">
                                 <div class="relative w-24 h-24">
                                     <svg class="w-full h-full" viewBox="0 0 36 36">
-                                        <path class="text-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
-                                        <path id="progress-ring-circle" class="progress-ring__circle text-cyan-500" stroke-width="3" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                        <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+                                        <path id="progress-ring-circle" class="progress-ring__circle text-green-500" stroke-width="3" stroke-linecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                                     </svg>
                                     <div class="absolute inset-0 flex items-center justify-center">
-                                        <span id="overall-success-rate-text" class="text-2xl font-bold text-cyan-400">-%</span>
+                                        <span id="overall-success-rate-text" class="text-2xl font-bold text-green-600">-%</span>
                                     </div>
                                 </div>
                                 <div class="ml-5">
-                                    <h4 class="text-slate-400 text-sm font-medium">Overall Success</h4>
-                                    <p class="text-slate-200 text-lg font-semibold">Accuracy Rate</p>
+                                    <h4 class="text-slate-500 text-sm font-medium">Overall Success</h4>
+                                    <p class="text-slate-800 text-lg font-semibold">Accuracy Rate</p>
                                 </div>
                             </div>
                              <!-- Best Performing Bet -->
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md flex items-center border border-slate-700">
-                                <div class="flex-shrink-0 bg-teal-500/10 text-teal-400 rounded-full h-16 w-16 flex items-center justify-center">
+                            <div class="bg-white p-6 rounded-xl shadow-md flex items-center border border-slate-200">
+                                <div class="flex-shrink-0 bg-teal-100 text-teal-800 rounded-full h-16 w-16 flex items-center justify-center">
                                     <i data-lucide="trending-up" class="w-8 h-8"></i>
                                 </div>
                                 <div class="ml-5">
-                                    <h4 class="text-slate-400 text-sm font-medium">Best Performing Bet</h4>
-                                    <p id="best-bet-type" class="text-slate-200 text-lg font-bold truncate">-</p>
+                                    <h4 class="text-slate-500 text-sm font-medium">Best Performing Bet</h4>
+                                    <p id="best-bet-type" class="text-slate-800 text-lg font-bold truncate">-</p>
                                 </div>
                             </div>
                              <!-- Optimal Confidence -->
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-lg p-6 border border-slate-700">
-                                <div class="flex-shrink-0 bg-violet-500/10 text-violet-400 rounded-full h-16 w-16 flex items-center justify-center">
+                            <div class="bg-white p-6 rounded-xl shadow-lg p-6 border border-slate-200">
+                                <div class="flex-shrink-0 bg-violet-100 text-violet-800 rounded-full h-16 w-16 flex items-center justify-center">
                                     <i data-lucide="target" class="w-8 h-8"></i>
                                 </div>
                                 <div class="ml-5">
-                                    <h4 class="text-slate-400 text-sm font-medium">Optimal Confidence</h4>
-                                    <p id="optimal-confidence" class="text-slate-200 text-lg font-bold">-</p>
+                                    <h4 class="text-slate-500 text-sm font-medium">Optimal Confidence</h4>
+                                    <p id="optimal-confidence" class="text-slate-800 text-lg font-bold">-</p>
                                 </div>
                             </div>
                              <!-- Total Bets -->
-                             <div class="bg-slate-800 p-6 rounded-xl shadow-lg p-6 border border-slate-700">
-                                <div class="flex-shrink-0 bg-amber-500/10 text-amber-400 rounded-full h-16 w-16 flex items-center justify-center">
+                             <div class="bg-white p-6 rounded-xl shadow-lg p-6 border border-slate-200">
+                                <div class="flex-shrink-0 bg-amber-100 text-amber-800 rounded-full h-16 w-16 flex items-center justify-center">
                                     <i data-lucide="hash" class="w-8 h-8"></i>
                                 </div>
                                 <div class="ml-5">
-                                    <h4 class="text-slate-400 text-sm font-medium">Total Bets Analyzed</h4>
-                                    <p id="total-bets-analyzed" class="text-slate-200 text-lg font-bold">-</p>
+                                    <h4 class="text-slate-500 text-sm font-medium">Total Bets Analyzed</h4>
+                                    <p id="total-bets-analyzed" class="text-slate-800 text-lg font-bold">-</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Charts Grid -->
                         <div class="grid grid-cols-1 xl:grid-cols-5 gap-8">
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-3 border border-slate-700"><canvas id="confidenceChart"></canvas></div>
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-2 border border-slate-700"><canvas id="predictionAccuracyChart"></canvas></div>
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-5 border border-slate-700"><canvas id="successOverTimeChart"></canvas></div>
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-3 border border-slate-700"><canvas id="analyzedPredictionChart"></canvas></div>
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-2 border border-slate-700"><canvas id="winningMarginChart"></canvas></div>
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-3 border border-slate-700"><canvas id="goalsTipChart"></canvas></div>
-                            <div class="bg-slate-800 p-6 rounded-xl shadow-md xl:col-span-2 border border-slate-700"><canvas id="preferenceChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-3 border border-slate-200"><canvas id="confidenceChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2 border border-slate-200"><canvas id="predictionAccuracyChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-5 border border-slate-200"><canvas id="successOverTimeChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-3 border border-slate-200"><canvas id="analyzedPredictionChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2 border border-slate-200"><canvas id="winningMarginChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-3 border border-slate-200"><canvas id="goalsTipChart"></canvas></div>
+                            <div class="bg-white p-6 rounded-xl shadow-md xl:col-span-2 border border-slate-200"><canvas id="preferenceChart"></canvas></div>
                         </div>
                     </div>
                      <!-- Admin Content -->
                     <div id="content-admin" class="page-content hidden">
-                        <div class="bg-slate-800/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-slate-700">
-                            <h3 class="text-xl font-bold text-cyan-400 mb-2">Table Column Management</h3>
-                            <p class="text-sm text-slate-400 mb-6">Drag and drop to reorder columns. Check or uncheck to show or hide them.</p>
+                        <div class="bg-white/70 backdrop-blur-lg rounded-xl shadow-md p-6 border border-slate-200">
+                            <h3 class="text-xl font-bold text-blue-900 mb-2">Table Column Management</h3>
+                            <p class="text-sm text-slate-500 mb-6">Drag and drop to reorder columns. Check or uncheck to show or hide them.</p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <!-- All Match Data Table Management -->
                                 <div>
-                                    <h4 class="font-bold text-slate-200 mb-4">Dashboard: All Match Data Table</h4>
-                                    <div id="main-table-admin-container" class="space-y-2 p-4 bg-slate-900 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-slate-800 mb-4">Dashboard: All Match Data Table</h4>
+                                    <div id="main-table-admin-container" class="space-y-2 p-4 bg-slate-50 rounded-lg border border-slate-200">
                                         <!-- Columns will be injected here by JS -->
                                     </div>
                                 </div>
                                 <!-- High Confidence Table Management -->
                                 <div>
-                                    <h4 class="font-bold text-slate-200 mb-4">High-Confidence Table</h4>
-                                    <div id="high-confidence-table-admin-container" class="space-y-2 p-4 bg-slate-900 rounded-lg border border-slate-700">
+                                    <h4 class="font-bold text-slate-800 mb-4">High-Confidence Table</h4>
+                                    <div id="high-confidence-table-admin-container" class="space-y-2 p-4 bg-slate-50 rounded-lg border border-slate-200">
                                         <!-- Columns will be injected here by JS -->
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-8 flex justify-end gap-4">
-                                <button id="reset-columns-btn" class="bg-slate-600 hover:bg-slate-500 text-slate-200 font-bold py-2.5 px-6 rounded-lg transition">Reset to Default</button>
-                                <button id="save-columns-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm hover:shadow-md">Save Changes</button>
+                                <button id="reset-columns-btn" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2.5 px-6 rounded-lg transition">Reset to Default</button>
+                                <button id="save-columns-btn" class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm hover:shadow-md">Save Changes</button>
                             </div>
                             <p id="admin-message" class="text-sm text-right mt-4 text-emerald-500"></p>
                         </div>
@@ -862,10 +912,10 @@
     <!-- Details Modal -->
     <div id="details-modal" class="fixed inset-0 z-50 hidden">
         <div id="modal-overlay" class="absolute inset-0 bg-black bg-opacity-60 modal-overlay opacity-0"></div>
-        <div class="relative bg-slate-800 w-full max-w-xl mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95 opacity-0 transform -translate-y-10 border border-slate-700">
-            <div class="flex items-start justify-between pb-4 border-b border-slate-700">
-                <h2 class="text-xl font-bold text-slate-200" id="modal-title"></h2>
-                <button id="modal-close-btn" class="text-2xl text-slate-500 hover:text-slate-300 font-light">&times;</button>
+        <div class="relative bg-white w-full max-w-xl mx-auto mt-20 rounded-lg shadow-xl p-6 modal-content scale-95 opacity-0 transform -translate-y-10 border border-slate-200">
+            <div class="flex items-start justify-between pb-4 border-b border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800" id="modal-title"></h2>
+                <button id="modal-close-btn" class="text-2xl text-slate-400 hover:text-slate-600 font-light">&times;</button>
             </div>
             <div id="modal-body" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 text-sm max-h-[70vh] overflow-y-auto"></div>
         </div>
@@ -880,7 +930,6 @@
         const ROWS_PER_PAGE = 20;
         
         // --- DEFAULT TABLE HEADERS CONFIGURATION ---
-        // MODIFIED: Replaced 'Match Outcome' and 'Accuracy'
         const DEFAULT_MAIN_TABLE_HEADERS = ['Details', 'Date', 'Home Team', 'Away Team', 'Analyzed Prediction', 'Home Odds', 'Draw Odds', 'Away Odds', 'Level of Confidence', 'Prediction Status', 'Match Result'];
         let ALL_POSSIBLE_COLUMNS = [];
 
@@ -895,6 +944,9 @@
         let mainTableHeaders = [];
         let allEventsInitialized = false;
         let bestAnalysisInitialized = false;
+        let todaysBestInitialized = false;
+        let ba_rawData = [];
+
 
         const initialFilterState = () => ({
             searchTerm: '',
@@ -916,15 +968,20 @@
             dom.syncDataBtn.disabled = true;
             dom.syncIcon.classList.add('animate-spin');
             dom.syncText.textContent = 'Syncing...';
-            dom.tableBody.innerHTML = `<tr><td colspan="${mainTableHeaders.length}" class="p-8 text-center text-slate-400"><div class="loader mx-auto"></div><p class="mt-4">Syncing data...</p></td></tr>`;
+            dom.tableBody.innerHTML = `<tr><td colspan="${mainTableHeaders.length}" class="p-8 text-center text-slate-500"><div class="loader mx-auto"></div><p class="mt-4">Syncing data...</p></td></tr>`;
             try {
                 await fetchAndProcessData();
                 if (allEventsInitialized) {
                     initializeAppEvents();
                 }
                  if (bestAnalysisInitialized) {
-                    initializeBestAnalysis();
+                    // Refresh Best Analysis data without resetting filters
+                    const baRefreshFunc = document.getElementById('ba-refreshButton')?.onclick;
+                    if(typeof baRefreshFunc === 'function') baRefreshFunc();
                 }
+                 if (todaysBestInitialized) {
+                    initializeTodaysBest();
+                 }
             } catch (e) {
                 // Error handled in fetch function
             } finally {
@@ -1013,6 +1070,9 @@
             }
             if (targetId === 'content-best-analysis' && !bestAnalysisInitialized) {
                 initializeBestAnalysis();
+            }
+            if (targetId === 'content-todays-best' && !todaysBestInitialized) {
+                initializeTodaysBest();
             }
             if (targetId === 'content-analytics') updateAnalytics();
             if (targetId === 'content-admin') renderAdminUI();
@@ -1163,7 +1223,7 @@
             e.preventDefault();
             const form = e.target;
             dom.signupMessage.textContent = 'Submitting...';
-            dom.signupMessage.className = 'text-sm text-center text-slate-400';
+            dom.signupMessage.className = 'text-sm text-center text-slate-500';
 
             try {
                 const formData = new FormData(form);
@@ -1352,16 +1412,16 @@
                 'Home Tip': 'border-lime-500', 'Over 2.5 Tip': 'border-amber-500',
                 'Draw Tip': 'border-yellow-500'
             };
-            const defaultColor = 'border-slate-500';
+            const defaultColor = 'border-slate-300';
 
             const sortedPredictions = Object.entries(predictionCounts).sort((a,b) => b[1] - a[1]);
 
             for (const [prediction, count] of sortedPredictions) {
                 const color = colorMap[prediction] || defaultColor;
                 const cardHTML = `
-                    <div class="bg-slate-800 p-4 rounded-xl shadow-md border-t-4 ${color} flex flex-col justify-center">
-                        <p class="text-slate-400 text-xs font-medium truncate">${prediction}</p>
-                        <p class="text-slate-200 text-xl font-bold">${count}</p>
+                    <div class="bg-white p-4 rounded-xl shadow-md border-t-4 ${color} flex flex-col justify-center">
+                        <p class="text-slate-500 text-xs font-medium truncate">${prediction}</p>
+                        <p class="text-slate-800 text-xl font-bold">${count}</p>
                     </div>`;
                 container.innerHTML += cardHTML;
             }
@@ -1372,7 +1432,7 @@
         function renderMainTableHeaders() {
             dom.tableHeader.innerHTML = mainTableHeaders.map(header => {
                 const isSortable = !['Details'].includes(header);
-                let classes = 'px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider';
+                let classes = 'px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider';
                 const originalIndex = COLUMN_INDICES[header];
 
                 if (header === 'Details') return `<th scope="col" class="${classes}"></th>`;
@@ -1400,46 +1460,45 @@
 
             pageData.forEach((row, index) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-700 transition-colors';
+                tr.className = 'hover:bg-slate-100 transition-colors';
                 tr.dataset.rowIndex = allData.indexOf(row);
                 
                 let cellsHTML = '';
                 mainTableHeaders.forEach(headerName => {
                     const colIndex = COLUMN_INDICES[headerName];
                     const cellValue = colIndex !== undefined ? row[colIndex] : '';
-                    let cellClass = 'px-6 py-4 whitespace-nowrap text-sm text-slate-300 align-middle';
+                    let cellClass = 'px-6 py-4 whitespace-nowrap text-sm text-slate-600 align-middle';
                     let cellContent = cellValue || '-';
 
                     switch(headerName) {
                         case 'Home Team': case 'Away Team':
-                            cellClass += ' font-semibold text-cyan-400';
+                            cellClass += ' font-semibold text-blue-800';
                             break;
                         case 'Level of Confidence':
                             const numericConf = parseFloat(cellValue.replace('%','').trim());
-                            let confColor = 'text-slate-200';
+                            let confColor = 'text-slate-800';
                             if (!isNaN(numericConf)) {
-                                if (numericConf >= 80) confColor = 'text-emerald-400';
-                                else if (numericConf >= 70) confColor = 'text-amber-400';
-                                else confColor = 'text-rose-400';
+                                if (numericConf >= 80) confColor = 'text-green-600';
+                                else if (numericConf >= 70) confColor = 'text-amber-600';
+                                else confColor = 'text-rose-600';
                             }
                             cellContent = `<span class="font-bold ${confColor}">${cellValue}</span>`;
                             break;
                         case 'Analyzed Prediction':
                             cellContent = getStyledPredictionBadge(cellValue);
                             break;
-                        // MODIFIED: Replaced 'Accuracy' case with 'Prediction Status'
                         case 'Prediction Status':
-                            let statusClass = 'bg-slate-700 text-slate-300';
+                            let statusClass = 'bg-slate-100 text-slate-600';
                             const lowerCellValue = (cellValue || '').toLowerCase();
                             if (lowerCellValue === 'won' || lowerCellValue === 'success') {
-                                statusClass = 'bg-emerald-500/10 text-emerald-400';
+                                statusClass = 'bg-green-100 text-green-700';
                             } else if (lowerCellValue === 'lost' || lowerCellValue === 'unsuccessful') {
-                                statusClass = 'bg-rose-500/10 text-rose-400';
+                                statusClass = 'bg-rose-100 text-rose-700';
                             }
                             cellContent = `<span class="${statusClass} text-xs font-medium px-2.5 py-0.5 rounded-full">${cellValue || 'N/A'}</span>`;
                             break;
                         case 'Details':
-                            cellContent = `<button class="view-more-btn bg-cyan-600 text-white px-3 py-1 text-xs rounded-full hover:bg-cyan-700 transition shadow">View</button>`;
+                            cellContent = `<button class="view-more-btn bg-blue-700 text-white px-3 py-1 text-xs rounded-full hover:bg-blue-800 transition shadow">View</button>`;
                             break;
                     }
                     cellsHTML += `<td class="${cellClass}">${cellContent}</td>`;
@@ -1452,19 +1511,19 @@
         }
 
         function getStyledPredictionBadge(prediction) {
-            let bgColor = 'bg-slate-700';
-            let textColor = 'text-slate-300';
+            let bgColor = 'bg-slate-200';
+            let textColor = 'text-slate-700';
             switch(prediction) {
                 case 'Home Best Tip':
                 case 'Home Good Tip':
-                    bgColor = 'bg-emerald-500/10'; textColor = 'text-emerald-400'; break;
+                    bgColor = 'bg-green-100'; textColor = 'text-green-800'; break;
                 case 'Home Tip':
-                    bgColor = 'bg-lime-500/10'; textColor = 'text-lime-400'; break;
+                    bgColor = 'bg-lime-100'; textColor = 'text-lime-800'; break;
                 case 'Best Away Tip':
                 case 'Good Away Tip':
-                    bgColor = 'bg-sky-500/10'; textColor = 'text-sky-400'; break;
+                    bgColor = 'bg-sky-100'; textColor = 'text-sky-800'; break;
                 case 'Over 1.5 Tip': case 'Over 2.5 Tip':
-                    bgColor = 'bg-amber-500/10'; textColor = 'text-amber-400'; break;
+                    bgColor = 'bg-amber-100'; textColor = 'text-amber-800'; break;
             }
             return `<span class="${bgColor} ${textColor} text-xs font-medium px-2.5 py-1 rounded-full">${prediction || 'N/A'}</span>`;
         }
@@ -1579,10 +1638,10 @@
 
         function renderAnalyticsCharts(filteredChartData) {
             
-            const CHART_PALETTE = ['#0891b2', '#0d9488', '#6d28d9', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'];
-             // Chart.js dark mode defaults
-            Chart.defaults.color = '#94a3b8'; // slate-400
-            Chart.defaults.borderColor = '#334155'; // slate-700
+            const CHART_PALETTE = ['#1e40af', '#059669', '#6d28d9', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6'];
+             // Chart.js light mode defaults
+            Chart.defaults.color = '#475569'; // slate-600
+            Chart.defaults.borderColor = '#e2e8f0'; // slate-200
             
             const chartConfigs = {
                 'preferenceChart': { type: 'bar', columnName: 'Preference', title: 'Success Rate by Preference' },
@@ -1615,7 +1674,7 @@
                         responsive: true,
                         maintainAspectRatio: true,
                         plugins: {
-                            title: { display: true, text: config.title, font: { size: 16, weight: 'bold' }, color: '#e2e8f0', padding: { bottom: 20 } },
+                            title: { display: true, text: config.title, font: { size: 16, weight: 'bold' }, color: '#1e293b', padding: { bottom: 20 } },
                             legend: { display: false },
                              tooltip: {
                                 callbacks: {
@@ -1630,10 +1689,10 @@
                                 beginAtZero: true, 
                                 max: 100, 
                                 ticks: { callback: value => value + '%' },
-                                grid: { color: '#334155' } 
+                                grid: { color: '#e2e8f0' } 
                             },
                             x: {
-                                grid: { color: '#334155' }
+                                grid: { color: '#e2e8f0' }
                             }
                         }
                     }
@@ -1655,13 +1714,13 @@
                 type: 'doughnut',
                 data: {
                     labels: ['Success', 'Unsuccessful'],
-                    datasets: [{ data: [successCount, unsuccessCount], backgroundColor: ['#10b981', '#f43f5e'], borderColor: '#1e293b', borderWidth: 4 }]
+                    datasets: [{ data: [successCount, unsuccessCount], backgroundColor: ['#10b981', '#f43f5e'], borderColor: '#ffffff', borderWidth: 4 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: true,
                     plugins: { 
-                        title: { display: true, text: 'Prediction Accuracy Overview', font: { size: 16, weight: 'bold' }, color: '#e2e8f0', padding: { bottom: 20 } },
-                        legend: { position: 'bottom', labels: { color: '#94a3b8' } }
+                        title: { display: true, text: 'Prediction Accuracy Overview', font: { size: 16, weight: 'bold' }, color: '#1e293b', padding: { bottom: 20 } },
+                        legend: { position: 'bottom', labels: { color: '#475569' } }
                     }
                 }
             });
@@ -1689,18 +1748,18 @@
                     datasets: [{
                         label: 'Success Rate',
                         data: timeValues,
-                        borderColor: '#0891b2',
-                        backgroundColor: 'rgba(8, 145, 178, 0.1)',
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
                         fill: true,
                         tension: 0.3,
-                        pointBackgroundColor: '#0891b2',
+                        pointBackgroundColor: '#1e40af',
                         pointRadius: 4
                     }]
                 },
                  options: {
                     responsive: true, maintainAspectRatio: true,
                     plugins: { 
-                        title: { display: true, text: 'Success Rate Over Time', font: { size: 16, weight: 'bold' }, color: '#e2e8f0', padding: { bottom: 20 } },
+                        title: { display: true, text: 'Success Rate Over Time', font: { size: 16, weight: 'bold' }, color: '#1e293b', padding: { bottom: 20 } },
                         legend: { display: false },
                         tooltip: { callbacks: { label: context => `Success Rate: ${context.parsed.y.toFixed(1)}%` } }
                     },
@@ -1709,10 +1768,10 @@
                             beginAtZero: true, 
                             max: 100, 
                             ticks: { callback: value => value + '%' },
-                            grid: { color: '#334155' }
+                            grid: { color: '#e2e8f0' }
                         },
                         x: {
-                           grid: { color: '#334155' }
+                           grid: { color: '#e2e8f0' }
                         }
                     }
                 }
@@ -1764,7 +1823,7 @@
             // Determine confidence bar color
             let confidenceBarColor = 'bg-rose-500';
             if (confidenceValue >= 70) confidenceBarColor = 'bg-amber-500';
-            if (confidenceValue >= 80) confidenceBarColor = 'bg-emerald-500';
+            if (confidenceValue >= 80) confidenceBarColor = 'bg-green-500';
             
             const homeTeamForm = getTeamForm(homeTeam, row[COLUMN_INDICES['Date']]);
             const awayTeamForm = getTeamForm(awayTeam, row[COLUMN_INDICES['Date']]);
@@ -1778,15 +1837,15 @@
                 }).join('');
             };
             const formHTML = `
-                <div class="md:col-span-3 mt-4 pt-4 border-t border-slate-700">
-                    <h4 class="font-bold text-slate-300 mb-3 text-base">Recent Form (Last 5 Games)</h4>
+                <div class="md:col-span-3 mt-4 pt-4 border-t border-slate-200">
+                    <h4 class="font-bold text-slate-600 mb-3 text-base">Recent Form (Last 5 Games)</h4>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-semibold text-slate-200">${homeTeam}</span>
+                            <span class="text-sm font-semibold text-slate-800">${homeTeam}</span>
                             <div class="flex items-center gap-2">${getFormHtml(homeTeamForm)}</div>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-sm font-semibold text-slate-200">${awayTeam}</span>
+                            <span class="text-sm font-semibold text-slate-800">${awayTeam}</span>
                             <div class="flex items-center gap-2">${getFormHtml(awayTeamForm)}</div>
                         </div>
                     </div>
@@ -1800,9 +1859,9 @@
                 if(header === 'Final Score / Time') {
                      modalBodyContent += `
                          <div>
-                             <p class="font-semibold text-slate-400">${header}</p>
+                             <p class="font-semibold text-slate-500">${header}</p>
                              <div class="flex items-center">
-                                 <p class="text-slate-200" id="modal-final-score">${cellValue || '-'}</p>
+                                 <p class="text-slate-800" id="modal-final-score">${cellValue || '-'}</p>
                                  ${scoreIsMissing ? `
                                  <button id="fetchOutcomeBtn"
                                      data-home-team="${homeTeam}"
@@ -1815,8 +1874,8 @@
                          </div>`;
                 } else if(header && cellValue) {
                     modalBodyContent += `<div>
-                        <p class="font-semibold text-slate-400">${header}</p>
-                        <p class="text-slate-200">${cellValue}</p>
+                        <p class="font-semibold text-slate-500">${header}</p>
+                        <p class="text-slate-800">${cellValue}</p>
                     </div>`;
                 }
             });
@@ -1827,22 +1886,22 @@
                     ${modalBodyContent}
                 </div>
                 ${formHTML}
-                <div class="md:col-span-3 mt-4 pt-4 border-t border-slate-700">
+                <div class="md:col-span-3 mt-4 pt-4 border-t border-slate-200">
                     <div class="mt-3">
                         <div class="flex justify-between mb-1">
-                            <span class="text-base font-medium text-slate-300">Level of Confidence</span>
-                            <span class="text-sm font-bold text-cyan-400">${confidenceText}</span>
+                            <span class="text-base font-medium text-slate-600">Level of Confidence</span>
+                            <span class="text-sm font-bold text-blue-800">${confidenceText}</span>
                         </div>
-                        <div class="w-full bg-slate-700 rounded-full h-2.5">
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
                             <div class="${confidenceBarColor} h-2.5 rounded-full" style="width: ${confidenceValue}%"></div>
                         </div>
                     </div>
                 </div>
-                <div class="md:col-span-3 mt-4 pt-4 border-t border-slate-700">
-                     <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
+                <div class="md:col-span-3 mt-4 pt-4 border-t border-slate-200">
+                     <button id="getExternalAnalysisBtn" data-home-team="${homeTeam}" data-away-team="${awayTeam}" class="flex items-center justify-center w-full text-center bg-blue-800 hover:bg-blue-900 text-white font-bold py-2.5 px-4 rounded-lg transition">
                          <i data-lucide="search" class="w-4 h-4 mr-2"></i> Fetch Other Predictions
                      </button>
-                     <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-700 border border-slate-600 rounded-lg text-sm text-slate-300 hidden" readonly></textarea>
+                     <textarea id="external-analysis-container" class="mt-4 w-full p-3 h-32 bg-slate-100 border border-slate-300 rounded-lg text-sm text-slate-700 hidden" readonly></textarea>
                 </div>
                 ${(urlSource && urlSource.startsWith('http')) ? `
                 <div class="md:col-span-3 mt-6"><a href="${urlSource}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full text-center bg-slate-600 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-lg transition">
@@ -2042,12 +2101,12 @@
         
         function renderAdminUI() {
             const createColumnItem = (columnName, isVisible) => `
-                <li data-column="${columnName}" class="draggable-item flex items-center justify-between p-2 bg-slate-800 rounded-md shadow-sm border border-slate-700" draggable="true">
+                <li data-column="${columnName}" class="draggable-item flex items-center justify-between p-2 bg-white rounded-md shadow-sm border border-slate-200" draggable="true">
                     <div class="flex items-center">
                         <i data-lucide="grip-vertical" class="w-5 h-5 text-slate-400 mr-2"></i>
-                        <label for="check-${columnName.replace(/\s+/g, '-')}" class="text-sm font-medium text-slate-300">${columnName}</label>
+                        <label for="check-${columnName.replace(/\s+/g, '-')}" class="text-sm font-medium text-slate-700">${columnName}</label>
                     </div>
-                    <input type="checkbox" id="check-${columnName.replace(/\s+/g, '-')}" ${isVisible ? 'checked' : ''} class="h-4 w-4 rounded border-slate-500 bg-slate-700 text-cyan-600 focus:ring-cyan-500">
+                    <input type="checkbox" id="check-${columnName.replace(/\s+/g, '-')}" ${isVisible ? 'checked' : ''} class="h-4 w-4 rounded border-slate-300 bg-slate-100 text-blue-600 focus:ring-blue-500">
                 </li>
             `;
             
@@ -2055,7 +2114,7 @@
                 .map(col => createColumnItem(col, mainTableHeaders.includes(col)))
                 .join('');
             
-            dom.highConfidenceTableAdminContainer.innerHTML = `<p class="text-slate-400 text-sm">This section has been removed.</p>`;
+            dom.highConfidenceTableAdminContainer.innerHTML = `<p class="text-slate-500 text-sm">This section has been removed.</p>`;
             
             lucide.createIcons();
             setupDragAndDrop();
@@ -2213,7 +2272,7 @@
                 ae_updateCards(ae_filteredEvents);
 
                 if (eventsToShow.length === 0) {
-                    ae_dom.dataTableBody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-slate-400">No events found matching the filters.</td></tr>`;
+                    ae_dom.dataTableBody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-slate-500">No events found matching the filters.</td></tr>`;
                     ae_dom.pageInfo.innerText = '';
                     ae_dom.prevBtn.disabled = true;
                     ae_dom.nextBtn.disabled = true;
@@ -2223,31 +2282,31 @@
                 eventsToShow.forEach((item, index) => {
                     const resultText = item.Result || '';
                     const getResultColor = (result) => {
-                        if (result.toLowerCase() === 'won') return 'bg-emerald-500/10 text-emerald-400';
-                        if (result.toLowerCase() === 'lost') return 'bg-rose-500/10 text-rose-400';
-                        if (result.toLowerCase() === 'draw') return 'bg-yellow-500/10 text-yellow-400';
-                        return 'bg-slate-600 text-slate-300';
+                        if (result.toLowerCase() === 'won') return 'bg-green-100 text-green-800';
+                        if (result.toLowerCase() === 'lost') return 'bg-rose-100 text-rose-800';
+                        if (result.toLowerCase() === 'draw') return 'bg-yellow-100 text-yellow-800';
+                        return 'bg-slate-200 text-slate-700';
                     };
                     const resultClass = getResultColor(resultText);
                     const row = document.createElement('tr');
-                    row.className = 'hover:bg-slate-700 cursor-pointer transition-colors duration-200';
+                    row.className = 'hover:bg-slate-100 cursor-pointer transition-colors duration-200';
                     
                     row.onclick = () => ae_openModal(item);
 
                     row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-200">${item.Date || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${item.Home || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${item.Away || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">${item['Level of Confidence'] || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">${item['Winning Margin'] || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">${item['Total Goals'] || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden lg:table-cell">${item['Prediction'] || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden lg:table-cell">${item['FT Outcome'] || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800">${item.Date || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">${item.Home || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">${item.Away || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 hidden md:table-cell">${item['Level of Confidence'] || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 hidden md:table-cell">${item['Winning Margin'] || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 hidden md:table-cell">${item['Total Goals'] || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 hidden lg:table-cell">${item['Prediction'] || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 hidden lg:table-cell">${item['FT Outcome'] || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${resultClass}">${resultText}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <button class="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-200" onclick="event.stopPropagation();">View</button>
+                            <button class="text-blue-700 hover:text-blue-900 font-medium transition-colors duration-200" onclick="event.stopPropagation();">View</button>
                         </td>`;
                     ae_dom.dataTableBody.appendChild(row);
                 });
@@ -2362,7 +2421,6 @@
         // --- BEST ANALYSIS TAB FUNCTIONS ---
         function initializeBestAnalysis() {
             // State for this tab
-            let ba_rawData = [];
             let ba_filteredData = [];
             let ba_currentSortColumn = 'Confidence';
             let ba_currentSortDirection = 'desc';
@@ -2394,10 +2452,12 @@
                 closeModalBtn: document.getElementById('ba-closeModal'),
                 modalContent: document.getElementById('ba-modalContent'),
                 modalTitle: document.getElementById('ba-modalTitle'),
+                bestTipsExportBtn: document.getElementById('ba-bestTips-exportPdfBtn'),
+                tableExportBtn: document.getElementById('ba-table-exportPdfBtn')
             };
 
             // Functions for this tab
-            async function ba_fetchData() {
+            async function ba_fetchData(isInitialLoad = false) {
                 try {
                     const GOOGLE_SHEET_URL_BA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vStqwpsns8hisGU7fbDbTh5I-yuho4Xxf1KGFDS1GtG6ewELvVzQYpmqpJnnsoUoLMd-g3iH1QIQ9EU/pub?gid=1066037497&single=true&output=csv';
                     const response = await fetch(`${GOOGLE_SHEET_URL_BA}&t=${new Date().getTime()}`);
@@ -2426,13 +2486,17 @@
                         DrawTips: row['Draw Tips']
                     }));
                     
-                    ba_filteredData = [...ba_rawData];
-                    ba_populateFilters();
-                    ba_updateUI();
+                    if (isInitialLoad) {
+                        ba_populateFilters();
+                    }
+                    ba_applyFiltersAndSort();
                 } catch (error) {
                     console.error('Best Analysis Fetch Error:', error);
                 }
             }
+            
+            async function ba_initialLoad() { await ba_fetchData(true); }
+            async function ba_refreshData() { await ba_fetchData(false); }
 
             function ba_parseCSV(csv) {
                 const lines = csv.split('\n').filter(line => line.trim() !== '');
@@ -2534,16 +2598,16 @@
 
                 paginatedData.forEach(match => {
                     const row = document.createElement('tr');
-                    let statusColor = 'text-slate-300';
-                    if (match.PredictionStatus === 'Won') statusColor = 'text-green-400';
-                    if (match.PredictionStatus === 'Lost') statusColor = 'text-red-400';
+                    let statusColor = 'text-slate-700';
+                    if (match.PredictionStatus === 'Won') statusColor = 'text-green-600';
+                    if (match.PredictionStatus === 'Lost') statusColor = 'text-red-600';
 
-                    row.className = `hover:bg-slate-700 cursor-pointer transition-colors duration-200 ${statusColor}`;
+                    row.className = `hover:bg-slate-100 cursor-pointer transition-colors duration-200`;
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${match.Date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${match.HomeTeam}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800">${match.HomeTeam}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${parseInt(match.HomeFormRate)}%</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${match.AwayTeam}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800">${match.AwayTeam}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${parseInt(match.AwayFormRate)}%</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${match.OddsH}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${match.OddsD}</td>
@@ -2551,16 +2615,16 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${match.Confidence}%</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${match.AnalyzedPrediction}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${match.MatchResult}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">${match.PredictionStatus}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${statusColor}">${match.PredictionStatus}</td>
                     `;
                     row.addEventListener('click', () => ba_showMatchModal(match));
                     tableBody.appendChild(row);
                 });
                 
                 paginationContainer.innerHTML = `
-                    <button class="p-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors duration-200 ${ba_currentPage === 1 ? 'opacity-50' : ''}" ${ba_currentPage === 1 ? 'disabled' : ''} data-page-nav="prev">Previous</button>
-                    <span class="text-sm text-slate-400">Page ${ba_currentPage} of ${totalPages || 1}</span>
-                    <button class="p-2 rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition-colors duration-200 ${ba_currentPage === totalPages || totalPages === 0 ? 'opacity-50' : ''}" ${ba_currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} data-page-nav="next">Next</button>
+                    <button class="p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors duration-200 ${ba_currentPage === 1 ? 'opacity-50' : ''}" ${ba_currentPage === 1 ? 'disabled' : ''} data-page-nav="prev">Previous</button>
+                    <span class="text-sm text-slate-500">Page ${ba_currentPage} of ${totalPages || 1}</span>
+                    <button class="p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors duration-200 ${ba_currentPage === totalPages || totalPages === 0 ? 'opacity-50' : ''}" ${ba_currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} data-page-nav="next">Next</button>
                 `;
 
                 paginationContainer.querySelector('[data-page-nav="prev"]').addEventListener('click', () => { ba_currentPage--; ba_renderTable(isBestTips); });
@@ -2600,8 +2664,8 @@
 
                 const tipsHtml = Object.entries(oddsTips).map(([tip, count]) => `
                     <div class="text-center">
-                        <span class="text-xl font-bold text-slate-200">${count}</span>
-                        <p class="text-sm text-slate-400">${tip}</p>
+                        <span class="text-xl font-bold text-slate-800">${count}</span>
+                        <p class="text-sm text-slate-500">${tip}</p>
                     </div>`).join('');
                 document.getElementById('ba-tipsDistribution').innerHTML = tipsHtml;
             }
@@ -2636,9 +2700,61 @@
                 });
             }
 
+            function ba_exportToPdf() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                let dataToExport;
+                let title;
+                
+                if (ba_currentTab === 'bestTips') {
+                    dataToExport = ba_filteredData.filter(match => ['Home Tip', 'Home Best Tip', 'Best Away Tip'].includes(match.AnalyzedPrediction));
+                    title = "Best Tips - Filtered Data";
+                } else if (ba_currentTab === 'table') {
+                    dataToExport = ba_filteredData;
+                    title = "All Match Predictions - Filtered Data";
+                } else {
+                    alert("Export is not available for this view.");
+                    return;
+                }
+
+                if (dataToExport.length === 0) {
+                    alert("No data to export based on current filters.");
+                    return;
+                }
+
+                const head = [['Date', 'Home', 'H Form %', 'Away', 'A Form %', 'H Odds', 'D Odds', 'A Odds', 'Conf. %', 'Prediction', 'Status']];
+                const body = dataToExport.map(row => [
+                    row.Date,
+                    row.HomeTeam,
+                    `${parseInt(row.HomeFormRate)}%`,
+                    row.AwayTeam,
+                    `${parseInt(row.AwayFormRate)}%`,
+                    row.OddsH,
+                    row.OddsD,
+                    row.OddsA,
+                    `${row.Confidence}%`,
+                    row.AnalyzedPrediction,
+                    row.PredictionStatus
+                ]);
+
+                doc.text(title, 14, 16);
+                doc.autoTable({
+                    head: head,
+                    body: body,
+                    startY: 20,
+                    theme: 'grid',
+                    headStyles: { fillColor: [30, 58, 138] }, // Navy Blue
+                    styles: { fontSize: 8 },
+                });
+
+                doc.save(`DataCompass_Export_${new Date().toISOString().slice(0,10)}.pdf`);
+            }
+
 
             // Event Listeners for this tab
-            ba_dom.refreshButton.addEventListener('click', ba_fetchData);
+            ba_dom.refreshButton.addEventListener('click', ba_refreshData);
+            ba_dom.refreshButton.onclick = ba_refreshData; // Make it accessible for sync button
             [ba_dom.dateFilter, ba_dom.leagueFilter, ba_dom.analyzedPredictionFilter, ba_dom.goalTipFilter, ba_dom.teamSearch, ba_dom.statusFilter].forEach(el => {
                 if(el) {
                     el.addEventListener('change', ba_applyFiltersAndSort);
@@ -2652,6 +2768,9 @@
 
              document.querySelector('#ba-bestTipsTable thead').addEventListener('click', ba_handleSortClick);
              document.querySelector('#ba-matchTable thead').addEventListener('click', ba_handleSortClick);
+             ba_dom.bestTipsExportBtn.addEventListener('click', ba_exportToPdf);
+             ba_dom.tableExportBtn.addEventListener('click', ba_exportToPdf);
+
 
              function ba_updateTabDisplay() {
                 ba_dom.tableContent.classList.toggle('hidden', ba_currentTab !== 'table');
@@ -2661,22 +2780,90 @@
                 const allTabButtons = [ba_dom.tableTabBtn, ba_dom.bestTipsTabBtn, ba_dom.analyticsTabBtn];
                 allTabButtons.forEach(btn => {
                     btn.classList.remove('bg-green-600', 'text-white');
-                    btn.classList.add('text-slate-400', 'hover:text-slate-300');
+                    btn.classList.add('text-slate-500', 'hover:text-slate-700');
                 });
 
                 const activeBtn = document.getElementById(`ba-${ba_currentTab}TabBtn`);
                 if (activeBtn) {
-                     activeBtn.classList.remove('text-slate-400', 'hover:text-slate-300');
+                     activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700');
                      activeBtn.classList.add('bg-green-600', 'text-white');
                 }
             }
 
 
             // Initial Call
-            ba_fetchData();
+            ba_initialLoad();
             bestAnalysisInitialized = true;
-            // ADDED: Auto-refresh data every 60 seconds
-            setInterval(ba_fetchData, 60000); 
+            setInterval(ba_refreshData, 60000); 
+        }
+
+        // --- TODAY'S BEST TAB FUNCTIONS ---
+        function initializeTodaysBest() {
+            const tb_dom = {
+                dateFilter: document.getElementById('tb-dateFilter'),
+                dataTableBody: document.getElementById('tb-dataTableBody')
+            };
+
+            const bestPredictionTypes = ["Best Away Tip", "Home Good Tip", "Home Tip"];
+
+            function tb_populateFilter() {
+                if (ba_rawData.length === 0) {
+                    console.warn("Best Analysis data not loaded yet for Today's Best tab.");
+                    // Attempt to load it if not available
+                    if (!bestAnalysisInitialized) {
+                        initializeBestAnalysis(); // This might cause a race condition, but it's a fallback
+                    }
+                    // Re-check after a delay
+                    setTimeout(tb_populateFilter, 2000);
+                    return;
+                }
+                const dates = [...new Set(ba_rawData.map(item => item.Date))].filter(Boolean);
+                dates.sort((a, b) => new Date(b) - new Date(a));
+                tb_dom.dateFilter.innerHTML = '<option value="">All Available Dates</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+            }
+
+            function tb_renderTable() {
+                const selectedDate = tb_dom.dateFilter.value;
+
+                let filtered = ba_rawData.filter(item => bestPredictionTypes.includes(item.AnalyzedPrediction));
+
+                if (selectedDate) {
+                    filtered = filtered.filter(item => item.Date === selectedDate);
+                }
+
+                tb_dom.dataTableBody.innerHTML = '';
+
+                if (filtered.length === 0) {
+                    tb_dom.dataTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-500">No best tips found for the selected date.</td></tr>`;
+                    return;
+                }
+
+                filtered.forEach(match => {
+                    let statusColor = 'text-slate-700';
+                    if (match.PredictionStatus === 'Won') statusColor = 'text-green-600';
+                    if (match.PredictionStatus === 'Lost') statusColor = 'text-red-600';
+
+                    const row = document.createElement('tr');
+                    row.className = `hover:bg-slate-100 transition-colors duration-200`;
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${match.Date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${match.League}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800">${match.HomeTeam} vs ${match.AwayTeam}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${match.Confidence}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${getStyledPredictionBadge(match.AnalyzedPrediction)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${statusColor}">${match.PredictionStatus}</td>
+                    `;
+                    tb_dom.dataTableBody.appendChild(row);
+                });
+            }
+
+            // Initial setup
+            tb_populateFilter();
+            tb_renderTable();
+
+            tb_dom.dateFilter.addEventListener('change', tb_renderTable);
+            
+            todaysBestInitialized = true;
         }
 
         // --- EVENT LISTENERS ---
@@ -2722,3 +2909,4 @@
     </script>
 </body>
 </html>
+
